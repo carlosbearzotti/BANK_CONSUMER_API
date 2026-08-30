@@ -229,11 +229,14 @@ textarea.form-control {
   border-radius: var(--radius-sm);
 }
 
-.btn-icon {
+.btn-icon-square {
   width: 36px;
   height: 36px;
   padding: 0;
   border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ==========================================================================
@@ -272,6 +275,7 @@ textarea.form-control {
   align-items: center;
   flex-wrap: wrap;
   gap: 0.65rem;
+  flex: 1;
 }
 
 .inspector-title {
@@ -281,33 +285,48 @@ textarea.form-control {
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  flex-shrink: 0;
 }
 
-.inspector-actions {
+.inspector-header-right {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.75rem;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
-.btn-icon {
+.btn-action {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border-subtle);
   color: var(--text-secondary);
-  padding: 0.3rem 0.65rem;
+  padding: 0.35rem 0.75rem;
   border-radius: 6px;
   font-family: var(--font-mono);
   font-size: 0.75rem;
+  font-weight: 600;
   cursor: pointer;
   transition: var(--transition-fast);
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+  width: auto;
+  height: auto;
+  line-height: 1.4;
+  box-sizing: border-box;
 }
 
-.btn-icon:hover {
-  background: rgba(255, 255, 255, 0.1);
+.btn-action:hover {
+  background: rgba(255, 255, 255, 0.12);
   color: var(--text-primary);
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-action:active {
+  transform: translateY(0);
 }
 
 .http-method {
@@ -447,16 +466,29 @@ textarea.form-control {
 
 /* Inspector View Toolbar & Tabs */
 .inspector-toolbar {
-  padding: 0.65rem 1rem 0 1rem;
+  padding: 0.5rem 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.01);
 }
 
 .inspector-tabs {
   display: flex;
   gap: 0.35rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.inspector-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 .inspector-tab-btn {

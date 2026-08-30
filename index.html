@@ -455,10 +455,8 @@
             <span id="inspectorUrl" class="http-url">/api/health</span>
             <span id="inspectorStatusBadge" class="inspector-status-badge status-success">✓ 200 OK</span>
           </div>
-          <div class="inspector-actions">
+          <div class="inspector-header-right">
             <span id="inspectorLatency" class="http-latency">⏱️ 0ms</span>
-            <button id="copyInspectorBtn" class="btn-icon" title="Copiar Payload JSON">📋 Copiar JSON</button>
-            <button id="clearInspectorBtn" class="btn-icon" title="Limpar Console">🗑️ Limpar</button>
           </div>
         </div>
 
@@ -477,7 +475,11 @@
           <div class="inspector-tabs">
             <button class="inspector-tab-btn active" data-view="response">📄 Resposta (Body)</button>
             <button class="inspector-tab-btn" data-view="request">📤 Envio (Request)</button>
-            <button class="inspector-tab-btn" data-view="history">📜 Histórico de Requisições</button>
+            <button class="inspector-tab-btn" data-view="history">📜 Histórico</button>
+          </div>
+          <div class="inspector-actions">
+            <button id="copyInspectorBtn" class="btn-action" title="Copiar Payload JSON">📋 Copiar JSON</button>
+            <button id="clearInspectorBtn" class="btn-action" title="Limpar Console">🗑️ Limpar</button>
           </div>
         </div>
 
