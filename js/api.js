@@ -50,19 +50,35 @@ export async function request(endpoint, options = {}) {
 
     const duration = Math.round(performance.now() - startTime);
 
+    const statusTexts = {
+      200: 'OK',
+      201: 'Created',
+      202: 'Accepted',
+      204: 'No Content',
+      400: 'Bad Request',
+      401: 'Unauthorized',
+      403: 'Forbidden',
+      404: 'Not Found',
+      409: 'Conflict',
+      422: 'Unprocessable Entity',
+      500: 'Internal Server Error'
+    };
+    const statusText = statusTexts[status] || (res.statusText || (ok ? 'Success' : 'Error'));
+
     state.addLog({
       timestamp: new Date().toLocaleTimeString(),
       method,
       endpoint,
       status,
+      statusText,
       duration,
       ok,
-      requestPayload: options.body,
-      responsePayload: responseData
+      requestPayload: options.body || null,
+      responsePayload: responseData !== null ? responseData : (status === 204 ? { message: '204 No Content - Operação aceita com sucesso sem corpo de resposta.' } : null)
     });
 
     if (!ok) {
-      const errorMsg = responseData?.message || responseData?.error || `HTTP ${status}: ${res.statusText}`;
+      const errorMsg = responseData?.message || responseData?.error || `HTTP ${status}: ${statusText}`;
       const err = new Error(errorMsg);
       err.status = status;
       err.data = responseData;
@@ -78,10 +94,11 @@ export async function request(endpoint, options = {}) {
         method,
         endpoint,
         status: 'ERR',
+        statusText: 'Network / Offline Error',
         duration,
         ok: false,
-        requestPayload: options.body,
-        responsePayload: { error: err.message }
+        requestPayload: options.body || null,
+        responsePayload: { error: err.message || 'Falha de conexão com a API' }
       });
     }
     throw err;

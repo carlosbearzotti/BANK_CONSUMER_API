@@ -446,17 +446,52 @@
       </section>
 
       <!-- Live API Inspector Console -->
-      <section class="inspector-card">
+      <section class="inspector-card" id="apiInspectorCard">
+        <!-- Inspector Top Header -->
         <div class="inspector-header">
           <div class="inspector-meta">
-            <span style="font-weight: 700; color: var(--text-primary);">⚡ API INSPECTOR (LIVE)</span>
+            <span class="inspector-title">⚡ API INSPECTOR (LIVE)</span>
             <span id="inspectorMethod" class="http-method method-get">GET</span>
-            <span id="inspectorUrl" class="http-url">/api/health [200]</span>
+            <span id="inspectorUrl" class="http-url">/api/health</span>
+            <span id="inspectorStatusBadge" class="inspector-status-badge status-success">✓ 200 OK</span>
           </div>
-          <span id="inspectorLatency" class="http-latency">0ms</span>
+          <div class="inspector-actions">
+            <span id="inspectorLatency" class="http-latency">⏱️ 0ms</span>
+            <button id="copyInspectorBtn" class="btn-icon" title="Copiar Payload JSON">📋 Copiar JSON</button>
+            <button id="clearInspectorBtn" class="btn-icon" title="Limpar Console">🗑️ Limpar</button>
+          </div>
         </div>
+
+        <!-- Prominent Status / Feedback Banner (Success / Error / Info) -->
+        <div id="inspectorBanner" class="inspector-banner banner-info">
+          <div id="inspectorBannerIcon" class="inspector-banner-icon">ℹ️</div>
+          <div class="inspector-banner-content">
+            <div id="inspectorBannerTitle" class="inspector-banner-title">Pronto para Inspeção</div>
+            <div id="inspectorBannerMsg" class="inspector-banner-msg">Inicie qualquer ação nas abas acima para inspecionar os payloads e confirmações de sucesso em tempo real.</div>
+          </div>
+          <span id="inspectorTimestamp" class="inspector-timestamp">--:--:--</span>
+        </div>
+
+        <!-- View Navigation Toolbar -->
+        <div class="inspector-toolbar">
+          <div class="inspector-tabs">
+            <button class="inspector-tab-btn active" data-view="response">📄 Resposta (Body)</button>
+            <button class="inspector-tab-btn" data-view="request">📤 Envio (Request)</button>
+            <button class="inspector-tab-btn" data-view="history">📜 Histórico de Requisições</button>
+          </div>
+        </div>
+
+        <!-- Inspector Content Body -->
         <div id="inspectorBody" class="inspector-body">
-          <pre>{ "status": "Ready", "message": "Inicie qualquer ação nas abas acima para inspecionar os payloads em tempo real." }</pre>
+          <div id="inspectorViewResponse" class="inspector-view active">
+            <pre id="inspectorResponsePre"></pre>
+          </div>
+          <div id="inspectorViewRequest" class="inspector-view">
+            <pre id="inspectorRequestPre"></pre>
+          </div>
+          <div id="inspectorViewHistory" class="inspector-view">
+            <div id="inspectorHistoryList" class="inspector-history-list"></div>
+          </div>
         </div>
       </section>
 

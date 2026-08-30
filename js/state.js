@@ -14,6 +14,7 @@ export const state = {
   user: JSON.parse(localStorage.getItem(STORAGE_KEYS.USER) || 'null'),
   activeTab: 'auth',
   logs: [],
+  lastFeedback: null,
 
   setBaseUrl(url) {
     this.baseUrl = url.replace(/\/+$/, '');
@@ -34,9 +35,19 @@ export const state = {
     this.notify('auth', { token, user });
   },
 
+  setLastFeedback(feedback) {
+    this.lastFeedback = feedback;
+    this.notify('feedback', feedback);
+  },
+
   addLog(logEntry) {
     this.logs.unshift(logEntry);
     if (this.logs.length > 50) this.logs.pop();
+    this.notify('logs', this.logs);
+  },
+
+  clearLogs() {
+    this.logs = [];
     this.notify('logs', this.logs);
   },
 

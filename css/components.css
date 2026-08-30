@@ -236,20 +236,31 @@ textarea.form-control {
   border-radius: var(--radius-sm);
 }
 
-/* API Inspector Console */
+/* ==========================================================================
+   API Inspector Console & Status System
+   ========================================================================== */
 .inspector-card {
-  margin-top: 1.5rem;
-  background: #050507;
+  margin-top: 1.75rem;
+  background: #040406;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
   overflow: hidden;
+  position: relative;
+  transition: var(--transition-normal);
+}
+
+.inspector-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .inspector-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.65rem 1rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
   background: rgba(255, 255, 255, 0.02);
   border-bottom: 1px solid var(--border-subtle);
   font-family: var(--font-mono);
@@ -259,42 +270,285 @@ textarea.form-control {
 .inspector-meta {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.inspector-title {
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.inspector-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.btn-icon {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  padding: 0.3rem 0.65rem;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.btn-icon:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .http-method {
   font-weight: 800;
-  padding: 0.15rem 0.5rem;
-  border-radius: 4px;
+  padding: 0.2rem 0.55rem;
+  border-radius: 5px;
   font-size: 0.75rem;
+  letter-spacing: 0.05em;
 }
 
-.method-get { background: rgba(244, 63, 94, 0.2); color: #fb7185; }
-.method-post { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-.method-put { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
-.method-delete { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+.method-get { background: rgba(244, 63, 94, 0.18); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.35); }
+.method-post { background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); }
+.method-put { background: rgba(245, 158, 11, 0.18); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.35); }
+.method-delete { background: rgba(239, 68, 68, 0.18); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35); }
 
 .http-url {
-  color: var(--text-secondary);
+  color: var(--text-primary);
+  font-weight: 600;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .http-latency {
   color: var(--text-muted);
+  font-size: 0.775rem;
 }
 
+/* Inspector Status Badge */
+.inspector-status-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: var(--transition-fast);
+}
+
+.inspector-status-badge.status-success {
+  background: rgba(16, 185, 129, 0.18);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.inspector-status-badge.status-error {
+  background: rgba(239, 68, 68, 0.18);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.inspector-status-badge.status-warning {
+  background: rgba(245, 158, 11, 0.18);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+.inspector-status-badge.status-info {
+  background: rgba(59, 130, 246, 0.18);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+/* Inspector Status Banner (Prominent Success / Error / Info notification) */
+.inspector-banner {
+  margin: 0.85rem 1rem 0 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  transition: all 0.25s ease;
+  animation: fadeIn 0.3s ease;
+}
+
+.inspector-banner.banner-success {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);
+}
+.inspector-banner.banner-success .inspector-banner-title { color: #34d399; }
+.inspector-banner.banner-success .inspector-banner-msg { color: #a7f3d0; }
+
+.inspector-banner.banner-error {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.1);
+}
+.inspector-banner.banner-error .inspector-banner-title { color: #f87171; }
+.inspector-banner.banner-error .inspector-banner-msg { color: #fca5a5; }
+
+.inspector-banner.banner-warning {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+.inspector-banner.banner-warning .inspector-banner-title { color: #fbbf24; }
+.inspector-banner.banner-warning .inspector-banner-msg { color: #fde68a; }
+
+.inspector-banner.banner-info {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+.inspector-banner.banner-info .inspector-banner-title { color: #60a5fa; }
+.inspector-banner.banner-info .inspector-banner-msg { color: #bfdbfe; }
+
+.inspector-banner-icon {
+  font-size: 1.35rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.inspector-banner-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.inspector-banner-title {
+  font-weight: 700;
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
+}
+
+.inspector-banner-msg {
+  font-size: 0.8rem;
+  margin-top: 0.2rem;
+  word-break: break-word;
+}
+
+.inspector-timestamp {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* Inspector View Toolbar & Tabs */
+.inspector-toolbar {
+  padding: 0.65rem 1rem 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.inspector-tabs {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.inspector-tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.775rem;
+  padding: 0.45rem 0.85rem;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.inspector-tab-btn:hover {
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.inspector-tab-btn.active {
+  color: var(--accent-primary);
+  border-bottom-color: var(--accent-primary);
+  background: rgba(239, 68, 68, 0.05);
+  font-weight: 600;
+}
+
+/* Inspector Body & Views */
 .inspector-body {
   padding: 1rem;
-  max-height: 280px;
+  min-height: 180px;
+  max-height: 320px;
   overflow-y: auto;
   font-family: var(--font-mono);
   font-size: 0.825rem;
-  color: #fca5a5;
   background: #020203;
+  line-height: 1.5;
+}
+
+.inspector-view {
+  display: none;
+}
+
+.inspector-view.active {
+  display: block;
 }
 
 .inspector-body pre {
   white-space: pre-wrap;
   word-break: break-all;
+  margin: 0;
+}
+
+/* Syntax Highlighting */
+.json-key { color: #93c5fd; font-weight: 600; }
+.json-string { color: #34d399; }
+.json-number { color: #fbbf24; }
+.json-boolean { color: #38bdf8; font-weight: 700; }
+.json-null { color: #94a3b8; font-style: italic; }
+
+/* History List inside Inspector */
+.inspector-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.inspector-history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0.85rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-size: 0.8rem;
+}
+
+.inspector-history-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.inspector-history-item.item-success {
+  border-left: 3px solid var(--status-success);
+}
+
+.inspector-history-item.item-error {
+  border-left: 3px solid var(--status-danger);
 }
 
 /* Toast Notification System */
