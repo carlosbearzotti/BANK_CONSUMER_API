@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Integrados | Fintech API Consumer Suite</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/modules.css">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="brand-container">
+      <div class="brand-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+          <polyline points="2 17 12 22 22 17"></polyline>
+          <polyline points="2 12 12 17 22 12"></polyline>
+        </svg>
+      </div>
+      <div class="brand-info">
+        <h1>INTEGRADOS</h1>
+        <span>Fintech API Consumer</span>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <div class="api-endpoint-selector" title="Conexão com a API Spring Boot">
+        <div id="apiStatusDot" class="api-status-dot" title="Verificando API..."></div>
+        <input type="text" id="apiUrlInput" class="api-url-input" value="http://localhost:8080" placeholder="http://localhost:8080">
+      </div>
+
+      <div id="headerUserBadge" class="user-badge" style="display: none;">
+        <div class="user-avatar">U</div>
+        <span id="headerUserName" style="font-weight: 600;">Usuário</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container Layout -->
+  <div class="app-container">
+
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar">
+      <ul class="nav-menu">
+        <li>
+          <button class="nav-item-btn active" data-tab="auth">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span>Autenticação</span>
+            <span class="nav-tag">JWT</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-tab="password">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <span>Senha Segura</span>
+            <span class="nav-tag">Regras</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-tab="loans">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            <span>Empréstimos</span>
+            <span class="nav-tag">Crédito</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-tab="crypto">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+            <span>Cofre Cripto</span>
+            <span class="nav-tag">AES/RSA</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-tab="gps">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+            <span>Radar GPS</span>
+            <span class="nav-tag">POIs</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-tab="shortener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+            <span>Encurtador</span>
+            <span class="nav-tag">URLs</span>
+          </button>
+        </li>
+      </ul>
+
+      <!-- Footer Info -->
+      <div style="font-size: 0.75rem; color: var(--text-muted); padding: 1rem 0;">
+        <div>Integrados Suite v1.0.0</div>
+        <div>Spring Boot 3.4.3 &bull; REST API</div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+
+      <!-- 1. TAB: AUTHENTICATION -->
+      <section id="tab-auth" class="tab-pane active">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+          
+          <!-- Login Card -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title-group">
+                <h2>🔐 Login</h2>
+                <div class="card-subtitle">Autentique para obter o Bearer JWT Token</div>
+              </div>
+              <span id="authStatusBadge" class="badge badge-warning">Não Autenticado</span>
+            </div>
+
+            <form id="loginForm">
+              <div class="form-group" style="margin-bottom: 1rem;">
+                <label class="form-label" for="loginEmail">E-mail</label>
+                <input type="email" id="loginEmail" class="form-control" placeholder="carlos@exemplo.com" required>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label class="form-label" for="loginPassword">Senha</label>
+                <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar</button>
+            </form>
+
+            <div style="margin-top: 1.5rem; border-top: 1px solid var(--border-subtle); padding-top: 1.25rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <h4 style="font-size: 0.9rem;">Perfil Autenticado</h4>
+                <div style="display: flex; gap: 0.5rem;">
+                  <button id="loadProfileBtn" class="btn btn-secondary btn-sm">Recarregar</button>
+                  <button id="logoutBtn" class="btn btn-danger btn-sm">Sair</button>
+                </div>
+              </div>
+              <div id="profileDetails">
+                <p style="color: var(--text-muted); font-size: 0.875rem;">Nenhum usuário autenticado no momento.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Register Card -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title-group">
+                <h2>👤 Novo Cadastro</h2>
+                <div class="card-subtitle">Crie uma conta na plataforma com validação de senha</div>
+              </div>
+            </div>
+
+            <form id="registerForm">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="regName">Nome Completo</label>
+                  <input type="text" id="regName" class="form-control" placeholder="Carlos Silva" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="regEmail">E-mail</label>
+                  <input type="email" id="regEmail" class="form-control" placeholder="carlos@exemplo.com" required>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="regPassword">Senha Forte</label>
+                  <input type="password" id="regPassword" class="form-control" placeholder="SenhaForte@123" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="regCpf">CPF</label>
+                  <input type="text" id="regCpf" class="form-control" placeholder="123.456.789-00" required>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="regIncome">Renda Mensal (R$)</label>
+                  <input type="number" id="regIncome" class="form-control" step="0.01" placeholder="5000.00" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="regAge">Idade</label>
+                  <input type="number" id="regAge" class="form-control" placeholder="28" required>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="regLat">Latitude</label>
+                  <input type="number" id="regLat" class="form-control" step="any" placeholder="-23.5505">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="regLng">Longitude</label>
+                  <input type="number" id="regLng" class="form-control" step="any" placeholder="-46.6333">
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-gradient" style="width: 100%;">Cadastrar Usuário</button>
+            </form>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 2. TAB: SENHA SEGURA LAB -->
+      <section id="tab-password" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2>🛡️ Laboratório SenhaSegura</h2>
+              <div class="card-subtitle">Análise em tempo real dos 5 critérios obrigatórios da API</div>
+            </div>
+            <span class="badge badge-primary">Algoritmo Ativo</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="pwdLabInput">Digite ou teste uma senha:</label>
+            <input type="text" id="pwdLabInput" class="form-control" placeholder="Ex: SenhaForte@2026!" style="font-family: var(--font-mono); font-size: 1.1rem;">
+          </div>
+
+          <div class="password-meter-container">
+            <div class="password-meter-bar">
+              <div id="pwdMeterFill" class="password-meter-fill"></div>
+            </div>
+            <div id="pwdMeterLabel" style="font-size: 0.875rem; font-weight: 700; color: var(--text-secondary);">Digite uma senha...</div>
+          </div>
+
+          <ul class="password-rules-list">
+            <li id="ruleLength" class="password-rule-item invalid">
+              <span class="rule-icon">✗</span> Mínimo de 8 caracteres
+            </li>
+            <li id="ruleUpper" class="password-rule-item invalid">
+              <span class="rule-icon">✗</span> Ao menos 1 letra maiúscula
+            </li>
+            <li id="ruleLower" class="password-rule-item invalid">
+              <span class="rule-icon">✗</span> Ao menos 1 letra minúscula
+            </li>
+            <li id="ruleDigit" class="password-rule-item invalid">
+              <span class="rule-icon">✗</span> Ao menos 1 dígito numérico
+            </li>
+            <li id="ruleSpecial" class="password-rule-item invalid">
+              <span class="rule-icon">✗</span> Ao menos 1 caractere especial
+            </li>
+          </ul>
+
+          <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+            <button id="pwdLabValidateBtn" class="btn btn-primary">Validar na API Backend</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. TAB: LOANS -->
+      <section id="tab-loans" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2>💳 Simulador de Empréstimos</h2>
+              <div class="card-subtitle">Cálculo de elegibilidade para Pessoal, Garantia e Consignado</div>
+            </div>
+            <button id="myLoansBtn" class="btn btn-secondary btn-sm">Consultar Meus Empréstimos (JWT)</button>
+          </div>
+
+          <form id="loanSimulateForm">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="loanName">Nome do Cliente</label>
+                <input type="text" id="loanName" class="form-control" placeholder="Carlos Silva" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="loanCpf">CPF</label>
+                <input type="text" id="loanCpf" class="form-control" placeholder="123.456.789-00" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="loanAge">Idade</label>
+                <input type="number" id="loanAge" class="form-control" placeholder="28" required>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="loanIncome">Renda Mensal (R$)</label>
+                <input type="number" id="loanIncome" class="form-control" step="0.01" placeholder="5000.00" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="loanLocation">Localização (UF / Cidade)</label>
+                <input type="text" id="loanLocation" class="form-control" placeholder="SP" required>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-gradient">Simular Empréstimos</button>
+          </form>
+
+          <div id="loanResultsContainer" class="loan-results-grid"></div>
+        </div>
+      </section>
+
+      <!-- 4. TAB: CRYPTO VAULT -->
+      <section id="tab-crypto" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2>🔒 Cofre de Transações Criptografadas</h2>
+              <div class="card-subtitle">Criptografia Híbrida: AES-256 no Documento e RSA-2048 no Cartão</div>
+            </div>
+            <button id="loadTxBtn" class="btn btn-secondary btn-sm">Atualizar Transações</button>
+          </div>
+
+          <form id="txForm">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="txDoc">Documento (CPF)</label>
+                <input type="text" id="txDoc" class="form-control" placeholder="12345678900" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="txCard">Token do Cartão de Crédito</label>
+                <input type="text" id="txCard" class="form-control" placeholder="4111111111111111" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="txValue">Valor (R$)</label>
+                <input type="number" id="txValue" class="form-control" step="0.01" placeholder="150.00" required>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Registrar Transação Criptografada</button>
+          </form>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Documento (AES)</th>
+                  <th>Cartão (RSA)</th>
+                  <th>Valor</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="txTableBody">
+                <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Clique em 'Atualizar Transações' para carregar os registros.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. TAB: GPS RADAR -->
+      <section id="tab-gps" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2>📍 Radar GPS & Pontos de Interesse</h2>
+              <div class="card-subtitle">Cadastro de POIs e busca euclidiana por raio de proximidade</div>
+            </div>
+            <button id="refreshPoisBtn" class="btn btn-secondary btn-sm">Recarregar Mapa</button>
+          </div>
+
+          <div class="form-grid">
+            <!-- Create POI Form -->
+            <form id="poiCreateForm" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: flex-end;">
+              <div class="form-group" style="flex: 1; min-width: 140px;">
+                <label class="form-label" for="poiName">Nome do POI</label>
+                <input type="text" id="poiName" class="form-control" placeholder="Lanchonete" required>
+              </div>
+              <div class="form-group" style="width: 80px;">
+                <label class="form-label" for="poiX">X</label>
+                <input type="number" id="poiX" class="form-control" placeholder="20" required>
+              </div>
+              <div class="form-group" style="width: 80px;">
+                <label class="form-label" for="poiY">Y</label>
+                <input type="number" id="poiY" class="form-control" placeholder="10" required>
+              </div>
+              <button type="submit" class="btn btn-primary">Cadastrar</button>
+            </form>
+
+            <!-- Search Nearby Form -->
+            <form id="poiSearchForm" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: flex-end;">
+              <div class="form-group" style="width: 80px;">
+                <label class="form-label" for="searchX">Ref X</label>
+                <input type="number" id="searchX" class="form-control" value="20" required>
+              </div>
+              <div class="form-group" style="width: 80px;">
+                <label class="form-label" for="searchY">Ref Y</label>
+                <input type="number" id="searchY" class="form-control" value="10" required>
+              </div>
+              <div class="form-group" style="width: 100px;">
+                <label class="form-label" for="searchDmax">D-Max (m)</label>
+                <input type="number" id="searchDmax" class="form-control" value="10" required>
+              </div>
+              <button type="submit" class="btn btn-gradient">Buscar no Raio</button>
+            </form>
+          </div>
+
+          <!-- Radar Visualizer & POI List -->
+          <div class="radar-map-wrapper">
+            <div class="canvas-container">
+              <canvas id="gpsCanvas"></canvas>
+              <div id="canvasCoords" class="canvas-overlay-coords">X: 0 | Y: 0</div>
+            </div>
+            <div id="poiListContainer" class="poi-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. TAB: URL SHORTENER -->
+      <section id="tab-shortener" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2>🔗 Encurtador de URLs Inteligente</h2>
+              <div class="card-subtitle">Reduza URLs longas com código único e estatísticas de acesso</div>
+            </div>
+          </div>
+
+          <form id="shortenerForm">
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+              <label class="form-label" for="originalUrlInput">Cole a URL original para encurtar:</label>
+              <input type="url" id="originalUrlInput" class="form-control" placeholder="https://exemplo.com/artigo-longo-fintech" required>
+            </div>
+            <button type="submit" class="btn btn-gradient">Encurtar URL</button>
+          </form>
+
+          <div id="shortResultBox" class="shortened-result-box" style="display: none;">
+            <div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Link Encurtado:</div>
+              <div id="shortUrlDisplay" class="short-url-text">http://localhost:8080/xyz123</div>
+            </div>
+            <button id="copyShortUrlBtn" class="btn btn-secondary btn-sm">Copiar Link</button>
+          </div>
+
+          <div style="margin-top: 2rem; border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
+            <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem;">Métricas e Contagem de Acessos</h4>
+            <div style="display: flex; gap: 0.75rem; max-width: 400px;">
+              <input type="text" id="statsCodeInput" class="form-control" placeholder="Ex: xyz123">
+              <button id="checkStatsBtn" class="btn btn-primary btn-sm">Ver Estatísticas</button>
+            </div>
+            <div id="shortStatsResult"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Live API Inspector Console -->
+      <section class="inspector-card">
+        <div class="inspector-header">
+          <div class="inspector-meta">
+            <span style="font-weight: 700; color: var(--text-primary);">⚡ API INSPECTOR (LIVE)</span>
+            <span id="inspectorMethod" class="http-method method-get">GET</span>
+            <span id="inspectorUrl" class="http-url">/api/health [200]</span>
+          </div>
+          <span id="inspectorLatency" class="http-latency">0ms</span>
+        </div>
+        <div id="inspectorBody" class="inspector-body">
+          <pre>{ "status": "Ready", "message": "Inicie qualquer ação nas abas acima para inspecionar os payloads em tempo real." }</pre>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
