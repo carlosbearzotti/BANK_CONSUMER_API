@@ -1,0 +1,13 @@
+{
+  "name": "integrados-frontend-consumer",
+  "version": "1.0.0",
+  "description": "Frontend Consumer standalone para a API Integrados (Fintech Suite)",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx serve . -l 3000",
+    "start": "npx serve . -l 3000"
+  },
+  "keywords": ["fintech", "api-consumer", "spring-boot", "dashboard"],
+  "author": "Carlos",
+  "license": "MIT"
+}
