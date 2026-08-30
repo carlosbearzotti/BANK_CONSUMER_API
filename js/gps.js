@@ -16,13 +16,19 @@ export const gpsModule = {
     const ctx = canvas.getContext('2d');
 
     const resizeCanvas = () => {
+      if (!canvas.parentElement) return;
       const rect = canvas.parentElement.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = Math.max(380, rect.height);
+      if (rect.width === 0) return;
+      canvas.width = Math.round(rect.width);
+      canvas.height = Math.round(rect.height || 320);
       this.drawRadar(ctx, canvas);
     };
 
     window.addEventListener('resize', resizeCanvas);
+    if (window.ResizeObserver && canvas.parentElement) {
+      const ro = new ResizeObserver(() => resizeCanvas());
+      ro.observe(canvas.parentElement);
+    }
 
     // Canvas click to select coordinate
     canvas.addEventListener('click', (e) => {
