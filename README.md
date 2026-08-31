@@ -1,35 +1,87 @@
-# 🚀 Integrados - Frontend Consumer (Fintech Suite)
+# 📱 consumerLãoBank — Portal B2C & Internet Banking Digital
 
-Aplicação Frontend **Single Page Application (SPA)** desacoplada e independente, desenvolvida em Vanilla HTML5, CSS3 Moderno (Glassmorphism Dark Mode) e JavaScript ES6+.
+[![Vanilla JS](https://img.shields.io/badge/JavaScript-ES6+-yellow.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![CSS3 Glassmorphism](https://img.shields.io/badge/CSS3-Glassmorphism%20Dark-blue.svg)](https://developer.mozilla.org/en-US/docs/Web/CSS)
+[![HTML5](https://img.shields.io/badge/HTML5-Single%20Page%20App-orange.svg)](https://developer.mozilla.org/en-US/docs/Web/HTML)
+[![Consumer API](https://img.shields.io/badge/Backend-Integrados%20API-brightgreen.svg)](https://github.com/carlosbearzotti/INTEGRATE_SERVICES_JAVA_API)
 
-Consome diretamente a API REST do Spring Boot em `http://localhost:8080` cobrindo todos os módulos do ecossistema:
+Aplicação Frontend **Single Page Application (SPA)** moderna, elegante e desacoplada, servindo como o **Internet Banking B2C** do banco digital fictício **LãoBank**.
 
-1. **🔐 Autenticação & JWT**: Registro de usuário, Login e carregamento de Perfil (`/api/auth/*`).
-2. **🛡️ SenhaSegura Lab**: Validador interativo em tempo real com regras de complexidade (`/api/validate-password`).
-3. **💳 Empréstimos Inteligentes**: Simulador de elegibilidade de crédito (Pessoal, Garantia, Consignado) (`/customer-loans` & `/api/loans/me`).
-4. **🔒 Cofre Criptográfico**: Criação e listagem de transações com criptografia AES (CPF) e RSA (Cartão) (`/api/transactions`).
-5. **📍 Radar GPS (POIs)**: Mapa interativo em HTML5 Canvas com cadastro e busca por raio de proximidade (`/pois`, `/pois/proximidade`).
-6. **🔗 Encurtador de URLs**: Geração de short links com contador de cliques e redirecionamento (`/shorten-url`, `/{shortCode}`).
-7. **⚡ API Inspector / Console**: Histórico ao vivo de requisições HTTP, headers, tempo de resposta em milissegundos e payloads formatados.
+---
+
+## 🎯 Casos de Uso & Propósito
+
+O **`consumerLãoBank`** foi projetado para atender o cliente final (Pessoa Física e Jurídica), proporcionando uma experiência de autoatendimento bancário fluida com estética *Dark Mode*, efeitos de *Glassmorphism* e feedback visual em tempo real.
+
+---
+
+## 🔌 Funcionalidades Consumidas do Backend (`Integrados`)
+
+Esta aplicação consome diretamente a API centralizadora REST em `http://localhost:8080`:
+
+### 1. 🔐 Autenticação, Sessão & Recuperação de Senha
+- **Endpoints**: `POST /api/auth/login`, `POST /api/auth/register`, `GET /api/auth/me`, `POST /api/auth/forgot-password`, `POST /api/auth/reset-password`
+- **Funcionalidades**:
+  - Cadastro de correntista com validação de dados.
+  - Login seguro com recebimento e armazenamento de Token JWT no `localStorage`.
+  - Fluxo de recuperação de senha por e-mail em 2 etapas (solicitação de código de 6 dígitos e redefinição de senha).
+
+### 2. 🛡️ Laboratório de Senha Segura (`SenhaSegura`)
+- **Endpoints**: `POST /api/validate-password`
+- **Funcionalidades**:
+  - Validador interativo que testa 5 regras de complexidade em tempo real (mínimo 8 dígitos, maiúscula, minúscula, número e caractere especial).
+
+### 3. 💳 Gestão de Transações & Pagamento de Faturas
+- **Endpoints**: `POST /api/transactions`, `GET /api/transactions`
+- **Funcionalidades**:
+  - Visualização de saldo em conta e extrato com valores formatados.
+  - Modal sobreposto para **Pagamento de Fatura** e transferências Pix/TED.
+  - Criptografia em repouso garantida pelo backend: CPF cifrado via AES-256 e dados de cartão via RSA-2048.
+
+### 4. 📊 Simulador de Crédito & Empréstimos
+- **Endpoints**: `GET /api/loans/me`, `POST /customer-loans`
+- **Funcionalidades**:
+  - Simulação de taxas e elegibilidade de crédito (Crédito Pessoal, Com Garantia, Consignado).
+  - Cálculo instantâneo do valor da parcela baseado no prazo e juros.
+
+### 5. 📍 Radar GPS de Agências & Caixas Eletrônicos
+- **Endpoints**: `GET /pois/nearby`, `POST /pois`
+- **Funcionalidades**:
+  - Radar interativo renderizado em HTML5 Canvas para busca de pontos de atendimento próximos por raio euclidiano (km).
+  - Cadastro de novos pontos de interesse diretamente no mapa.
+
+### 6. ✂️ Encurtador de URLs ("Indique e Ganhe")
+- **Endpoints**: `POST /shorten-url`, `GET /{shortCode}`
+- **Funcionalidades**:
+  - Geração de links curtos rastreáveis para compartilhamento de comprovantes e campanhas de indicação.
+
+### 7. 📡 Console & Live API Inspector
+- **Funcionalidades**:
+  - Painel de observabilidade em tempo real para desenvolvedores, exibindo requisições HTTP, headers, tempo de resposta (ms) e payloads.
 
 ---
 
 ## 🏃 Como Executar
 
-Não necessita de etapa pesada de build. Você pode abrir diretamente no navegador ou rodar com um servidor estático:
+A aplicação é 100% estática e não exige build complexo.
 
-### Opção 1: Abrir diretamente
-Basta dar duplo clique no arquivo `index.html` em qualquer navegador moderno.
-
-### Opção 2: Servidor Node / NPM
+### Opção 1: Node.js (Recomendado)
 ```bash
-cd frontend-consumer
-npm run dev
-# Acesse em http://localhost:3000
+# Na pasta consumerLãoBank
+npx serve . -l 3000
 ```
+Acesse em: **`http://localhost:3000`**
 
-### Opção 3: Python
+### Opção 2: Python HTTP Server
 ```bash
-cd frontend-consumer
 python -m http.server 3000
 ```
+
+### Opção 3: Visual Studio Code / Live Server
+Clique com o botão direito em `index.html` e selecione **Open with Live Server**.
+
+---
+
+## 👨‍💻 Autor
+Desenvolvido por **Carlos Bearzotti**  
+GitHub: [@carlosbearzotti](https://github.com/carlosbearzotti)
