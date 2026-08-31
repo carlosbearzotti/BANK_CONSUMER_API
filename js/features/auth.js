@@ -288,23 +288,28 @@ export const authFeature = {
         if (!recoveryEmail) return;
 
         try {
-          toast.info('Solicitando código de verificação para o e-mail...');
+          toast.info('Solicitando token de redefinição ao Integrados Core API...');
           const res = await authService.forgotPassword(recoveryEmail);
 
-          // Disparar notificação para o consumerNotification caso esteja aberto
+          // 1. Enviar pedido de disparo com o token para o consumerNotification (Middleware de E-mail)
           try {
-            window.parent?.postMessage({
-              type: 'DISPATCH_EMAIL',
-              payload: {
-                recipient: recoveryEmail,
+            await fetch('http://localhost:3002/api/notify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                to: recoveryEmail,
+                token: res.resetCode,
+                subject: 'Código de Recuperação de Senha - LãoBank Digital',
                 name: 'Cliente LãoBank',
-                resetCode: res.resetCode,
                 template: 'password_reset'
-              }
-            }, '*');
-          } catch (e) {}
+              })
+            });
+            console.log('📬 [LãoBank -> consumerNotification] E-mail com token despachado para:', recoveryEmail);
+          } catch (notifErr) {
+            console.warn('⚠️ consumerNotification offline ou inacessível:', notifErr.message);
+          }
 
-          toast.success(`Código de segurança enviado para ${recoveryEmail}!`);
+          toast.success(`Token de segurança gerado e enviado via e-mail para ${recoveryEmail}!`);
           step1El.style.display = 'none';
           step2El.style.display = 'block';
           const codeInput = document.getElementById('recoveryCodeInput');
