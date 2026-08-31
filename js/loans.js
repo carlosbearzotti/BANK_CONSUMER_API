@@ -1,4 +1,4 @@
-import { request } from './api.js';
+import { bankingService } from './services/bankingService.js';
 import { state } from './state.js';
 
 export const loansModule = {
@@ -29,7 +29,7 @@ export const loansModule = {
                 Taxa especial calculada para ${customer || 'cliente'}.
               </p>
             </div>
-            <button class="btn btn-primary btn-sm" onclick="alert('Solicitação de ${type} encaminhada!')">Contratar</button>
+            <button class="btn btn-primary btn-sm" onclick="alert('Solicitação de ${type} encaminhada ao LãoBank!')">Contratar</button>
           </div>
         `;
       }).join('');
@@ -45,13 +45,10 @@ export const loansModule = {
         const location = document.getElementById('loanLocation').value.trim();
 
         try {
-          const res = await request('/customer-loans', {
-            method: 'POST',
-            body: { name, cpf, age, income, location }
-          });
+          const res = await bankingService.simulateLoans({ name, cpf, age, income, location });
 
           renderLoanCards(res.customer, res.loans);
-          showToast(`Simulação concluída! ${res.loans?.length || 0} modalidade(s) elegível(is).`, 'success');
+          showToast(`Simulação LãoBank concluída! ${res.loans?.length || 0} modalidade(s) elegível(is).`, 'success');
         } catch (err) {
           showToast(`Erro na simulação: ${err.message}`, 'error');
         }
@@ -66,9 +63,9 @@ export const loansModule = {
         }
 
         try {
-          const res = await request('/api/loans/me');
+          const res = await bankingService.getMyLoans();
           renderLoanCards(res.customer || state.user?.name, res.loans);
-          showToast('Empréstimos do perfil autenticado carregados!', 'success');
+          showToast('Empréstimos do perfil LãoBank carregados!', 'success');
         } catch (err) {
           showToast(`Erro ao carregar empréstimos: ${err.message}`, 'error');
         }

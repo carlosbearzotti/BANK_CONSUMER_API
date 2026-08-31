@@ -1,4 +1,4 @@
-import { request } from './api.js';
+import { passwordService } from './services/passwordService.js';
 
 export const passwordLabModule = {
   init(showToast) {
@@ -53,16 +53,13 @@ export const passwordLabModule = {
       validateBtn.addEventListener('click', async () => {
         const password = input ? input.value : '';
         try {
-          await request('/api/validate-password', {
-            method: 'POST',
-            body: { password }
-          });
+          await passwordService.validate(password);
 
           // O backend retorna 204 No Content quando a senha atende a todas as 5 regras
-          showToast('API confirmou: Senha VÁLIDA e atende a todos os requisitos!', 'success');
+          showToast('LãoBank Segurança: Senha VÁLIDA e em total conformidade!', 'success');
         } catch (err) {
           const reasons = err.data?.failures ? err.data.failures.join(' • ') : err.message;
-          showToast(`API rejeitou: ${reasons}`, 'warning');
+          showToast(`API LãoBank rejeitou: ${reasons}`, 'warning');
         }
       });
     }

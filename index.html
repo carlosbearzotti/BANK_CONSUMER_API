@@ -2,13 +2,13 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Integrados | Fintech API Consumer Suite</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>LãoBank | Solidez, Tradição & Digital Banking</title>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="css/main.css">
@@ -17,493 +17,1182 @@
 </head>
 <body>
 
-  <!-- App Header -->
-  <header class="app-header">
-    <div class="brand-container">
-      <div class="brand-logo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-          <polyline points="2 17 12 22 22 17"></polyline>
-          <polyline points="2 12 12 17 22 12"></polyline>
-        </svg>
-      </div>
-      <div class="brand-info">
-        <h1>INTEGRADOS</h1>
-        <span>Fintech API Consumer</span>
-      </div>
-    </div>
+  <!-- ========================================================================
+       TELA 1: AUTENTICAÇÃO (PADRÃO GMAIL COM ESTILO BANCO CLÁSSICO)
+       ======================================================================== -->
+  <div id="view-auth-gmail" class="app-view active">
+    <div class="gmail-auth-wrapper">
 
-    <div class="header-actions">
-      <div class="api-endpoint-selector" title="Conexão com a API Spring Boot">
-        <div id="apiStatusDot" class="api-status-dot" title="Verificando API..."></div>
-        <input type="text" id="apiUrlInput" class="api-url-input" value="http://localhost:8080" placeholder="http://localhost:8080">
+      <!-- API Endpoint Toolbar (Top) -->
+      <div style="position: absolute; top: 1.25rem; display: flex; align-items: center; gap: 0.75rem; background: rgba(15,23,42,0.7); padding: 0.4rem 0.85rem; border-radius: var(--radius-full); border: 1px solid rgba(197,160,89,0.25); font-size: 0.775rem;">
+        <span id="authApiStatusDot" style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+        <span style="color: var(--bank-gold-light); font-weight: 600;">API LãoBank:</span>
+        <input type="text" id="authApiUrlInput" value="http://localhost:8080" style="background: transparent; border: none; color: #ffffff; font-family: var(--font-mono); font-size: 0.75rem; outline: none; width: 150px;">
       </div>
 
-      <div id="headerUserBadge" class="user-badge" style="display: none;">
-        <div class="user-avatar">U</div>
-        <span id="headerUserName" style="font-weight: 600;">Usuário</span>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main Container Layout -->
-  <div class="app-container">
-
-    <!-- Sidebar Navigation -->
-    <aside class="app-sidebar">
-      <ul class="nav-menu">
-        <li>
-          <button class="nav-item-btn active" data-tab="auth">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-            <span>Autenticação</span>
-            <span class="nav-tag">JWT</span>
-          </button>
-        </li>
-        <li>
-          <button class="nav-item-btn" data-tab="password">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-            <span>Senha Segura</span>
-            <span class="nav-tag">Regras</span>
-          </button>
-        </li>
-        <li>
-          <button class="nav-item-btn" data-tab="loans">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-            <span>Empréstimos</span>
-            <span class="nav-tag">Crédito</span>
-          </button>
-        </li>
-        <li>
-          <button class="nav-item-btn" data-tab="crypto">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-            <span>Cofre Cripto</span>
-            <span class="nav-tag">AES/RSA</span>
-          </button>
-        </li>
-        <li>
-          <button class="nav-item-btn" data-tab="gps">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
-            <span>Radar GPS</span>
-            <span class="nav-tag">POIs</span>
-          </button>
-        </li>
-        <li>
-          <button class="nav-item-btn" data-tab="shortener">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-            <span>Encurtador</span>
-            <span class="nav-tag">URLs</span>
-          </button>
-        </li>
-      </ul>
-
-      <!-- Footer Info -->
-      <div style="font-size: 0.75rem; color: var(--text-muted); padding: 1rem 0;">
-        <div>Integrados Suite v1.0.0</div>
-        <div>Spring Boot 3.4.3 &bull; REST API</div>
-      </div>
-    </aside>
-
-    <!-- Main Content Area -->
-    <main class="main-content">
-
-      <!-- 1. TAB: AUTHENTICATION -->
-      <section id="tab-auth" class="tab-pane active">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
-          
-          <!-- Login Card -->
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title-group">
-                <h2>🔐 Login</h2>
-                <div class="card-subtitle">Autentique para obter o Bearer JWT Token</div>
-              </div>
-              <span id="authStatusBadge" class="badge badge-warning">Não Autenticado</span>
-            </div>
-
-            <form id="loginForm">
-              <div class="form-group" style="margin-bottom: 1rem;">
-                <label class="form-label" for="loginEmail">E-mail</label>
-                <input type="email" id="loginEmail" class="form-control" placeholder="carlos@exemplo.com" required>
-              </div>
-
-              <div class="form-group" style="margin-bottom: 1.5rem;">
-                <label class="form-label" for="loginPassword">Senha</label>
-                <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
-              </div>
-
-              <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar</button>
-            </form>
-
-            <div style="margin-top: 1.5rem; border-top: 1px solid var(--border-subtle); padding-top: 1.25rem;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                <h4 style="font-size: 0.9rem;">Perfil Autenticado</h4>
-                <div style="display: flex; gap: 0.5rem;">
-                  <button id="loadProfileBtn" class="btn btn-secondary btn-sm">Recarregar</button>
-                  <button id="logoutBtn" class="btn btn-danger btn-sm">Sair</button>
-                </div>
-              </div>
-              <div id="profileDetails">
-                <p style="color: var(--text-muted); font-size: 0.875rem;">Nenhum usuário autenticado no momento.</p>
-              </div>
-            </div>
+      <!-- Classic Bank Style Auth Card (Gmail Flow Layout) -->
+      <div class="gmail-auth-card">
+        
+        <!-- Brand Header -->
+        <div class="gmail-brand-header">
+          <div class="google-logo-wrapper">
+            <!-- Classic Neoclassical Bank SVG Icon -->
+            <svg class="bank-classic-logo" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M32 6L4 22H60L32 6Z" fill="url(#classicGoldGrad)" stroke="#c5a059" stroke-width="1.5" stroke-linejoin="round"/>
+              <rect x="8" y="24" width="48" height="4" rx="1" fill="url(#classicGoldGrad)" />
+              <rect x="12" y="30" width="6" height="20" rx="1" fill="url(#classicGoldGrad)" />
+              <rect x="23" y="30" width="6" height="20" rx="1" fill="url(#classicGoldGrad)" />
+              <rect x="35" y="30" width="6" height="20" rx="1" fill="url(#classicGoldGrad)" />
+              <rect x="46" y="30" width="6" height="20" rx="1" fill="url(#classicGoldGrad)" />
+              <rect x="6" y="52" width="52" height="4" rx="1" fill="url(#classicGoldGrad)" />
+              <rect x="2" y="58" width="60" height="4" rx="1" fill="url(#classicGoldGrad)" />
+              <circle cx="32" cy="15" r="3.5" fill="#080c16" stroke="#dfb76c" stroke-width="1.2"/>
+              <defs>
+                <linearGradient id="classicGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#F5ECD5" />
+                  <stop offset="50%" stop-color="#C5A059" />
+                  <stop offset="100%" stop-color="#8E6C2B" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <span class="google-brand-title" style="font-family: 'Cinzel', serif; letter-spacing: 0.08em;">LãoBank</span>
           </div>
-
-          <!-- Register Card -->
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title-group">
-                <h2>👤 Novo Cadastro</h2>
-                <div class="card-subtitle">Crie uma conta na plataforma com validação de senha</div>
-              </div>
-            </div>
-
-            <form id="registerForm">
-              <div class="form-grid">
-                <div class="form-group">
-                  <label class="form-label" for="regName">Nome Completo</label>
-                  <input type="text" id="regName" class="form-control" placeholder="Carlos Silva" required>
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="regEmail">E-mail</label>
-                  <input type="email" id="regEmail" class="form-control" placeholder="carlos@exemplo.com" required>
-                </div>
-              </div>
-
-              <div class="form-grid">
-                <div class="form-group">
-                  <label class="form-label" for="regPassword">Senha Forte</label>
-                  <input type="password" id="regPassword" class="form-control" placeholder="SenhaForte@123" required>
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="regCpf">CPF</label>
-                  <input type="text" id="regCpf" class="form-control" placeholder="123.456.789-00" required>
-                </div>
-              </div>
-
-              <div class="form-grid">
-                <div class="form-group">
-                  <label class="form-label" for="regIncome">Renda Mensal (R$)</label>
-                  <input type="number" id="regIncome" class="form-control" step="0.01" placeholder="5000.00" required>
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="regAge">Idade</label>
-                  <input type="number" id="regAge" class="form-control" placeholder="28" required>
-                </div>
-              </div>
-
-              <div class="form-grid">
-                <div class="form-group">
-                  <label class="form-label" for="regLat">Latitude</label>
-                  <input type="number" id="regLat" class="form-control" step="any" placeholder="-23.5505">
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="regLng">Longitude</label>
-                  <input type="number" id="regLng" class="form-control" step="any" placeholder="-46.6333">
-                </div>
-              </div>
-
-              <button type="submit" class="btn btn-gradient" style="width: 100%;">Cadastrar Usuário</button>
-            </form>
-          </div>
-
+          <h1 id="authCardTitle" class="google-auth-heading">Fazer login</h1>
+          <p id="authCardSubtitle" class="google-auth-subtitle">Use sua Conta LãoBank para acessar os serviços bancários</p>
         </div>
-      </section>
 
-      <!-- 2. TAB: SENHA SEGURA LAB -->
-      <section id="tab-password" class="tab-pane">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title-group">
-              <h2>🛡️ Laboratório SenhaSegura</h2>
-              <div class="card-subtitle">Análise em tempo real dos 5 critérios obrigatórios da API</div>
+        <!-- 1. LOGIN FORM -->
+        <form id="gmailLoginForm">
+          <div class="google-field">
+            <input type="email" id="loginEmail" class="google-input" placeholder=" " required autocomplete="email">
+            <label class="google-label" for="loginEmail">E-mail ou CPF</label>
+          </div>
+
+          <div class="google-field">
+            <input type="password" id="loginPassword" class="google-input" placeholder=" " required autocomplete="current-password">
+            <label class="google-label" for="loginPassword">Digite sua senha</label>
+            <button type="button" id="toggleLoginPasswordBtn" class="google-input-action" title="Mostrar senha">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+          </div>
+
+          <div style="margin-bottom: 1.5rem;">
+            <a href="#" id="forgotEmailLink" style="color: var(--bank-gold-light); font-size: 0.85rem; text-decoration: none; font-weight: 600;">Esqueceu seu e-mail ou CPF?</a>
+          </div>
+
+          <div class="google-auth-actions">
+            <button type="button" id="switchToRegisterBtn" class="google-btn-text">Criar conta</button>
+            <button type="submit" id="loginSubmitBtn" class="google-btn-primary">
+              <span>Avançar</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+          </div>
+
+          <!-- Quick Fill Demo Pills -->
+          <div class="google-demo-pills">
+            <span style="font-size: 0.75rem; color: var(--text-muted); width: 100%;">Preenchimento rápido para testes:</span>
+            <button type="button" class="google-demo-pill" id="demoUserPill">👤 Preencher carlos@exemplo.com</button>
+            <button type="button" class="google-demo-pill" id="demoAutoLoginPill" style="background: rgba(197,160,89,0.15); border-color: var(--bank-gold); color: #ffffff;">🚀 1-Clique: Criar & Entrar no LãoBank</button>
+          </div>
+        </form>
+
+        <!-- 2. REGISTER FORM (GOOGLE STYLE) -->
+        <form id="gmailRegisterForm" style="display: none;">
+          <div class="form-grid">
+            <div class="google-field">
+              <input type="text" id="regName" class="google-input" placeholder=" " required>
+              <label class="google-label" for="regName">Nome completo</label>
             </div>
-            <span class="badge badge-primary">Algoritmo Ativo</span>
+            <div class="google-field">
+              <input type="email" id="regEmail" class="google-input" placeholder=" " required>
+              <label class="google-label" for="regEmail">E-mail</label>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label" for="pwdLabInput">Digite ou teste uma senha:</label>
-            <input type="text" id="pwdLabInput" class="form-control" placeholder="Ex: SenhaForte@2026!" style="font-family: var(--font-mono); font-size: 1.1rem;">
+          <div class="google-field">
+            <input type="password" id="regPassword" class="google-input" placeholder=" " required>
+            <label class="google-label" for="regPassword">Crie uma senha forte</label>
+            <button type="button" id="toggleRegPasswordBtn" class="google-input-action" title="Mostrar senha">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
           </div>
 
-          <div class="password-meter-container">
+          <!-- Real-time Password Strength Meter -->
+          <div class="password-meter-container" style="margin: -0.5rem 0 1.25rem 0;">
             <div class="password-meter-bar">
-              <div id="pwdMeterFill" class="password-meter-fill"></div>
+              <div id="regPwdMeterFill" class="password-meter-fill"></div>
             </div>
-            <div id="pwdMeterLabel" style="font-size: 0.875rem; font-weight: 700; color: var(--text-secondary);">Digite uma senha...</div>
-          </div>
-
-          <ul class="password-rules-list">
-            <li id="ruleLength" class="password-rule-item invalid">
-              <span class="rule-icon">✗</span> Mínimo de 8 caracteres
-            </li>
-            <li id="ruleUpper" class="password-rule-item invalid">
-              <span class="rule-icon">✗</span> Ao menos 1 letra maiúscula
-            </li>
-            <li id="ruleLower" class="password-rule-item invalid">
-              <span class="rule-icon">✗</span> Ao menos 1 letra minúscula
-            </li>
-            <li id="ruleDigit" class="password-rule-item invalid">
-              <span class="rule-icon">✗</span> Ao menos 1 dígito numérico
-            </li>
-            <li id="ruleSpecial" class="password-rule-item invalid">
-              <span class="rule-icon">✗</span> Ao menos 1 caractere especial
-            </li>
-          </ul>
-
-          <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
-            <button id="pwdLabValidateBtn" class="btn btn-primary">Validar na API Backend</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- 3. TAB: LOANS -->
-      <section id="tab-loans" class="tab-pane">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title-group">
-              <h2>💳 Simulador de Empréstimos</h2>
-              <div class="card-subtitle">Cálculo de elegibilidade para Pessoal, Garantia e Consignado</div>
-            </div>
-            <button id="myLoansBtn" class="btn btn-secondary btn-sm">Consultar Meus Empréstimos (JWT)</button>
-          </div>
-
-          <form id="loanSimulateForm">
-            <div class="form-grid">
-              <div class="form-group">
-                <label class="form-label" for="loanName">Nome do Cliente</label>
-                <input type="text" id="loanName" class="form-control" placeholder="Carlos Silva" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="loanCpf">CPF</label>
-                <input type="text" id="loanCpf" class="form-control" placeholder="123.456.789-00" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="loanAge">Idade</label>
-                <input type="number" id="loanAge" class="form-control" placeholder="28" required>
-              </div>
-            </div>
-
-            <div class="form-grid">
-              <div class="form-group">
-                <label class="form-label" for="loanIncome">Renda Mensal (R$)</label>
-                <input type="number" id="loanIncome" class="form-control" step="0.01" placeholder="5000.00" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="loanLocation">Localização (UF / Cidade)</label>
-                <input type="text" id="loanLocation" class="form-control" placeholder="SP" required>
-              </div>
-            </div>
-
-            <button type="submit" class="btn btn-gradient">Simular Empréstimos</button>
-          </form>
-
-          <div id="loanResultsContainer" class="loan-results-grid"></div>
-        </div>
-      </section>
-
-      <!-- 4. TAB: CRYPTO VAULT -->
-      <section id="tab-crypto" class="tab-pane">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title-group">
-              <h2>🔒 Cofre de Transações Criptografadas</h2>
-              <div class="card-subtitle">Criptografia Híbrida: AES-256 no Documento e RSA-2048 no Cartão</div>
-            </div>
-            <button id="loadTxBtn" class="btn btn-secondary btn-sm">Atualizar Transações</button>
-          </div>
-
-          <form id="txForm">
-            <div class="form-grid">
-              <div class="form-group">
-                <label class="form-label" for="txDoc">Documento (CPF)</label>
-                <input type="text" id="txDoc" class="form-control" placeholder="12345678900" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="txCard">Token do Cartão de Crédito</label>
-                <input type="text" id="txCard" class="form-control" placeholder="4111111111111111" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="txValue">Valor (R$)</label>
-                <input type="number" id="txValue" class="form-control" step="0.01" placeholder="150.00" required>
-              </div>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Registrar Transação Criptografada</button>
-          </form>
-
-          <div class="table-responsive">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Documento (AES)</th>
-                  <th>Cartão (RSA)</th>
-                  <th>Valor</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody id="txTableBody">
-                <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Clique em 'Atualizar Transações' para carregar os registros.</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- 5. TAB: GPS RADAR -->
-      <section id="tab-gps" class="tab-pane">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title-group">
-              <h2>📍 Radar GPS & Pontos de Interesse</h2>
-              <div class="card-subtitle">Cadastro de POIs e busca euclidiana por raio de proximidade</div>
-            </div>
-            <button id="refreshPoisBtn" class="btn btn-secondary btn-sm">Recarregar Mapa</button>
+            <div id="regPwdMeterLabel" style="font-size: 0.775rem; font-weight: 600; color: var(--text-secondary);">Digite uma senha com 8+ caracteres, maiúscula, minúscula, número e símbolo.</div>
           </div>
 
           <div class="form-grid">
-            <!-- Create POI Form -->
-            <form id="poiCreateForm" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: flex-end;">
-              <div class="form-group" style="flex: 1; min-width: 140px;">
-                <label class="form-label" for="poiName">Nome do POI</label>
-                <input type="text" id="poiName" class="form-control" placeholder="Lanchonete" required>
-              </div>
-              <div class="form-group" style="width: 80px;">
-                <label class="form-label" for="poiX">X</label>
-                <input type="number" id="poiX" class="form-control" placeholder="20" required>
-              </div>
-              <div class="form-group" style="width: 80px;">
-                <label class="form-label" for="poiY">Y</label>
-                <input type="number" id="poiY" class="form-control" placeholder="10" required>
-              </div>
-              <button type="submit" class="btn btn-primary">Cadastrar</button>
-            </form>
-
-            <!-- Search Nearby Form -->
-            <form id="poiSearchForm" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: flex-end;">
-              <div class="form-group" style="width: 80px;">
-                <label class="form-label" for="searchX">Ref X</label>
-                <input type="number" id="searchX" class="form-control" value="20" required>
-              </div>
-              <div class="form-group" style="width: 80px;">
-                <label class="form-label" for="searchY">Ref Y</label>
-                <input type="number" id="searchY" class="form-control" value="10" required>
-              </div>
-              <div class="form-group" style="width: 100px;">
-                <label class="form-label" for="searchDmax">D-Max (m)</label>
-                <input type="number" id="searchDmax" class="form-control" value="10" required>
-              </div>
-              <button type="submit" class="btn btn-gradient">Buscar no Raio</button>
-            </form>
-          </div>
-
-          <!-- Radar Visualizer & POI List -->
-          <div class="radar-map-wrapper">
-            <div class="canvas-container">
-              <canvas id="gpsCanvas"></canvas>
-              <div id="canvasCoords" class="canvas-overlay-coords">X: 0 | Y: 0</div>
+            <div class="google-field">
+              <input type="text" id="regCpf" class="google-input" placeholder=" " required>
+              <label class="google-label" for="regCpf">CPF</label>
             </div>
-            <div id="poiListContainer" class="poi-list"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 6. TAB: URL SHORTENER -->
-      <section id="tab-shortener" class="tab-pane">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title-group">
-              <h2>🔗 Encurtador de URLs Inteligente</h2>
-              <div class="card-subtitle">Reduza URLs longas com código único e estatísticas de acesso</div>
+            <div class="google-field">
+              <input type="number" id="regIncome" class="google-input" step="0.01" placeholder=" " required>
+              <label class="google-label" for="regIncome">Renda mensal (R$)</label>
             </div>
           </div>
 
-          <form id="shortenerForm">
-            <div class="form-group" style="margin-bottom: 1.25rem;">
-              <label class="form-label" for="originalUrlInput">Cole a URL original para encurtar:</label>
-              <input type="url" id="originalUrlInput" class="form-control" placeholder="https://exemplo.com/artigo-longo-fintech" required>
+          <div class="form-grid">
+            <div class="google-field">
+              <input type="number" id="regAge" class="google-input" placeholder=" " required>
+              <label class="google-label" for="regAge">Idade</label>
             </div>
-            <button type="submit" class="btn btn-gradient">Encurtar URL</button>
-          </form>
-
-          <div id="shortResultBox" class="shortened-result-box" style="display: none;">
-            <div>
-              <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Link Encurtado:</div>
-              <div id="shortUrlDisplay" class="short-url-text">http://localhost:8080/xyz123</div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <div class="google-field" style="flex: 1; margin-bottom: 0;">
+                <input type="number" id="regLat" class="google-input" step="any" placeholder=" ">
+                <label class="google-label" for="regLat">Lat</label>
+              </div>
+              <div class="google-field" style="flex: 1; margin-bottom: 0;">
+                <input type="number" id="regLng" class="google-input" step="any" placeholder=" ">
+                <label class="google-label" for="regLng">Lng</label>
+              </div>
+              <button type="button" id="getGeoBtn" class="btn btn-secondary btn-sm" title="Usar localização atual" style="padding: 0.85rem 0.6rem;">📍</button>
             </div>
-            <button id="copyShortUrlBtn" class="btn btn-secondary btn-sm">Copiar Link</button>
           </div>
 
-          <div style="margin-top: 2rem; border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
-            <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem;">Métricas e Contagem de Acessos</h4>
-            <div style="display: flex; gap: 0.75rem; max-width: 400px;">
-              <input type="text" id="statsCodeInput" class="form-control" placeholder="Ex: xyz123">
-              <button id="checkStatsBtn" class="btn btn-primary btn-sm">Ver Estatísticas</button>
-            </div>
-            <div id="shortStatsResult"></div>
+          <div class="google-auth-actions" style="margin-top: 1.5rem;">
+            <button type="button" id="switchToLoginBtn" class="google-btn-text">Fazer login em vez disso</button>
+            <button type="submit" id="regSubmitBtn" class="google-btn-primary">
+              <span>Criar conta</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
           </div>
+        </form>
+
+      </div>
+
+      <!-- Gmail-style Clean Footer -->
+      <footer class="gmail-auth-footer">
+        <div>
+          <select style="background: transparent; border: none; color: #94a3b8; font-size: 0.8rem; outline: none; cursor: pointer;">
+            <option value="pt-BR">Português (Brasil)</option>
+            <option value="en-US">English (United States)</option>
+          </select>
         </div>
-      </section>
-
-      <!-- Live API Inspector Console -->
-      <section class="inspector-card" id="apiInspectorCard">
-        <!-- Inspector Top Header -->
-        <div class="inspector-header">
-          <div class="inspector-meta">
-            <span class="inspector-title">⚡ API INSPECTOR (LIVE)</span>
-            <span id="inspectorMethod" class="http-method method-get">GET</span>
-            <span id="inspectorUrl" class="http-url">/api/health</span>
-            <span id="inspectorStatusBadge" class="inspector-status-badge status-success">✓ 200 OK</span>
-          </div>
-          <div class="inspector-header-right">
-            <span id="inspectorLatency" class="http-latency">⏱️ 0ms</span>
-          </div>
+        <div>
+          <a href="#" onclick="alert('Central de Atendimento LãoBank: 0800 700 2026.'); return false;">Ajuda</a>
+          <a href="#" onclick="alert('Privacidade LãoBank: Seus dados estão protegidos por criptografia AES-256 e RSA-2048.'); return false;">Privacidade</a>
+          <a href="#" onclick="alert('Termos de Serviço e Contrato de Conta Corrente LãoBank S.A.'); return false;">Termos</a>
         </div>
+      </footer>
 
-        <!-- Prominent Status / Feedback Banner (Success / Error / Info) -->
-        <div id="inspectorBanner" class="inspector-banner banner-info">
-          <div id="inspectorBannerIcon" class="inspector-banner-icon">ℹ️</div>
-          <div class="inspector-banner-content">
-            <div id="inspectorBannerTitle" class="inspector-banner-title">Pronto para Inspeção</div>
-            <div id="inspectorBannerMsg" class="inspector-banner-msg">Inicie qualquer ação nas abas acima para inspecionar os payloads e confirmações de sucesso em tempo real.</div>
-          </div>
-          <span id="inspectorTimestamp" class="inspector-timestamp">--:--:--</span>
-        </div>
-
-        <!-- View Navigation Toolbar -->
-        <div class="inspector-toolbar">
-          <div class="inspector-tabs">
-            <button class="inspector-tab-btn active" data-view="response">📄 Resposta (Body)</button>
-            <button class="inspector-tab-btn" data-view="request">📤 Envio (Request)</button>
-            <button class="inspector-tab-btn" data-view="history">📜 Histórico</button>
-          </div>
-          <div class="inspector-actions">
-            <button id="copyInspectorBtn" class="btn-action" title="Copiar Payload JSON">📋 Copiar JSON</button>
-            <button id="clearInspectorBtn" class="btn-action" title="Limpar Console">🗑️ Limpar</button>
-          </div>
-        </div>
-
-        <!-- Inspector Content Body -->
-        <div id="inspectorBody" class="inspector-body">
-          <div id="inspectorViewResponse" class="inspector-view active">
-            <pre id="inspectorResponsePre"></pre>
-          </div>
-          <div id="inspectorViewRequest" class="inspector-view">
-            <pre id="inspectorRequestPre"></pre>
-          </div>
-          <div id="inspectorViewHistory" class="inspector-view">
-            <div id="inspectorHistoryList" class="inspector-history-list"></div>
-          </div>
-        </div>
-      </section>
-
-    </main>
+    </div>
   </div>
 
-  <!-- Toast Notification Container -->
+
+  <!-- ========================================================================
+       TELA 2: SERVIÇOS INTERNOS (PADRÃO BANCOS / NEOBANK LÃOBANK)
+       ======================================================================== -->
+  <div id="view-banking-app" class="app-view">
+    <div class="banking-app-layout">
+
+      <!-- Top Bank Header -->
+      <header class="bank-header">
+        <div class="bank-header-inner">
+          <div style="display: flex; align-items: center; gap: 1.25rem;">
+            <!-- LãoBank Brand Badge -->
+            <div style="display: flex; align-items: center; gap: 0.5rem; padding-right: 1rem; border-right: 1px solid var(--bank-border-subtle);">
+              <svg class="bank-classic-logo" style="width: 28px; height: 28px;" viewBox="0 0 64 64" fill="none">
+                <path d="M32 6L4 22H60L32 6Z" fill="url(#classicGoldGrad)" stroke="#c5a059" stroke-width="1.5"/>
+                <rect x="8" y="24" width="48" height="4" fill="url(#classicGoldGrad)" />
+                <rect x="12" y="30" width="6" height="20" fill="url(#classicGoldGrad)" />
+                <rect x="23" y="30" width="6" height="20" fill="url(#classicGoldGrad)" />
+                <rect x="35" y="30" width="6" height="20" fill="url(#classicGoldGrad)" />
+                <rect x="46" y="30" width="6" height="20" fill="url(#classicGoldGrad)" />
+                <rect x="6" y="52" width="52" height="4" fill="url(#classicGoldGrad)" />
+                <rect x="2" y="58" width="60" height="4" fill="url(#classicGoldGrad)" />
+              </svg>
+              <span style="font-family: 'Cinzel', serif; font-weight: 800; font-size: 1.1rem; background: var(--bank-gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">LãoBank Digital</span>
+            </div>
+
+            <div class="bank-user-profile" id="userProfileTrigger" title="Ver Perfil" style="cursor: pointer;">
+              <div id="bankUserAvatar" class="bank-avatar" style="background: var(--bank-gold-gradient); color: #080c16; font-weight: 800;">C</div>
+              <div class="bank-user-info">
+                <h3 id="bankUserName">Olá, Carlos Silva</h3>
+                <span class="bank-account-badge" style="color: var(--bank-gold-light);">Ag: 0001 &bull; CC: 104829-4</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bank-header-actions">
+            <!-- Toggle Balance Visibility (Eye) -->
+            <button id="toggleBalanceBtn" class="bank-icon-btn" title="Ocultar/Mostrar Saldos">
+              <svg id="eyeOpenIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              <svg id="eyeClosedIcon" style="display: none;" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+            </button>
+
+            <!-- API Health Indicator -->
+            <div class="bank-icon-btn" id="apiStatusPill" title="Status da Conexão com a API LãoBank">
+              <span id="bankApiDot" style="width: 10px; height: 10px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+            </div>
+
+            <!-- Logout Button -->
+            <button id="bankLogoutBtn" class="bank-icon-btn" title="Sair da Conta">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Layout: Sidebar (Desktop) + Main Container -->
+      <div class="bank-main-container">
+
+        <!-- Desktop Sidebar Navigation -->
+        <aside class="bank-sidebar">
+          <ul class="bank-nav-list">
+            <li>
+              <button class="bank-nav-item-btn active" data-tab="home">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Conta</span>
+              </button>
+            </li>
+            <li>
+              <button class="bank-nav-item-btn" data-tab="pix">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                <span>Área Pix</span>
+              </button>
+            </li>
+            <li>
+              <button class="bank-nav-item-btn" data-tab="cards">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                <span>Meus Cartões</span>
+              </button>
+            </li>
+            <li>
+              <button class="bank-nav-item-btn" data-tab="loans">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                <span>Empréstimos</span>
+              </button>
+            </li>
+            <li>
+              <button class="bank-nav-item-btn" data-tab="gps">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                <span>Radar de Agências</span>
+              </button>
+            </li>
+            <li>
+              <button class="bank-nav-item-btn" data-tab="shortener">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                <span>Cobranças & Links</span>
+              </button>
+            </li>
+            <li>
+              <button class="bank-nav-item-btn" data-tab="profile">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>Meu Perfil</span>
+              </button>
+            </li>
+          </ul>
+
+          <!-- Sidebar Collapse/Expand Toggle Button (Cortex Style) -->
+          <button id="sidebarToggleBtn" class="sidebar-toggle-btn" type="button" aria-label="Expandir ou recolher menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            <span>Recolher Menu</span>
+          </button>
+
+          <!-- System Status Footer -->
+          <div style="font-size: 0.725rem; color: var(--text-muted); padding: 0.75rem 0.5rem; border-top: 1px solid var(--bank-border-soft); margin-top: 0.5rem; text-align: center; white-space: nowrap;">
+            <div style="color: var(--bank-gold-light); font-weight: 700;">LãoBank Digital</div>
+          </div>
+        </aside>
+
+        <!-- Main Content Panes -->
+        <main class="bank-main-content">
+
+          <!-- ================================================================
+               ABA 1: CONTA (DASHBOARD, SALDO, TRANSFERÊNCIA SEGURA & EXTRATO)
+               ================================================================ -->
+          <section id="tab-home" class="tab-pane active">
+            
+            <!-- 1. Hero Balance Card -->
+            <div class="bank-balance-card">
+              <div class="balance-card-top">
+                <span class="balance-label">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"></path><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"></path><path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4h-4z"></path></svg>
+                  Conta Corrente Clássica
+                </span>
+                <span class="badge badge-success">Ativa</span>
+              </div>
+
+              <div class="balance-value-row">
+                <span class="balance-currency">R$</span>
+                <span id="bankBalanceDisplay" class="balance-amount">14.850,00</span>
+              </div>
+
+              <div>
+                <span class="balance-yield-badge">
+                  <span>📈</span>
+                  <span>Rendimento LãoBank: +102% do CDI (+R$ 142,30 este mês)</span>
+                </span>
+              </div>
+
+              <div class="balance-actions-row">
+                <button class="balance-action-btn primary" onclick="document.querySelector('[data-tab=pix]').click();">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                  <span>Área Pix</span>
+                </button>
+                <button class="balance-action-btn" onclick="document.querySelector('[data-tab=loans]').click();">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                  <span>Empréstimos</span>
+                </button>
+                <button class="balance-action-btn" onclick="document.querySelector('[data-tab=cards]').click();">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                  <span>Cartões</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 2. Horizontal Quick Actions Carousel -->
+            <div class="quick-actions-carousel">
+              <button class="quick-action-item" onclick="document.querySelector('[data-tab=pix]').click();">
+                <div class="quick-action-circle">⚡</div>
+                <span class="quick-action-label">Pix</span>
+              </button>
+              <button class="quick-action-item" onclick="document.querySelector('[data-tab=cards]').click();">
+                <div class="quick-action-circle">💳</div>
+                <span class="quick-action-label">Cartões</span>
+              </button>
+              <button class="quick-action-item" onclick="document.querySelector('[data-tab=loans]').click();">
+                <div class="quick-action-circle">💰</div>
+                <span class="quick-action-label">Empréstimo</span>
+              </button>
+              <button class="quick-action-item" onclick="document.querySelector('[data-tab=shortener]').click();">
+                <div class="quick-action-circle">🔗</div>
+                <span class="quick-action-label">Cobranças</span>
+              </button>
+              <button class="quick-action-item" onclick="document.querySelector('[data-tab=gps]').click();">
+                <div class="quick-action-circle">📍</div>
+                <span class="quick-action-label">Agências</span>
+              </button>
+              <button class="quick-action-item" onclick="document.querySelector('[data-tab=profile]').click();">
+                <div class="quick-action-circle">👤</div>
+                <span class="quick-action-label">Meu Perfil</span>
+              </button>
+            </div>
+
+            <!-- 3. Two Column Layout: Cartão Black + Extrato & Transferência Segura -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+              
+              <!-- Card Highlight -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title-group">
+                    <h2>💳 Cartão LãoBank Black Prestige</h2>
+                    <div class="card-subtitle">Toque no cartão para girar e ver o verso</div>
+                  </div>
+                </div>
+
+                <!-- 3D Credit Card Element -->
+                <div class="credit-card-perspective" id="interactiveCreditCard">
+                  <div class="credit-card-inner">
+                    <!-- Front -->
+                    <div class="credit-card-front">
+                      <div class="card-chip-row">
+                        <div class="card-emv-chip"></div>
+                        <div class="card-contactless">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8.5 16.5a5 5 0 0 1 0-7"></path><path d="M12 20a10 10 0 0 0 0-14"></path></svg>
+                        </div>
+                      </div>
+                      <div class="card-number-display" id="cardFrontNumber">•••• •••• •••• 8824</div>
+                      <div class="card-meta-row">
+                        <div>
+                          <div style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase;">Titular</div>
+                          <div class="card-holder-name" id="cardFrontHolder">CARLOS SILVA</div>
+                        </div>
+                        <div>
+                          <div style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase;">Validade</div>
+                          <div class="card-expiry">08/32</div>
+                        </div>
+                        <div style="font-weight: 800; font-size: 1.2rem; font-style: italic; color: #ffffff;">VISA</div>
+                      </div>
+                    </div>
+
+                    <!-- Back -->
+                    <div class="credit-card-back">
+                      <div class="card-black-stripe"></div>
+                      <div>
+                        <div style="font-size: 0.65rem; color: #94a3b8; margin-left: 2rem; margin-bottom: 0.2rem;">CÓDIGO DE SEGURANÇA (CVV)</div>
+                        <div class="card-cvv-box" id="cardBackCvv">592</div>
+                      </div>
+                      <div style="padding: 0 1.5rem; font-size: 0.65rem; color: #64748b; text-align: center;">
+                        LãoBank S.A. &bull; Proteção Criptográfica &bull; Atendimento 24h
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Limit Bar -->
+                <div class="card-limit-box">
+                  <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                    <span style="color: var(--text-secondary);">Limite Disponível:</span>
+                    <strong style="color: #34d399;" class="balance-sensitive">R$ 5.525,00</strong>
+                  </div>
+                  <div class="limit-progress-bar">
+                    <div class="limit-progress-fill" style="width: 35%;"></div>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.775rem; color: var(--text-muted);">
+                    <span>Fatura atual: <strong class="balance-sensitive" style="color: #f1f5f9;">R$ 2.975,00</strong></span>
+                    <span>Limite total: R$ 8.500,00</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Extrato & Pagamentos Criptografados -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title-group">
+                    <h2>📄 Extrato da Conta</h2>
+                    <div class="card-subtitle">Movimentações protegidas por criptografia de ponta a ponta</div>
+                  </div>
+                  <button class="btn btn-secondary btn-sm" id="refreshExtratoBtn">Atualizar</button>
+                </div>
+
+                <!-- Formulário Rápido de Transferência / Pagamento -->
+                <form id="txForm" style="margin-bottom: 1.25rem; padding: 1.15rem; background: rgba(255,255,255,0.02); border: 1px solid var(--bank-border-soft); border-radius: var(--radius-lg);">
+                  <div style="font-size: 0.85rem; font-weight: 700; color: var(--bank-gold-light); margin-bottom: 0.75rem;">🔒 Nova Transferência Protegida</div>
+                  <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.6rem; margin-bottom: 0.75rem;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                      <input type="text" id="txDoc" class="form-control" placeholder="CPF Beneficiário" required style="font-size: 0.825rem; height: 2.5rem;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                      <input type="text" id="txCard" class="form-control" placeholder="Cartão / Token" required style="font-size: 0.825rem; height: 2.5rem;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                      <input type="number" id="txValue" class="form-control" step="0.01" placeholder="Valor (R$)" required style="font-size: 0.825rem; height: 2.5rem;">
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;">Confirmar Transferência</button>
+                </form>
+
+                <div class="bank-transactions-list" id="recentTransactionsList">
+                  <div class="tx-card-item">
+                    <div class="tx-item-left">
+                      <div class="tx-icon-circle pix">⚡</div>
+                      <div class="tx-item-info">
+                        <h4>Pix Recebido - Empresa X</h4>
+                        <span>Hoje, 10:45 &bull; Transferência Pix</span>
+                      </div>
+                    </div>
+                    <div class="tx-item-right">
+                      <div class="tx-item-value positive balance-sensitive">+ R$ 2.500,00</div>
+                      <span class="badge badge-success" style="font-size: 0.65rem;">Concluído</span>
+                    </div>
+                  </div>
+
+                  <div class="tx-card-item">
+                    <div class="tx-item-left">
+                      <div class="tx-icon-circle card">💳</div>
+                      <div class="tx-item-info">
+                        <h4>Supermercado Central</h4>
+                        <span>Ontem, 18:20 &bull; Cartão de Crédito</span>
+                      </div>
+                    </div>
+                    <div class="tx-item-right">
+                      <div class="tx-item-value negative balance-sensitive">- R$ 342,80</div>
+                      <span class="badge badge-primary" style="font-size: 0.65rem;">Aprovado</span>
+                    </div>
+                  </div>
+
+                  <div class="tx-card-item">
+                    <div class="tx-item-left">
+                      <div class="tx-icon-circle loan">💰</div>
+                      <div class="tx-item-info">
+                        <h4>Crédito Pessoal Aprovado</h4>
+                        <span>28 Ago, 14:10 &bull; Empréstimo</span>
+                      </div>
+                    </div>
+                    <div class="tx-item-right">
+                      <div class="tx-item-value positive balance-sensitive">+ R$ 5.000,00</div>
+                      <span class="badge badge-success" style="font-size: 0.65rem;">Depositado</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tabela de Auditoria de Transações do Cofre -->
+                <div style="margin-top: 1.25rem;">
+                  <button class="btn btn-secondary btn-sm" id="loadTxBtn" style="width: 100%; font-size: 0.8rem;">Ver Histórico Criptografado da Conta</button>
+                  <div class="table-responsive" style="margin-top: 0.75rem;">
+                    <table class="data-table">
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Beneficiário</th>
+                          <th>Cartão</th>
+                          <th>Valor</th>
+                          <th>Ação</th>
+                        </tr>
+                      </thead>
+                      <tbody id="txTableBody">
+                        <tr><td colspan="5" style="text-align: center; color: var(--text-muted); font-size: 0.8rem;">Carregando transações...</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </section>
+
+
+          <!-- ================================================================
+               ABA 2: ÁREA PIX
+               ================================================================ -->
+          <section id="tab-pix" class="tab-pane">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <h2>⚡ Área Pix</h2>
+                  <div class="card-subtitle">Envie e receba pagamentos instantâneos em segundos 24/7</div>
+                </div>
+              </div>
+
+              <div class="form-grid" style="margin-bottom: 1.5rem;">
+                <div class="card" style="padding: 1.25rem;">
+                  <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">💸 Transferir Pix</h3>
+                  <form id="pixTransferForm">
+                    <div class="form-group">
+                      <label class="form-label" for="pixKeyInput">Chave Pix (CPF, E-mail ou Telefone)</label>
+                      <input type="text" id="pixKeyInput" class="form-control" placeholder="usuario@exemplo.com" required>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" for="pixAmountInput">Valor (R$)</label>
+                      <input type="number" id="pixAmountInput" class="form-control" step="0.01" placeholder="150.00" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Confirmar Envio Pix</button>
+                  </form>
+                </div>
+
+                <div class="card" style="padding: 1.25rem; text-align: center;">
+                  <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">📱 Meu QR Code Pix</h3>
+                  <p style="font-size: 0.8rem; color: var(--text-secondary);">Mostre este QR Code para receber transferências</p>
+                  
+                  <div class="pix-qr-container">
+                    <svg viewBox="0 0 100 100">
+                      <rect width="100" height="100" fill="#ffffff"/>
+                      <path d="M10,10 h30 v30 h-30 z M15,15 v20 h20 v-20 z M20,20 h10 v10 h-10 z" fill="#000000"/>
+                      <path d="M60,10 h30 v30 h-30 z M65,15 v20 h20 v-20 z M70,20 h10 v10 h-10 z" fill="#000000"/>
+                      <path d="M10,60 h30 v30 h-30 z M15,65 v20 h20 v-20 z M20,70 h10 v10 h-10 z" fill="#000000"/>
+                      <rect x="50" y="50" width="10" height="10" fill="#ef4444"/>
+                      <rect x="70" y="60" width="20" height="10" fill="#000000"/>
+                      <rect x="60" y="80" width="30" height="10" fill="#000000"/>
+                      <rect x="50" y="70" width="10" height="20" fill="#000000"/>
+                    </svg>
+                  </div>
+
+                  <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('00020126580014br.gov.bcb.pix0136carlos@exemplo.com5204000053039865802BR5912Carlos Silva6009Sao Paulo62070503***6304E2CA'); alert('Chave Pix Copia e Cola copiada!');">📋 Copiar Chave Pix</button>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+
+          <!-- ================================================================
+               ABA 3: MEUS CARTÕES
+               ================================================================ -->
+          <section id="tab-cards" class="tab-pane">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <h2>💳 Gestão de Cartões</h2>
+                  <div class="card-subtitle">Controle de limites, bloqueio temporário e cartões virtuais</div>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <div class="card" style="padding: 1.25rem;">
+                  <h3 style="font-size: 1rem; margin-bottom: 0.75rem;">⚙️ Configurações Rápidas</h3>
+                  <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <button class="btn btn-secondary" id="toggleCardBlockBtn">🔒 Bloqueio Temporário: Desativado</button>
+                    <button class="btn btn-secondary" onclick="alert('Novo Cartão Virtual gerado com sucesso! Código CVV temporário ativo por 24 horas.');">🔄 Gerar Novo Cartão Virtual</button>
+                    <button class="btn btn-secondary" onclick="alert('Limite de compras online atualizado!');">🌐 Ajustar Limite para Compras Online</button>
+                  </div>
+                </div>
+
+                <div class="card" style="padding: 1.25rem;">
+                  <h3 style="font-size: 1rem; margin-bottom: 0.75rem;">📊 Fatura Atual</h3>
+                  <div style="font-size: 1.6rem; font-weight: 800; color: #f87171; margin-bottom: 0.5rem;" class="balance-sensitive">R$ 2.975,00</div>
+                  <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">Vencimento em 10 de Setembro &bull; Fechamento em 03 de Setembro</p>
+                  <button class="btn btn-primary btn-sm" id="openInvoiceModalBtn">Pagar Fatura</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+
+          <!-- ================================================================
+               ABA 4: EMPRÉSTIMOS
+               ================================================================ -->
+          <section id="tab-loans" class="tab-pane">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <h2>💰 Simulador de Empréstimos Inteligentes</h2>
+                  <div class="card-subtitle">Cálculo de elegibilidade e taxas para Pessoal, Garantia e Consignado</div>
+                </div>
+                <button id="myLoansBtn" class="btn btn-secondary btn-sm">Consultar Meus Empréstimos</button>
+              </div>
+
+              <form id="loanSimulateForm">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label class="form-label" for="loanName">Nome do Cliente</label>
+                    <input type="text" id="loanName" class="form-control" placeholder="Carlos Silva" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="loanCpf">CPF</label>
+                    <input type="text" id="loanCpf" class="form-control" placeholder="123.456.789-00" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="loanAge">Idade</label>
+                    <input type="number" id="loanAge" class="form-control" placeholder="28" required>
+                  </div>
+                </div>
+
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label class="form-label" for="loanIncome">Renda Mensal (R$)</label>
+                    <input type="number" id="loanIncome" class="form-control" step="0.01" placeholder="5000.00" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="loanLocation">Localização (UF / Cidade)</label>
+                    <input type="text" id="loanLocation" class="form-control" placeholder="SP" required>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-gradient">Simular Empréstimos</button>
+              </form>
+
+              <div id="loanResultsContainer" class="loan-results-grid"></div>
+            </div>
+          </section>
+
+
+          <!-- ================================================================
+               ABA 5: RADAR GPS DE AGÊNCIAS
+               ================================================================ -->
+          <section id="tab-gps" class="tab-pane">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <h2>📍 Radar de Agências & Caixas 24h</h2>
+                  <div class="card-subtitle">Cadastro e busca euclidiana por raio de proximidade no mapa</div>
+                </div>
+                <button id="refreshPoisBtn" class="btn btn-secondary btn-sm">Recarregar Mapa</button>
+              </div>
+
+                <!-- Forms Grid: Cadastrar & Buscar -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem;">
+                  <!-- Create POI Form -->
+                  <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--bank-border-soft); border-radius: var(--radius-lg); padding: 1.25rem;">
+                    <div style="font-size: 0.85rem; font-weight: 700; color: var(--bank-gold-light); margin-bottom: 0.85rem;">📍 Cadastrar Novo Ponto / Agência</div>
+                    <form id="poiCreateForm">
+                      <div class="form-group">
+                        <label class="form-label" for="poiName">Nome da Agência</label>
+                        <input type="text" id="poiName" class="form-control" placeholder="Agência Central" required>
+                      </div>
+                      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                          <label class="form-label" for="poiX">Coord X</label>
+                          <input type="number" id="poiX" class="form-control" placeholder="20" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                          <label class="form-label" for="poiY">Coord Y</label>
+                          <input type="number" id="poiY" class="form-control" placeholder="10" required>
+                        </div>
+                      </div>
+                      <button type="submit" class="btn btn-primary" style="width: 100%;">Cadastrar Agência</button>
+                    </form>
+                  </div>
+
+                  <!-- Search Nearby Form -->
+                  <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--bank-border-soft); border-radius: var(--radius-lg); padding: 1.25rem;">
+                    <div style="font-size: 0.85rem; font-weight: 700; color: var(--status-info); margin-bottom: 0.85rem;">🎯 Busca por Raio de Proximidade</div>
+                    <form id="poiSearchForm">
+                      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.6rem; margin-bottom: 1rem;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                          <label class="form-label" for="searchX">Ref X</label>
+                          <input type="number" id="searchX" class="form-control" value="20" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                          <label class="form-label" for="searchY">Ref Y</label>
+                          <input type="number" id="searchY" class="form-control" value="10" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                          <label class="form-label" for="searchDmax">Raio (m)</label>
+                          <input type="number" id="searchDmax" class="form-control" value="10" required>
+                        </div>
+                      </div>
+                      <button type="submit" class="btn btn-gradient" style="width: 100%; margin-top: 1.65rem;">Buscar no Raio</button>
+                    </form>
+                  </div>
+                </div>
+
+              <!-- Radar Visualizer & POI List -->
+              <div class="radar-map-wrapper">
+                <div class="canvas-container">
+                  <canvas id="gpsCanvas"></canvas>
+                  <div id="canvasCoords" class="canvas-overlay-coords">X: 0 | Y: 0</div>
+                </div>
+                <div id="poiListContainer" class="poi-list"></div>
+              </div>
+            </div>
+          </section>
+
+
+          <!-- ================================================================
+               ABA 6: COBRANÇAS, BOLETOS & CAMPANHA CDB
+               ================================================================ -->
+          <section id="tab-shortener" class="tab-pane">
+            
+            <!-- 1. Destaque da Campanha de Indicação CDB -->
+            <div class="cdb-campaign-hero">
+              <div class="cdb-badge-gift">✨ Campanha Exclusiva LãoBank</div>
+              <h2 style="font-size: 1.45rem; font-weight: 800; color: #ffffff; margin-bottom: 0.4rem;">Traga 15 pessoas para o CDB do banco e ganhe bônus no seu primeiro ano!</h2>
+              <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.25rem; max-width: 600px;">
+                Compartilhe seu link exclusivo de indicação. A cada amigo que investir no CDB Rendimento Turbinado, você acumula bônus de rentabilidade direta na sua conta!
+              </p>
+              <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <button type="button" id="generateCdbLinkBtn" class="btn btn-gradient">Gerar Meu Link de Indicação CDB</button>
+                <button type="button" class="btn btn-secondary" onclick="alert('Regulamento:\\n- Campanha válida para novos clientes indicados.\\n- Bônus creditado a partir de 15 indicações qualificadas.');">Ver Regulamento</button>
+              </div>
+            </div>
+
+            <!-- 2. Encurtador de Links para Boletos e Cobranças -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <h2>🔗 Gerador de Links de Cobrança & Boletos</h2>
+                  <div class="card-subtitle">Encurte links de boletos, Pix Copia e Cola e comprovantes para envio fácil por WhatsApp ou SMS</div>
+                </div>
+              </div>
+
+              <form id="shortenerForm">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                  <label class="form-label" for="originalUrlInput">Cole a URL do Boleto, Comprovante ou Pagamento:</label>
+                  <input type="url" id="originalUrlInput" class="form-control" placeholder="https://laobank.com.br/boletos/2026-fatura-mensal-carlos-silva-pdf" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Gerar Link Seguro Encurtado</button>
+              </form>
+
+              <div id="shortResultBox" class="shortened-result-box" style="display: none;">
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Link Encurtado Pronto para Envio:</div>
+                  <div id="shortUrlDisplay" class="short-url-text">http://localhost:8080/xyz123</div>
+                </div>
+                <button id="copyShortUrlBtn" class="btn btn-secondary btn-sm">📋 Copiar Link</button>
+              </div>
+
+              <div style="margin-top: 2rem; border-top: 1px solid var(--bank-border-subtle); padding-top: 1.5rem;">
+                <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem;">📊 Rastreamento e Métricas de Acessos</h4>
+                <div style="display: flex; gap: 0.75rem; max-width: 400px;">
+                  <input type="text" id="statsCodeInput" class="form-control" placeholder="Código do link (ex: xyz123)">
+                  <button id="checkStatsBtn" class="btn btn-primary btn-sm">Consultar Cliques</button>
+                </div>
+                <div id="shortStatsResult"></div>
+              </div>
+            </div>
+
+          </section>
+
+
+          <!-- ================================================================
+               ABA 7: MEU PERFIL (PADRÃO NUBANK MOBILE & WEB)
+               ================================================================ -->
+          <section id="tab-profile" class="tab-pane">
+            <div class="nubank-profile-container">
+              
+              <!-- 1. Hero do Perfil Nubank -->
+              <div class="nubank-profile-hero">
+                <div id="profileAvatarLarge" class="nubank-avatar-large">C</div>
+                <div class="nubank-user-meta">
+                  <h2 id="profileHeroName">Carlos Silva</h2>
+                  <div style="color: var(--text-secondary); font-size: 0.85rem;">Agência 0001 &bull; Conta 104829-4 &bull; Banco 077 LãoBank S.A.</div>
+                  <div class="nubank-badge-row">
+                    <span class="nubank-pill nubank-pill-gold">★ Cliente Black Prestige</span>
+                    <span class="nubank-pill nubank-pill-emerald">✓ Conta Verificada</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 2. Seção: Meus Dados Cadastrais -->
+              <div class="nubank-section-card">
+                <div class="nubank-section-header">
+                  <span>Meus Dados Cadastrais</span>
+                  <button id="loadProfileBtn" class="btn btn-secondary btn-sm" style="font-size: 0.75rem;">Atualizar Dados</button>
+                </div>
+                <div class="nubank-menu-list">
+                  
+                  <div class="nubank-menu-row">
+                    <div class="nubank-row-left">
+                      <div class="nubank-row-icon">👤</div>
+                      <div>
+                        <div class="nubank-row-label">Nome Completo</div>
+                        <div class="nubank-row-desc">Nome civil registrado na conta</div>
+                      </div>
+                    </div>
+                    <div class="nubank-row-value" id="profileNameVal">Carlos Silva</div>
+                  </div>
+
+                  <div class="nubank-menu-row">
+                    <div class="nubank-row-left">
+                      <div class="nubank-row-icon">✉️</div>
+                      <div>
+                        <div class="nubank-row-label">E-mail Principal</div>
+                        <div class="nubank-row-desc">Utilizado para acesso e notificações</div>
+                      </div>
+                    </div>
+                    <div class="nubank-row-value" id="profileEmailVal">carlos@exemplo.com</div>
+                  </div>
+
+                  <div class="nubank-menu-row">
+                    <div class="nubank-row-left">
+                      <div class="nubank-row-icon">🆔</div>
+                      <div>
+                        <div class="nubank-row-label">CPF</div>
+                        <div class="nubank-row-desc">Documento cadastrado na Receita Federal</div>
+                      </div>
+                    </div>
+                    <div class="nubank-row-value" id="profileCpfVal">123.456.789-00</div>
+                  </div>
+
+                  <div class="nubank-menu-row">
+                    <div class="nubank-row-left">
+                      <div class="nubank-row-icon">💵</div>
+                      <div>
+                        <div class="nubank-row-label">Renda Mensal Declarada</div>
+                        <div class="nubank-row-desc">Base para análise de limite de crédito</div>
+                      </div>
+                    </div>
+                    <div class="nubank-row-value" id="profileIncomeVal" style="color: #34d399;">R$ 7.500,00</div>
+                  </div>
+
+                  <div class="nubank-menu-row">
+                    <div class="nubank-row-left">
+                      <div class="nubank-row-icon">📍</div>
+                      <div>
+                        <div class="nubank-row-label">Idade & Localização GPS</div>
+                        <div class="nubank-row-desc">Coordenadas geográficas do cadastro</div>
+                      </div>
+                    </div>
+                    <div class="nubank-row-value" id="profileGeoVal">29 anos &bull; (-23.5505, -46.6333)</div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- 3. Seção: Segurança & Validação de Senha (Integrada) -->
+              <div class="nubank-section-card">
+                <div class="nubank-section-header">
+                  <span>Segurança & Senha de Acesso</span>
+                </div>
+                <div style="padding: 1.25rem;">
+                  <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                    Validador de conformidade com as 5 regras de segurança obrigatórias do banco:
+                  </p>
+                  
+                  <div class="form-group" style="margin-bottom: 0.75rem;">
+                    <input type="password" id="profilePwdTestInput" class="form-control" placeholder="Digite uma nova senha para testar conformidade..." style="font-family: var(--font-mono);">
+                  </div>
+
+                  <div class="password-meter-container" style="margin: 0.5rem 0 1rem 0;">
+                    <div class="password-meter-bar">
+                      <div id="profilePwdMeterFill" class="password-meter-fill"></div>
+                    </div>
+                    <div id="profilePwdMeterLabel" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">Digite uma senha com 8+ caracteres, maiúscula, minúscula, número e símbolo.</div>
+                  </div>
+
+                  <ul class="password-rules-list" style="margin-bottom: 1rem;">
+                    <li id="pRuleLength" class="password-rule-item invalid"><span class="rule-icon">✗</span> Mínimo de 8 caracteres</li>
+                    <li id="pRuleUpper" class="password-rule-item invalid"><span class="rule-icon">✗</span> Ao menos 1 letra maiúscula</li>
+                    <li id="pRuleLower" class="password-rule-item invalid"><span class="rule-icon">✗</span> Ao menos 1 letra minúscula</li>
+                    <li id="pRuleDigit" class="password-rule-item invalid"><span class="rule-icon">✗</span> Ao menos 1 dígito numérico</li>
+                    <li id="pRuleSpecial" class="password-rule-item invalid"><span class="rule-icon">✗</span> Ao menos 1 caractere especial (!@#$%...)</li>
+                  </ul>
+
+                  <button type="button" id="profileValidatePwdBtn" class="btn btn-secondary btn-sm">Validar Senha na API Backend</button>
+
+                  <hr style="border: 0; border-top: 1px solid var(--bank-border-subtle); margin: 1.5rem 0;">
+                  
+                  <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem;">🛡️ Funcionalidades Avançadas de Segurança</h4>
+                  
+                  <div class="nubank-menu-list">
+                    <div class="nubank-menu-row" style="background: transparent; border: none; padding: 0.5rem 0;">
+                      <div class="nubank-row-left">
+                        <div class="nubank-row-icon">📱</div>
+                        <div>
+                          <div class="nubank-row-label">Autenticação de Dois Fatores (2FA)</div>
+                          <div class="nubank-row-desc">Proteção extra com código SMS ou App</div>
+                        </div>
+                      </div>
+                      <div class="nubank-row-value">
+                        <label style="position: relative; display: inline-block; width: 40px; height: 20px;">
+                          <input type="checkbox" id="toggle2FA" style="opacity: 0; width: 0; height: 0;">
+                          <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bank-border-soft); transition: .4s; border-radius: 20px;"></span>
+                          <span class="toggle-slider-knob" style="position: absolute; content: ''; height: 16px; width: 16px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%;"></span>
+                        </label>
+                      </div>
+                    </div>
+
+                    <div class="nubank-menu-row" style="background: transparent; border: none; padding: 0.5rem 0;">
+                      <div class="nubank-row-left">
+                        <div class="nubank-row-icon">⏱️</div>
+                        <div>
+                          <div class="nubank-row-label">Timeout de Inatividade</div>
+                          <div class="nubank-row-desc">Tempo limite antes de deslogar automaticamente</div>
+                        </div>
+                      </div>
+                      <div class="nubank-row-value">
+                        <select id="timeoutSelect" style="background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--bank-border-soft); border-radius: 4px; padding: 0.2rem; font-size: 0.8rem; outline: none;">
+                          <option value="5">5 minutos</option>
+                          <option value="15" selected>15 minutos</option>
+                          <option value="30">30 minutos</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="nubank-menu-row" style="background: transparent; border: none; padding: 0.5rem 0;">
+                      <div class="nubank-row-left">
+                        <div class="nubank-row-icon">💻</div>
+                        <div>
+                          <div class="nubank-row-label">Sessões Ativas</div>
+                          <div class="nubank-row-desc">Logado neste navegador (Windows)</div>
+                        </div>
+                      </div>
+                      <div class="nubank-row-value">
+                        <button id="logoutAllSessionsBtn" class="btn btn-danger btn-sm" style="font-size: 0.7rem; padding: 0.25rem 0.5rem;">Desconectar Todos</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 4. Seção: Chaves & Multi-Tenancy (API) -->
+              <div class="nubank-section-card">
+                <div class="nubank-section-header">
+                  <span>Identificação & Chaves de Acesso (Multi-Tenant)</span>
+                </div>
+                <div class="nubank-menu-list">
+                  <div class="nubank-menu-row">
+                    <div class="nubank-row-left">
+                      <div class="nubank-row-icon">🏢</div>
+                      <div>
+                        <div class="nubank-row-label">Consumer Ativo (Tenant)</div>
+                        <div class="nubank-row-desc">Schema isolado no banco de dados</div>
+                      </div>
+                    </div>
+                    <div class="nubank-row-value" style="color: var(--bank-gold-light);">Fintech Startup (tenant_fintech)</div>
+                  </div>
+
+                  <div class="nubank-menu-row">
+                    <div class="nubank-row-left">
+                      <div class="nubank-row-icon">🔑</div>
+                      <div>
+                        <div class="nubank-row-label">Chave de API (X-API-Key)</div>
+                        <div class="nubank-row-desc">Identificador do Consumer na API</div>
+                      </div>
+                    </div>
+                    <div class="nubank-row-value" id="profileApiKeyVal">fintech-startup-key-12345</div>
+                  </div>
+
+                  <div class="nubank-menu-row" style="flex-direction: column; align-items: flex-start; gap: 0.5rem;">
+                    <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                      <div class="nubank-row-left">
+                        <div class="nubank-row-icon">🛡️</div>
+                        <div>
+                          <div class="nubank-row-label">Bearer Token JWT</div>
+                          <div class="nubank-row-desc">Token de autenticação de sessão</div>
+                        </div>
+                      </div>
+                      <button id="copyJwtTokenBtn" class="btn btn-secondary btn-sm" style="font-size: 0.75rem;">📋 Copiar</button>
+                    </div>
+                    <div id="profileJwtDisplay" style="font-family: var(--font-mono); font-size: 0.725rem; color: var(--text-muted); word-break: break-all; width: 100%; background: rgba(0,0,0,0.3); padding: 0.6rem; border-radius: var(--radius-sm);">
+                      Carregando token...
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 5. Seção: Ajuda e Encerrar Sessão -->
+              <div class="nubank-section-card">
+                <div class="nubank-menu-list">
+                  <div class="nubank-menu-row" style="cursor: pointer;" onclick="alert('Central de Atendimento 24h LãoBank: 0800 700 2026.');">
+                    <div class="nubank-row-left">
+                      <div class="nubank-row-icon">❓</div>
+                      <div>
+                        <div class="nubank-row-label">Me Ajuda / Central 24h</div>
+                        <div class="nubank-row-desc">Tire dúvidas sobre sua conta e cartões</div>
+                      </div>
+                    </div>
+                    <div style="color: var(--text-muted);">❯</div>
+                  </div>
+
+                  <div class="nubank-menu-row" style="cursor: pointer;" id="profileLogoutBtn">
+                    <div class="nubank-row-left">
+                      <div class="nubank-row-icon" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;">🚪</div>
+                      <div>
+                        <div class="nubank-row-label" style="color: #ef4444;">Encerrar Sessão</div>
+                        <div class="nubank-row-desc">Sair da sua conta neste dispositivo</div>
+                      </div>
+                    </div>
+                    <div style="color: #ef4444;">❯</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+        </main>
+      </div>
+
+      <!-- ====================================================================
+           MOBILE BOTTOM NAVIGATION BAR
+           ==================================================================== -->
+      <nav class="mobile-bottom-bar">
+        <button class="mobile-tab-btn active" data-tab="home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <span>Conta</span>
+        </button>
+        <button class="mobile-tab-btn" data-tab="pix">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          <span>Pix</span>
+        </button>
+        <button class="mobile-tab-btn" data-tab="cards">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+          <span>Cartões</span>
+        </button>
+        <button class="mobile-tab-btn" data-tab="loans">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          <span>Empréstimo</span>
+        </button>
+        <button class="mobile-tab-btn" data-tab="profile">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <span>Perfil</span>
+        </button>
+      </nav>
+
+    </div>
+  </div>
+
+
+  <!-- ========================================================================
+       FLOATING ACTION BUTTON & DRAWER DO API INSPECTOR (DEV CONSOLE)
+       ======================================================================== -->
+  <button id="inspectorFabBtn" class="inspector-fab" title="Abrir Console do API Inspector">
+    <span>⚡</span>
+    <span>API Inspector</span>
+    <span id="fabReqCount" class="badge badge-primary" style="font-size: 0.65rem; padding: 0.1rem 0.35rem;">0</span>
+  </button>
+
+  <div id="inspectorDrawer" class="inspector-drawer">
+    <div class="inspector-header">
+      <div class="inspector-meta">
+        <span class="inspector-title">⚡ API INSPECTOR (LIVE)</span>
+        <span id="inspectorMethod" class="http-method method-get">GET</span>
+        <span id="inspectorUrl" class="http-url">/api/health</span>
+        <span id="inspectorStatusBadge" class="inspector-status-badge status-success">✓ 200 OK</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span id="inspectorLatency" style="font-size: 0.75rem; font-family: var(--font-mono); color: var(--text-secondary);">⏱️ 0ms</span>
+        <button id="closeInspectorBtn" class="bank-icon-btn" style="width: 28px; height: 28px;">✕</button>
+      </div>
+    </div>
+
+    <div class="inspector-toolbar">
+      <div class="inspector-tabs">
+        <button class="inspector-tab-btn active" data-view="response">📄 Resposta</button>
+        <button class="inspector-tab-btn" data-view="request">📤 Requisição</button>
+        <button class="inspector-tab-btn" data-view="history">📜 Histórico</button>
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <button id="copyInspectorBtn" class="btn btn-secondary btn-sm" style="padding: 0.2rem 0.6rem; font-size: 0.75rem;">📋 Copiar</button>
+        <button id="clearInspectorBtn" class="btn btn-secondary btn-sm" style="padding: 0.2rem 0.6rem; font-size: 0.75rem;">🗑️ Limpar</button>
+      </div>
+    </div>
+
+    <div id="inspectorBody" class="inspector-body">
+      <div id="inspectorViewResponse" class="inspector-view active">
+        <pre id="inspectorResponsePre"></pre>
+      </div>
+      <div id="inspectorViewRequest" class="inspector-view" style="display: none;">
+        <pre id="inspectorRequestPre"></pre>
+      </div>
+      <div id="inspectorViewHistory" class="inspector-view" style="display: none;">
+        <div id="inspectorHistoryList" style="display: flex; flex-direction: column; gap: 0.4rem;"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal Pagamento de Fatura -->
+  <div id="invoicePaymentModal" class="modal-backdrop">
+    <div class="modal-card" style="max-width: 450px;">
+      <div class="modal-header">
+        <h3 class="modal-title">💳 Pagamento de Fatura</h3>
+        <button class="bank-icon-btn modal-close" data-modal-close>✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+          <div style="font-size: 0.85rem; color: var(--text-secondary);">Valor da Fatura Fechada</div>
+          <div style="font-size: 2rem; font-weight: 800; color: #f87171;">R$ 2.975,00</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">Vencimento em 10 de Setembro</div>
+        </div>
+        
+        <form id="invoicePaymentForm">
+          <div class="form-group">
+            <label class="form-label">Selecione o Método de Pagamento</label>
+            
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
+              <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--bank-border-soft); border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s;">
+                <input type="radio" name="invoicePayMethod" value="ACCOUNT_BALANCE" checked>
+                <div style="flex: 1;">
+                  <div style="font-weight: 600; font-size: 0.95rem;">Saldo em Conta</div>
+                  <div style="font-size: 0.8rem; color: var(--status-success);">Disponível: <span id="modalCurrentBalance">R$ 7.500,00</span></div>
+                </div>
+              </label>
+              
+              <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--bank-border-soft); border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s; opacity: 0.7;">
+                <input type="radio" name="invoicePayMethod" value="PIX">
+                <div style="flex: 1;">
+                  <div style="font-weight: 600; font-size: 0.95rem;">Pix (QR Code)</div>
+                  <div style="font-size: 0.8rem; color: var(--text-secondary);">Pagamento compensado na hora</div>
+                </div>
+              </label>
+              
+              <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--bank-border-soft); border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s; opacity: 0.7;">
+                <input type="radio" name="invoicePayMethod" value="BOLETO">
+                <div style="flex: 1;">
+                  <div style="font-weight: 600; font-size: 0.95rem;">Gerar Boleto Bancário</div>
+                  <div style="font-size: 0.8rem; color: var(--text-secondary);">Compensação em até 3 dias úteis</div>
+                </div>
+              </label>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Confirmar Pagamento</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <style>
+    /* Custom Toggle Switch Interaction */
+    #toggle2FA:checked + span { background-color: var(--status-success); }
+    #toggle2FA:checked ~ .toggle-slider-knob { transform: translateX(20px); }
+  </style>
+
+
+  <!-- Toast Notifications -->
   <div id="toastContainer" class="toast-container"></div>
 
-  <!-- Scripts -->
+  <!-- App Bootstrap Scripts -->
   <script type="module" src="js/app.js"></script>
 </body>
 </html>

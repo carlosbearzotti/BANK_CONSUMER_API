@@ -1,16 +1,21 @@
-import { urlService } from './services/urlService.js';
-import { state } from './state.js';
+import { urlService } from '../services/urlService.js';
+import { state } from '../lib/state.js';
+import { utils } from '../lib/utils.js';
+import { toast } from '../ui/toast.js';
 
-export const shortenerModule = {
-  init(showToast) {
+/**
+ * Módulo de Cobranças, Links e Campanha CDB (Padrão Cortex Feature)
+ */
+export const shortenerFeature = {
+  init() {
     const form = document.getElementById('shortenerForm');
     const resultBox = document.getElementById('shortResultBox');
     const shortUrlDisplay = document.getElementById('shortUrlDisplay');
     const copyBtn = document.getElementById('copyShortUrlBtn');
     const statsBtn = document.getElementById('checkStatsBtn');
     const statsResult = document.getElementById('shortStatsResult');
-
     const generateCdbBtn = document.getElementById('generateCdbLinkBtn');
+
     let currentShortCode = null;
 
     if (generateCdbBtn) {
@@ -29,9 +34,9 @@ export const shortenerModule = {
           const statsCodeInput = document.getElementById('statsCodeInput');
           if (statsCodeInput) statsCodeInput.value = code;
 
-          showToast('🎁 Link exclusivo da Campanha CDB gerado com sucesso!', 'success');
+          toast.success('🎁 Link exclusivo da Campanha CDB gerado com sucesso!');
         } catch (err) {
-          showToast(`Erro ao gerar link da campanha: ${err.message}`, 'error');
+          toast.error(`Erro ao gerar link da campanha: ${err.message}`);
         }
       });
     }
@@ -39,11 +44,15 @@ export const shortenerModule = {
     if (form) {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const url = document.getElementById('originalUrlInput').value.trim();
+        const url = document.getElementById('originalUrlInput')?.value.trim();
+
+        if (!url) {
+          toast.warning('Informe a URL para encurtar.');
+          return;
+        }
 
         try {
           const res = await urlService.shorten(url);
-
           const code = res.shortCode || res.code || (res.shortUrl ? res.shortUrl.split('/').pop() : '');
           currentShortCode = code;
           const fullShortUrl = `${state.baseUrl}/${code}`;
@@ -52,27 +61,28 @@ export const shortenerModule = {
           if (resultBox) resultBox.style.display = 'flex';
           if (statsResult) statsResult.innerHTML = '';
 
-          showToast('Link LãoBank encurtado com sucesso!', 'success');
+          toast.success('Link de cobrança encurtado com sucesso!');
         } catch (err) {
-          showToast(`Erro ao encurtar URL: ${err.message}`, 'error');
+          toast.error(`Erro ao encurtar link: ${err.message}`);
         }
       });
     }
 
     if (copyBtn) {
-      copyBtn.addEventListener('click', () => {
-        if (shortUrlDisplay && shortUrlDisplay.textContent) {
-          navigator.clipboard.writeText(shortUrlDisplay.textContent);
-          showToast('Link copiado para a área de transferência!', 'success');
+      copyBtn.addEventListener('click', async () => {
+        const text = shortUrlDisplay?.textContent;
+        if (text) {
+          await utils.copyToClipboard(text);
+          toast.success('Link copiado para a área de transferência!');
         }
       });
     }
 
     if (statsBtn) {
       statsBtn.addEventListener('click', async () => {
-        const inputCode = document.getElementById('statsCodeInput').value.trim() || currentShortCode;
+        const inputCode = document.getElementById('statsCodeInput')?.value.trim() || currentShortCode;
         if (!inputCode) {
-          showToast('Informe o código da URL para consultar as métricas!', 'warning');
+          toast.warning('Informe o código do link para consultar as métricas.');
           return;
         }
 
@@ -80,17 +90,16 @@ export const shortenerModule = {
           const stats = await urlService.getStats(inputCode);
           if (statsResult) {
             statsResult.innerHTML = `
-              <div style="margin-top: 1rem; padding: 1rem; background: rgba(255,255,255,0.02); border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.85rem;">
+              <div style="margin-top: 1rem; padding: 1rem; background: rgba(255,255,255,0.02); border: 1px solid var(--bank-border-soft); border-radius: var(--radius-md); font-family: var(--font-mono); font-size: 0.85rem;">
                 <div><strong>Código:</strong> ${stats.shortCode || inputCode}</div>
-                <div><strong>URL Original:</strong> <a href="${stats.originalUrl}" target="_blank" style="color: #f87171;">${stats.originalUrl}</a></div>
-                <div><strong>Acessos Totais:</strong> <span class="badge badge-primary">${stats.accessCount ?? stats.clicks ?? 0}</span></div>
-                <div><strong>Expira em:</strong> ${stats.expiresAt ? new Date(stats.expiresAt).toLocaleDateString() : '30 dias'}</div>
+                <div style="margin: 0.35rem 0; word-break: break-all;"><strong>URL Original:</strong> <a href="${stats.originalUrl}" target="_blank" style="color: var(--status-info);">${stats.originalUrl}</a></div>
+                <div><strong>Total de Cliques:</strong> <span class="badge badge-success">${stats.accessCount ?? stats.clicks ?? 0} acessos</span></div>
               </div>
             `;
           }
-          showToast('Métricas carregadas!', 'success');
+          toast.info('Métricas carregadas.');
         } catch (err) {
-          showToast(`Erro ao consultar estatísticas: ${err.message}`, 'error');
+          toast.error(`Erro ao consultar métricas: ${err.message}`);
         }
       });
     }
