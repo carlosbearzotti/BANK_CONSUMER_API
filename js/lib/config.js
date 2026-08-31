@@ -13,9 +13,9 @@ export const STORAGE_KEYS = {
 
 export const DEFAULT_CONFIG = {
   BASE_URL: 'http://localhost:8080',
-  API_KEY: 'fintech-startup-key-12345',
-  TENANT_NAME: 'Fintech Startup',
-  TENANT_SCHEMA: 'tenant_fintech'
+  API_KEY: 'laobank-digital-key-99999',
+  TENANT_NAME: 'LãoBank Digital Banking',
+  TENANT_SCHEMA: 'tenant_laobank'
 };
 
 export const TRANSACTION_TYPE_CONFIG = {
