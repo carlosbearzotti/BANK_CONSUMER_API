@@ -134,19 +134,36 @@ export const profileFeature = {
 
   setupLogout() {
     const handleLogout = () => {
+      // 1. Limpa estado e LocalStorage
       state.setAuth(null, null);
+
+      // 2. Garante que a tela de auth volte para o formulário de LOGIN
+      const loginForm = document.getElementById('gmailLoginForm');
+      const registerForm = document.getElementById('gmailRegisterForm');
+      const cardTitle = document.getElementById('authCardTitle');
+      const cardSubtitle = document.getElementById('authCardSubtitle');
+
+      if (loginForm && registerForm) {
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+        loginForm.reset();
+        registerForm.reset();
+      }
+
+      if (cardTitle) cardTitle.textContent = 'Fazer login';
+      if (cardSubtitle) cardSubtitle.textContent = 'Use sua Conta LãoBank para acessar os serviços bancários';
+
       toast.info('Sessão encerrada com segurança.');
     };
 
     document.getElementById('bankLogoutBtn')?.addEventListener('click', handleLogout);
     document.getElementById('profileLogoutBtn')?.addEventListener('click', handleLogout);
     
-    // Novas funcionalidades de segurança
+    // Funcionalidades de segurança
     const logoutAllBtn = document.getElementById('logoutAllSessionsBtn');
     if (logoutAllBtn) {
       logoutAllBtn.addEventListener('click', () => {
-        toast.info('Revogando tokens JWT de outros dispositivos na API...');
-        setTimeout(() => toast.success('Todas as outras sessões foram desconectadas com sucesso!'), 1000);
+        handleLogout();
       });
     }
 
@@ -154,9 +171,9 @@ export const profileFeature = {
     if (toggle2FA) {
       toggle2FA.addEventListener('change', (e) => {
         if (e.target.checked) {
-          toast.success('Autenticação de Dois Fatores (2FA) habilitada! O próximo login exigirá código SMS.');
+          toast.success('Autenticação de Dois Fatores (2FA) habilitada!');
         } else {
-          toast.warning('2FA desabilitado. Sua conta está menos segura.');
+          toast.warning('2FA desabilitado.');
         }
       });
     }
@@ -171,7 +188,7 @@ export const profileFeature = {
 
   refreshUI() {
     const user = state.user;
-    const name = user?.name || 'Carlos Silva';
+    const name = user?.name || 'Cliente';
     const initial = name.charAt(0).toUpperCase();
 
     // Top Header & Credit Card
@@ -197,14 +214,14 @@ export const profileFeature = {
     if (profileHeroName) profileHeroName.textContent = name;
     if (profileAvatarLarge) profileAvatarLarge.textContent = initial;
     if (profileNameVal) profileNameVal.textContent = name;
-    if (profileEmailVal) profileEmailVal.textContent = user?.email || 'carlos@exemplo.com';
-    if (profileCpfVal) profileCpfVal.textContent = utils.formatCPF(user?.cpf || '12345678900');
-    if (profileIncomeVal) profileIncomeVal.textContent = utils.formatCurrency(user?.income || 7500);
+    if (profileEmailVal) profileEmailVal.textContent = user?.email || '-';
+    if (profileCpfVal) profileCpfVal.textContent = user?.cpf ? utils.formatCPF(user.cpf) : '-';
+    if (profileIncomeVal) profileIncomeVal.textContent = user?.income ? utils.formatCurrency(user.income) : utils.formatCurrency(0);
 
-    const ageStr = user?.age ? `${user.age} anos` : '29 anos';
-    const lat = user?.latitude || -23.5505;
-    const lng = user?.longitude || -46.6333;
-    if (profileGeoVal) profileGeoVal.textContent = `${ageStr} • (${lat}, ${lng})`;
+    const ageStr = user?.age ? `${user.age} anos` : '';
+    const lat = user?.latitude != null ? user.latitude.toFixed(4) : '';
+    const lng = user?.longitude != null ? user.longitude.toFixed(4) : '';
+    if (profileGeoVal) profileGeoVal.textContent = lat && lng ? `${ageStr} • (${lat}, ${lng})` : ageStr;
 
     if (profileApiKeyVal) profileApiKeyVal.textContent = state.apiKey;
     if (profileJwtDisplay) profileJwtDisplay.textContent = state.token || 'Nenhum token ativo';

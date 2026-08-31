@@ -87,13 +87,6 @@
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </button>
           </div>
-
-          <!-- Quick Fill Demo Pills -->
-          <div class="google-demo-pills">
-            <span style="font-size: 0.75rem; color: var(--text-muted); width: 100%;">Preenchimento rápido para testes:</span>
-            <button type="button" class="google-demo-pill" id="demoUserPill">👤 Preencher carlos@exemplo.com</button>
-            <button type="button" class="google-demo-pill" id="demoAutoLoginPill" style="background: rgba(197,160,89,0.15); border-color: var(--bank-gold); color: #ffffff;">🚀 1-Clique: Criar & Entrar no LãoBank</button>
-          </div>
         </form>
 
         <!-- 2. REGISTER FORM (GOOGLE STYLE) -->
@@ -141,18 +134,27 @@
               <input type="number" id="regAge" class="google-input" placeholder=" " required>
               <label class="google-label" for="regAge">Idade</label>
             </div>
-            <div style="display: flex; gap: 0.5rem; align-items: center;">
-              <div class="google-field" style="flex: 1; margin-bottom: 0;">
-                <input type="number" id="regLat" class="google-input" step="any" placeholder=" ">
-                <label class="google-label" for="regLat">Lat</label>
-              </div>
-              <div class="google-field" style="flex: 1; margin-bottom: 0;">
-                <input type="number" id="regLng" class="google-input" step="any" placeholder=" ">
-                <label class="google-label" for="regLng">Lng</label>
-              </div>
-              <button type="button" id="getGeoBtn" class="btn btn-secondary btn-sm" title="Usar localização atual" style="padding: 0.85rem 0.6rem;">📍</button>
+            <div class="google-field">
+              <input type="text" id="regCep" class="google-input" placeholder=" " maxlength="9" required>
+              <label class="google-label" for="regCep">CEP (ex: 01310-100)</label>
+              <button type="button" id="searchCepBtn" class="google-input-action" title="Buscar Endereço e Coordenadas GPS">
+                🔍
+              </button>
             </div>
           </div>
+
+          <!-- Caixa de Endereço e GPS Resolvido Gratuitamente -->
+          <div id="addressResultBox" style="display: none; background: rgba(255,255,255,0.04); border: 1px solid rgba(197,160,89,0.3); border-radius: 8px; padding: 0.75rem 1rem; margin-top: -0.5rem; margin-bottom: 1.25rem; font-size: 0.8rem; color: #ffffff;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+              <span style="font-weight: 700; color: var(--bank-gold-light);" id="resolvedStreetText">📍 Localização Encontrada</span>
+              <span class="badge badge-emerald" id="geoResolvedBadge">GPS Gratuito (OpenStreetMap)</span>
+            </div>
+            <div id="resolvedDetailsText" style="color: var(--text-secondary); font-size: 0.75rem;">Carregando dados...</div>
+          </div>
+
+          <!-- Campos de Coordenadas Preenchidos Automaticamente em Background -->
+          <input type="hidden" id="regLat" value="-23.5505">
+          <input type="hidden" id="regLng" value="-46.6333">
 
           <div class="google-auth-actions" style="margin-top: 1.5rem;">
             <button type="button" id="switchToLoginBtn" class="google-btn-text">Fazer login em vez disso</button>
@@ -194,26 +196,28 @@
       <header class="bank-header">
         <div class="bank-header-inner">
           <div style="display: flex; align-items: center; gap: 1.25rem;">
-            <!-- LãoBank Brand Badge -->
-            <div style="display: flex; align-items: center; gap: 0.5rem; padding-right: 1rem; border-right: 1px solid var(--bank-border-subtle);">
-              <svg class="bank-classic-logo" style="width: 28px; height: 28px;" viewBox="0 0 64 64" fill="none">
-                <path d="M32 6L4 22H60L32 6Z" fill="url(#classicGoldGrad)" stroke="#c5a059" stroke-width="1.5"/>
-                <rect x="8" y="24" width="48" height="4" fill="url(#classicGoldGrad)" />
-                <rect x="12" y="30" width="6" height="20" fill="url(#classicGoldGrad)" />
-                <rect x="23" y="30" width="6" height="20" fill="url(#classicGoldGrad)" />
-                <rect x="35" y="30" width="6" height="20" fill="url(#classicGoldGrad)" />
-                <rect x="46" y="30" width="6" height="20" fill="url(#classicGoldGrad)" />
-                <rect x="6" y="52" width="52" height="4" fill="url(#classicGoldGrad)" />
-                <rect x="2" y="58" width="60" height="4" fill="url(#classicGoldGrad)" />
+            <!-- LãoBank Brand Badge (Apenas Telhado Clássico) -->
+            <div style="display: flex; align-items: center; gap: 0.6rem; padding-right: 1rem; border-right: 1px solid var(--bank-border-subtle);">
+              <svg style="width: 26px; height: 20px;" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16 2L2 13H30L16 2Z" fill="url(#roofGoldGrad)" stroke="#c5a059" stroke-width="1.2" stroke-linejoin="round"/>
+                <rect x="3" y="14.5" width="26" height="2.5" rx="0.5" fill="url(#roofGoldGrad)" />
+                <circle cx="16" cy="8.8" r="1.8" fill="#080c16" stroke="#dfb76c" stroke-width="0.8"/>
+                <defs>
+                  <linearGradient id="roofGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#F5ECD5" />
+                    <stop offset="50%" stop-color="#C5A059" />
+                    <stop offset="100%" stop-color="#8E6C2B" />
+                  </linearGradient>
+                </defs>
               </svg>
               <span style="font-family: 'Cinzel', serif; font-weight: 800; font-size: 1.1rem; background: var(--bank-gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">LãoBank Digital</span>
             </div>
 
             <div class="bank-user-profile" id="userProfileTrigger" title="Ver Perfil" style="cursor: pointer;">
-              <div id="bankUserAvatar" class="bank-avatar" style="background: var(--bank-gold-gradient); color: #080c16; font-weight: 800;">C</div>
+              <div id="bankUserAvatar" class="bank-avatar" style="background: var(--bank-gold-gradient); color: #080c16; font-weight: 800;">U</div>
               <div class="bank-user-info">
-                <h3 id="bankUserName">Olá, Carlos Silva</h3>
-                <span class="bank-account-badge" style="color: var(--bank-gold-light);">Ag: 0001 &bull; CC: 104829-4</span>
+                <h3 id="bankUserName">Olá, Correntista</h3>
+                <span class="bank-account-badge" style="color: var(--bank-gold-light);">Ag: 0001 &bull; Conta Digital</span>
               </div>
             </div>
           </div>
@@ -401,7 +405,7 @@
                       <div class="card-meta-row">
                         <div>
                           <div style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase;">Titular</div>
-                          <div class="card-holder-name" id="cardFrontHolder">CARLOS SILVA</div>
+                          <div class="card-holder-name" id="cardFrontHolder">TITULAR DA CONTA</div>
                         </div>
                         <div>
                           <div style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase;">Validade</div>
@@ -712,7 +716,16 @@
 
                   <!-- Search Nearby Form -->
                   <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--bank-border-soft); border-radius: var(--radius-lg); padding: 1.25rem;">
-                    <div style="font-size: 0.85rem; font-weight: 700; color: var(--status-info); margin-bottom: 0.85rem;">🎯 Busca por Raio de Proximidade</div>
+                    <div style="font-size: 0.85rem; font-weight: 700; color: var(--status-info); margin-bottom: 0.85rem;">🎯 Busca por Raio e CEP (Gratuito)</div>
+                    
+                    <div style="margin-bottom: 0.85rem;">
+                      <label class="form-label" for="poiCepInput" style="font-size: 0.78rem;">Buscar pelo seu CEP / Endereço:</label>
+                      <div style="display: flex; gap: 0.4rem;">
+                        <input type="text" id="poiCepInput" class="form-control" placeholder="Ex: 01310-100 (Av. Paulista)" style="font-size: 0.82rem;">
+                        <button type="button" id="poiCepSearchBtn" class="btn btn-secondary btn-sm" style="white-space: nowrap;">🔍 Localizar</button>
+                      </div>
+                    </div>
+
                     <form id="poiSearchForm">
                       <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.6rem; margin-bottom: 1rem;">
                         <div class="form-group" style="margin-bottom: 0;">
@@ -728,7 +741,7 @@
                           <input type="number" id="searchDmax" class="form-control" value="10" required>
                         </div>
                       </div>
-                      <button type="submit" class="btn btn-gradient" style="width: 100%; margin-top: 1.65rem;">Buscar no Raio</button>
+                      <button type="submit" class="btn btn-gradient" style="width: 100%;">Buscar Agências no Raio</button>
                     </form>
                   </div>
                 </div>
@@ -809,10 +822,10 @@
               
               <!-- 1. Hero do Perfil Nubank -->
               <div class="nubank-profile-hero">
-                <div id="profileAvatarLarge" class="nubank-avatar-large">C</div>
+                <div id="profileAvatarLarge" class="nubank-avatar-large">U</div>
                 <div class="nubank-user-meta">
-                  <h2 id="profileHeroName">Carlos Silva</h2>
-                  <div style="color: var(--text-secondary); font-size: 0.85rem;">Agência 0001 &bull; Conta 104829-4 &bull; Banco 077 LãoBank S.A.</div>
+                  <h2 id="profileHeroName">Correntista</h2>
+                  <div style="color: var(--text-secondary); font-size: 0.85rem;">Agência 0001 &bull; Conta Digital &bull; Banco 077 LãoBank S.A.</div>
                   <div class="nubank-badge-row">
                     <span class="nubank-pill nubank-pill-gold">★ Cliente Black Prestige</span>
                     <span class="nubank-pill nubank-pill-emerald">✓ Conta Verificada</span>
@@ -836,7 +849,7 @@
                         <div class="nubank-row-desc">Nome civil registrado na conta</div>
                       </div>
                     </div>
-                    <div class="nubank-row-value" id="profileNameVal">Carlos Silva</div>
+                    <div class="nubank-row-value" id="profileNameVal">-</div>
                   </div>
 
                   <div class="nubank-menu-row">
@@ -847,7 +860,7 @@
                         <div class="nubank-row-desc">Utilizado para acesso e notificações</div>
                       </div>
                     </div>
-                    <div class="nubank-row-value" id="profileEmailVal">carlos@exemplo.com</div>
+                    <div class="nubank-row-value" id="profileEmailVal">-</div>
                   </div>
 
                   <div class="nubank-menu-row">
@@ -1199,7 +1212,7 @@
           <form id="forgotPasswordForm">
             <div class="form-group" style="margin-bottom: 1.25rem;">
               <label class="form-label" for="recoveryEmail">Seu E-mail Cadastrado</label>
-              <input type="email" id="recoveryEmail" class="form-control" placeholder="carlos@exemplo.com" required>
+              <input type="email" id="recoveryEmail" class="form-control" placeholder="seu-email@dominio.com" required>
             </div>
             <button type="submit" id="sendRecoveryCodeBtn" class="btn btn-primary" style="width: 100%;">
               <span>Enviar Código por E-mail</span>

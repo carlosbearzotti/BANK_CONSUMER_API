@@ -90,6 +90,90 @@ export const gpsFeature = {
       });
     }
 
+    const poiCepInput = document.getElementById('poiCepInput');
+    const poiCepBtn = document.getElementById('poiCepSearchBtn');
+
+    if (poiCepBtn && poiCepInput) {
+      poiCepBtn.addEventListener('click', async () => {
+        const query = poiCepInput.value.trim();
+        if (!query) {
+          toast.warning('Informe um CEP ou endereço para localizar.');
+          return;
+        }
+
+        toast.info('Buscando localização por endereço...');
+        try {
+          const cleanCep = query.replace(/\D/g, '');
+          let lat = null;
+          let lng = null;
+
+          if (cleanCep.length === 8) {
+            // 1. AwesomeAPI (Mais rápida com coordenadas diretas)
+            try {
+              const aRes = await fetch(`https://cep.awesomeapi.com.br/json/${cleanCep}`);
+              if (aRes.ok) {
+                const aData = await aRes.json();
+                if (aData.lat && aData.lng) {
+                  lat = parseFloat(aData.lat);
+                  lng = parseFloat(aData.lng);
+                }
+              }
+            } catch {}
+
+            // 2. ViaCEP + OpenStreetMap
+            if (!lat || !lng) {
+              try {
+                const vRes = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
+                if (vRes.ok) {
+                  const vData = await vRes.json();
+                  if (!vData.erro) {
+                    const q = encodeURIComponent(`${vData.logradouro || ''}, ${vData.localidade || ''}, ${vData.uf || ''}, Brasil`);
+                    const osmRes = await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`);
+                    if (osmRes.ok) {
+                      const osmData = await osmRes.json();
+                      if (osmData && osmData.length > 0) {
+                        lat = parseFloat(osmData[0].lat);
+                        lng = parseFloat(osmData[0].lon);
+                      }
+                    }
+                  }
+                }
+              } catch {}
+            }
+          }
+
+          // 3. Busca por texto livre (rua, bairro, cidade) via OpenStreetMap Nominatim
+          if (!lat || !lng) {
+            const osmRes = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query + ', Brasil')}&format=json&limit=1`);
+            const osmData = await osmRes.json();
+            if (osmData && osmData.length > 0) {
+              lat = parseFloat(osmData[0].lat);
+              lng = parseFloat(osmData[0].lon);
+            }
+          }
+
+          if (lat && lng) {
+            // Mapeia coordenadas geográficas relativas para a grade do radar local
+            const refX = Math.abs(Math.round((lng + 46.63) * 100)) % 50;
+            const refY = Math.abs(Math.round((lat + 23.55) * 100)) % 50;
+
+            const searchX = document.getElementById('searchX');
+            const searchY = document.getElementById('searchY');
+            if (searchX) searchX.value = refX;
+            if (searchY) searchY.value = refY;
+
+            toast.success(`Endereço localizado! Ref: (${refX}, ${refY})`);
+            searchForm?.dispatchEvent(new Event('submit'));
+          } else {
+            toast.warning('Endereço não localizado com precisão. Usando ponto central.');
+            searchForm?.dispatchEvent(new Event('submit'));
+          }
+        } catch (err) {
+          toast.error('Erro na geolocalização: ' + err.message);
+        }
+      });
+    }
+
     if (refreshBtn) {
       refreshBtn.addEventListener('click', () => {
         this.searchCircle = null;

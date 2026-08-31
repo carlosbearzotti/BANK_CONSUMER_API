@@ -9,7 +9,7 @@ export const authFeature = {
   init() {
     this.setupLoginForm();
     this.setupRegisterForm();
-    this.setupDemoButtons();
+    this.setupCepLookup();
     this.setupViewToggles();
     this.setupPasswordToggles();
     this.setupPasswordRecovery();
@@ -91,25 +91,6 @@ export const authFeature = {
       });
     }
 
-    // Geolocalização
-    const geoBtn = document.getElementById('getGeoBtn');
-    if (geoBtn) {
-      geoBtn.addEventListener('click', () => {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            (pos) => {
-              const latInput = document.getElementById('regLat');
-              const lngInput = document.getElementById('regLng');
-              if (latInput) latInput.value = pos.coords.latitude.toFixed(4);
-              if (lngInput) lngInput.value = pos.coords.longitude.toFixed(4);
-              toast.success('Geolocalização obtida!');
-            },
-            () => toast.warning('Não foi possível obter a localização.')
-          );
-        }
-      });
-    }
-
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = document.getElementById('regName')?.value.trim();
@@ -134,17 +115,30 @@ export const authFeature = {
 
       try {
         await authService.register(payload);
-        toast.success('Conta bancária criada com sucesso!');
+        toast.success('Conta bancária criada com sucesso! Faça login com suas credenciais.');
 
-        // Login automático após cadastro
-        try {
-          const loginRes = await authService.login({ email, password });
-          const token = loginRes.token || loginRes.accessToken;
-          state.setAuth(token, payload);
-        } catch {
-          document.getElementById('switchToLoginBtn')?.click();
-          const loginEmail = document.getElementById('loginEmail');
-          if (loginEmail) loginEmail.value = email;
+        // Disparo assíncrono de e-mail de boas-vindas / cartão emitido (Porta 3002)
+        fetch('http://localhost:3002/api/notify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            to: email,
+            name: name,
+            template: 'card_issued',
+            last4: '8824',
+            deliveryDays: 7,
+            subject: '💳 Seu Cartão LãoBank foi emitido! Físico em até 7 dias e Virtual liberado'
+          })
+        }).catch(() => {});
+
+        // Redireciona para o modo "Fazer login" de forma limpa
+        document.getElementById('switchToLoginBtn')?.click();
+        const loginEmail = document.getElementById('loginEmail');
+        const loginPass = document.getElementById('loginPassword');
+        if (loginEmail) loginEmail.value = email;
+        if (loginPass) {
+          loginPass.value = '';
+          loginPass.focus();
         }
       } catch (err) {
         const failures = err.data?.failures ? ` (${err.data.failures.join(', ')})` : '';
@@ -153,64 +147,149 @@ export const authFeature = {
     });
   },
 
-  setupDemoButtons() {
-    const demoUser = document.getElementById('demoUserPill');
-    const demoAutoLogin = document.getElementById('demoAutoLoginPill');
+  setupCepLookup() {
+    const cepInput = document.getElementById('regCep');
+    const searchBtn = document.getElementById('searchCepBtn');
+    const resultBox = document.getElementById('addressResultBox');
+    const streetText = document.getElementById('resolvedStreetText');
+    const detailsText = document.getElementById('resolvedDetailsText');
+    const latInput = document.getElementById('regLat');
+    const lngInput = document.getElementById('regLng');
 
-    if (demoUser) {
-      demoUser.addEventListener('click', () => {
-        const email = document.getElementById('loginEmail');
-        const pass = document.getElementById('loginPassword');
-        if (email) email.value = 'carlos@exemplo.com';
-        if (pass) pass.value = 'SenhaForte@2026!';
-        toast.info('Credenciais de Carlos preenchidas.');
-      });
-    }
+    if (!cepInput) return;
 
-    if (demoAutoLogin) {
-      demoAutoLogin.addEventListener('click', async () => {
-        const email = 'carlos@exemplo.com';
-        const password = 'SenhaForte@2026!';
-        try {
-          const res = await authService.login({ email, password });
-          const token = res.token || res.accessToken;
-          state.setAuth(token, {
-            id: res.userId || 1,
-            name: res.name || 'Carlos Silva',
-            email: res.email || email,
-            cpf: '123.456.789-00',
-            income: 7500,
-            age: 29
-          });
-          toast.success('Acesso rápido 1-Clique autenticado!');
-        } catch {
-          // Se não existir, registra e loga
-          try {
-            await authService.register({
-              name: 'Carlos Silva',
-              email,
-              cpf: '12345678900',
-              password,
-              income: 7500.0,
-              age: 29,
-              latitude: -23.5505,
-              longitude: -46.6333
-            });
-            const res = await authService.login({ email, password });
-            state.setAuth(res.token, {
-              id: res.userId || 1,
-              name: res.name || 'Carlos Silva',
-              email,
-              cpf: '123.456.789-00',
-              income: 7500,
-              age: 29
-            });
-            toast.success('Conta criada e autenticada com sucesso!');
-          } catch (err) {
-            toast.error(`Falha no acesso rápido: ${err.message}`);
-          }
+    // Máscara 00000-000
+    cepInput.addEventListener('input', (e) => {
+      let v = e.target.value.replace(/\D/g, '');
+      if (v.length > 5) {
+        v = v.substring(0, 5) + '-' + v.substring(5, 8);
+      }
+      e.target.value = v;
+
+      const clean = v.replace(/\D/g, '');
+      if (clean.length === 8) {
+        this.resolveAddressAndGps(clean);
+      }
+    });
+
+    if (searchBtn) {
+      searchBtn.addEventListener('click', () => {
+        const clean = cepInput.value.replace(/\D/g, '');
+        if (clean.length === 8) {
+          this.resolveAddressAndGps(clean);
+        } else {
+          toast.warning('Digite um CEP válido com 8 dígitos.');
         }
       });
+    }
+  },
+
+  async resolveAddressAndGps(cep) {
+    const resultBox = document.getElementById('addressResultBox');
+    const streetText = document.getElementById('resolvedStreetText');
+    const detailsText = document.getElementById('resolvedDetailsText');
+    const latInput = document.getElementById('regLat');
+    const lngInput = document.getElementById('regLng');
+
+    if (resultBox) resultBox.style.display = 'block';
+    if (streetText) streetText.textContent = '🔍 Consultando Base de Endereços...';
+    if (detailsText) detailsText.textContent = 'Resolvendo endereço e coordenadas GPS gratuitas...';
+
+    const cleanCep = cep.replace(/\D/g, '');
+    let street = '';
+    let neighborhood = '';
+    let city = '';
+    let state = '';
+    let lat = null;
+    let lng = null;
+
+    try {
+      // 1. Tenta AwesomeAPI (Retorna endereço completo + Latitude/Longitude exata nativamente)
+      try {
+        const awesomeRes = await fetch(`https://cep.awesomeapi.com.br/json/${cleanCep}`);
+        if (awesomeRes.ok) {
+          const aData = await awesomeRes.json();
+          street = aData.address || aData.address_name || '';
+          neighborhood = aData.district || '';
+          city = aData.city || '';
+          state = aData.state || '';
+          if (aData.lat && aData.lng) {
+            lat = parseFloat(aData.lat);
+            lng = parseFloat(aData.lng);
+          }
+        }
+      } catch (e1) {
+        console.warn('AwesomeAPI falhou, tentando ViaCEP:', e1.message);
+      }
+
+      // 2. Se não pegou endereço, tenta ViaCEP (Base mais completa do Brasil)
+      if (!street || !city) {
+        try {
+          const viaRes = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
+          if (viaRes.ok) {
+            const vData = await viaRes.json();
+            if (!vData.erro) {
+              street = vData.logradouro || street;
+              neighborhood = vData.bairro || neighborhood;
+              city = vData.localidade || city;
+              state = vData.uf || state;
+            }
+          }
+        } catch (e2) {
+          console.warn('ViaCEP falhou, tentando BrasilAPI:', e2.message);
+        }
+      }
+
+      // 3. Se ainda faltar endereço, tenta BrasilAPI v1
+      if (!street || !city) {
+        try {
+          const bRes = await fetch(`https://brasilapi.com.br/api/cep/v1/${cleanCep}`);
+          if (bRes.ok) {
+            const bData = await bRes.json();
+            street = bData.street || street;
+            neighborhood = bData.neighborhood || neighborhood;
+            city = bData.city || city;
+            state = bData.state || state;
+          }
+        } catch (e3) {}
+      }
+
+      // 4. Se temos endereço/cidade mas não temos Lat/Lng, busca no OpenStreetMap Nominatim
+      if ((!lat || !lng) && city) {
+        try {
+          const q = encodeURIComponent(`${street ? street + ', ' : ''}${neighborhood ? neighborhood + ', ' : ''}${city}, ${state}, Brasil`);
+          const osmRes = await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`);
+          if (osmRes.ok) {
+            const osmData = await osmRes.json();
+            if (osmData && osmData.length > 0) {
+              lat = parseFloat(osmData[0].lat);
+              lng = parseFloat(osmData[0].lon);
+            }
+          }
+        } catch (e4) {
+          console.warn('Nominatim falhou:', e4.message);
+        }
+      }
+
+      if (!city && !street) {
+        throw new Error('CEP não localizado nas bases públicas.');
+      }
+
+      // Fallback seguro de coordenadas caso offline
+      lat = lat || -23.5505;
+      lng = lng || -46.6333;
+
+      if (latInput) latInput.value = lat;
+      if (lngInput) lngInput.value = lng;
+
+      if (streetText) streetText.textContent = `📍 ${street ? street : 'Região'}${neighborhood ? ' - ' + neighborhood : ''}`;
+      if (detailsText) detailsText.textContent = `${city} - ${state} | GPS: (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
+
+      toast.success(`Endereço localizado: ${city}/${state}!`);
+    } catch (err) {
+      if (streetText) streetText.textContent = '⚠️ CEP não identificado';
+      if (detailsText) detailsText.textContent = 'Coordenadas da região metropolitana aplicadas.';
+      toast.warning('CEP não identificado nas bases. Coordenadas padrão aplicadas.');
     }
   },
 
@@ -288,33 +367,15 @@ export const authFeature = {
         if (!recoveryEmail) return;
 
         try {
-          toast.info('Solicitando token de redefinição ao Integrados Core API...');
-          const res = await authService.forgotPassword(recoveryEmail);
+          toast.info('Solicitando redefinição de acesso ao Integrados Core API...');
+          await authService.forgotPassword(recoveryEmail);
 
-          // 1. Enviar pedido de disparo com o token para o consumerNotification (Middleware de E-mail)
-          try {
-            await fetch('http://localhost:3002/api/notify', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                to: recoveryEmail,
-                token: res.resetCode,
-                subject: 'Código de Recuperação de Senha - LãoBank Digital',
-                name: 'Cliente LãoBank',
-                template: 'password_reset'
-              })
-            });
-            console.log('📬 [LãoBank -> consumerNotification] E-mail com token despachado para:', recoveryEmail);
-          } catch (notifErr) {
-            console.warn('⚠️ consumerNotification offline ou inacessível:', notifErr.message);
-          }
-
-          toast.success(`Token de segurança gerado e enviado via e-mail para ${recoveryEmail}!`);
+          toast.success(`E-mail com token enviado para ${recoveryEmail}! Abra o Notify Hub (Porta 3002) para ver seu código.`);
           step1El.style.display = 'none';
           step2El.style.display = 'block';
           const codeInput = document.getElementById('recoveryCodeInput');
           if (codeInput) {
-            codeInput.value = res.resetCode || '';
+            codeInput.value = '';
             codeInput.focus();
           }
         } catch (err) {
