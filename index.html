@@ -77,7 +77,7 @@
           </div>
 
           <div style="margin-bottom: 1.5rem;">
-            <a href="#" id="forgotEmailLink" style="color: var(--bank-gold-light); font-size: 0.85rem; text-decoration: none; font-weight: 600;">Esqueceu seu e-mail ou CPF?</a>
+            <a href="#" id="forgotPasswordLink" style="color: var(--bank-gold-light); font-size: 0.85rem; text-decoration: none; font-weight: 600;">Esqueceu sua senha?</a>
           </div>
 
           <div class="google-auth-actions">
@@ -1177,6 +1177,66 @@
           
           <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Confirmar Pagamento</button>
         </form>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal Recuperação de Senha via E-mail (Sem CPF) -->
+  <div id="passwordRecoveryModal" class="modal-backdrop">
+    <div class="modal-card" style="max-width: 460px;">
+      <div class="modal-header">
+        <h3 class="modal-title">🔐 Recuperação de Acesso</h3>
+        <button class="bank-icon-btn modal-close" data-modal-close>✕</button>
+      </div>
+      <div class="modal-body">
+        
+        <!-- Passo 1: Informar E-mail -->
+        <div id="recoveryStep1">
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+            Informe o e-mail cadastrado na sua conta do <strong>LãoBank Digital</strong>. Enviaremos um código de verificação de 6 dígitos para redefinir sua senha.
+          </p>
+          <form id="forgotPasswordForm">
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+              <label class="form-label" for="recoveryEmail">Seu E-mail Cadastrado</label>
+              <input type="email" id="recoveryEmail" class="form-control" placeholder="carlos@exemplo.com" required>
+            </div>
+            <button type="submit" id="sendRecoveryCodeBtn" class="btn btn-primary" style="width: 100%;">
+              <span>Enviar Código por E-mail</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Passo 2: Digitar Código e Nova Senha -->
+        <div id="recoveryStep2" style="display: none;">
+          <div style="background: rgba(16,185,129,0.1); border: 1px solid var(--status-success); border-radius: var(--radius-md); padding: 0.75rem; font-size: 0.82rem; color: #ffffff; margin-bottom: 1rem;">
+            ✉️ E-mail enviado! Abra o <strong><a href="http://localhost:3002" target="_blank" style="color: var(--bank-gold-light); text-decoration: underline;">Notify Hub (Porta 3002)</a></strong> para ver o código.
+          </div>
+
+          <form id="resetPasswordForm">
+            <div class="form-group" style="margin-bottom: 0.75rem;">
+              <label class="form-label" for="recoveryCodeInput">Código de Segurança (6 dígitos)</label>
+              <input type="text" id="recoveryCodeInput" class="form-control" placeholder="123456" maxlength="6" style="font-family: var(--font-mono); font-size: 1.2rem; letter-spacing: 4px; text-align: center;" required>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0.5rem;">
+              <label class="form-label" for="recoveryNewPassword">Nova Senha Forte</label>
+              <input type="password" id="recoveryNewPassword" class="form-control" placeholder="Digite uma nova senha forte..." required>
+            </div>
+
+            <div class="password-meter-container" style="margin: 0.25rem 0 1rem 0;">
+              <div class="password-meter-bar">
+                <div id="recoveryPwdMeterFill" class="password-meter-fill"></div>
+              </div>
+              <div id="recoveryPwdMeterLabel" style="font-size: 0.75rem; font-weight: 600; color: var(--text-secondary);">Mínimo de 8 caracteres com maiúscula, minúscula, número e símbolo.</div>
+            </div>
+
+            <button type="submit" id="confirmResetPasswordBtn" class="btn btn-primary" style="width: 100%;">
+              <span>Confirmar e Redefinir Senha</span>
+            </button>
+          </form>
+        </div>
+
       </div>
     </div>
   </div>

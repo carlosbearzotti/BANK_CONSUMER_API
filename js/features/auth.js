@@ -12,6 +12,7 @@ export const authFeature = {
     this.setupDemoButtons();
     this.setupViewToggles();
     this.setupPasswordToggles();
+    this.setupPasswordRecovery();
   },
 
   setupLoginForm() {
@@ -253,6 +254,127 @@ export const authFeature = {
     if (toggleReg && regPass) {
       toggleReg.addEventListener('click', () => {
         regPass.type = regPass.type === 'password' ? 'text' : 'password';
+      });
+    }
+  },
+
+  setupPasswordRecovery() {
+    const forgotLink = document.getElementById('forgotPasswordLink');
+    const modalEl = document.getElementById('passwordRecoveryModal');
+    const formStep1 = document.getElementById('forgotPasswordForm');
+    const formStep2 = document.getElementById('resetPasswordForm');
+    const step1El = document.getElementById('recoveryStep1');
+    const step2El = document.getElementById('recoveryStep2');
+
+    let recoveryEmail = '';
+
+    if (forgotLink && modalEl) {
+      forgotLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        step1El.style.display = 'block';
+        step2El.style.display = 'none';
+        modalEl.classList.add('active');
+        const prefill = document.getElementById('loginEmail')?.value;
+        if (prefill && document.getElementById('recoveryEmail')) {
+          document.getElementById('recoveryEmail').value = prefill;
+        }
+      });
+    }
+
+    if (formStep1) {
+      formStep1.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        recoveryEmail = document.getElementById('recoveryEmail')?.value.trim();
+        if (!recoveryEmail) return;
+
+        try {
+          toast.info('Solicitando código de verificação para o e-mail...');
+          const res = await authService.forgotPassword(recoveryEmail);
+
+          // Disparar notificação para o consumerNotification caso esteja aberto
+          try {
+            window.parent?.postMessage({
+              type: 'DISPATCH_EMAIL',
+              payload: {
+                recipient: recoveryEmail,
+                name: 'Cliente LãoBank',
+                resetCode: res.resetCode,
+                template: 'password_reset'
+              }
+            }, '*');
+          } catch (e) {}
+
+          toast.success(`Código de segurança enviado para ${recoveryEmail}!`);
+          step1El.style.display = 'none';
+          step2El.style.display = 'block';
+          const codeInput = document.getElementById('recoveryCodeInput');
+          if (codeInput) {
+            codeInput.value = res.resetCode || '';
+            codeInput.focus();
+          }
+        } catch (err) {
+          toast.error(`Falha ao solicitar recuperação: ${err.message}`);
+        }
+      });
+    }
+
+    // Medidor de senha no reset
+    const newPass = document.getElementById('recoveryNewPassword');
+    const fill = document.getElementById('recoveryPwdMeterFill');
+    const label = document.getElementById('recoveryPwdMeterLabel');
+
+    if (newPass && fill && label) {
+      newPass.addEventListener('input', (e) => {
+        const val = e.target.value;
+        const checks = [
+          val.length >= 8,
+          /[A-Z]/.test(val),
+          /[a-z]/.test(val),
+          /[0-9]/.test(val),
+          /[\W_]/.test(val)
+        ];
+        const passed = checks.filter(Boolean).length;
+        const percent = (passed / 5) * 100;
+        fill.style.width = `${percent}%`;
+
+        if (passed <= 2) {
+          fill.style.backgroundColor = 'var(--status-danger)';
+          label.textContent = '⚠️ Senha Fraca - Requer 8+ dígitos, maiúscula, minúscula e símbolo.';
+        } else if (passed <= 4) {
+          fill.style.backgroundColor = 'var(--status-warning)';
+          label.textContent = '🟡 Senha Média - Quase pronta.';
+        } else {
+          fill.style.backgroundColor = 'var(--status-success)';
+          label.textContent = '✅ Senha Forte e Segura aprovada!';
+        }
+      });
+    }
+
+    if (formStep2) {
+      formStep2.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const code = document.getElementById('recoveryCodeInput')?.value.trim();
+        const newPassword = document.getElementById('recoveryNewPassword')?.value;
+
+        if (!code || !newPassword) return;
+
+        try {
+          toast.info('Validando conformidade e atualizando senha...');
+          await authService.resetPassword(recoveryEmail, code, newPassword);
+          toast.success('Senha de acesso redefinida com sucesso!');
+          modalEl?.classList.remove('active');
+
+          const loginEmail = document.getElementById('loginEmail');
+          const loginPass = document.getElementById('loginPassword');
+          if (loginEmail) loginEmail.value = recoveryEmail;
+          if (loginPass) {
+            loginPass.value = newPassword;
+            loginPass.focus();
+          }
+        } catch (err) {
+          const failures = err.data?.failures ? ` (${err.data.failures.join(', ')})` : '';
+          toast.error(`Erro ao redefinir senha: ${err.message}${failures}`);
+        }
       });
     }
   }
