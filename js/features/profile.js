@@ -9,14 +9,29 @@ import { CARD_PLANS_CONFIG } from '../lib/config.js';
  * Módulo de Perfil do Usuário e Segurança (Padrão Cortex Feature)
  */
 export const profileFeature = {
+  isPinVisible: false,
+
   init() {
     this.setupProfileData();
     this.setupPasswordValidator();
     this.setupLogout();
     this.setupTokenCopy();
+    this.setupPinToggle();
 
     state.subscribe('auth', () => this.refreshUI());
     this.refreshUI();
+  },
+
+  setupPinToggle() {
+    const toggleBtn = document.getElementById('toggleProfilePinBtn');
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        this.isPinVisible = !this.isPinVisible;
+        this.refreshUI();
+        toggleBtn.textContent = this.isPinVisible ? '🙈' : '👁️';
+        toggleBtn.setAttribute('title', this.isPinVisible ? 'Ocultar PIN' : 'Mostrar PIN');
+      });
+    }
   },
 
   setupProfileData() {
@@ -280,7 +295,9 @@ export const profileFeature = {
     const lng = user?.longitude != null ? user.longitude.toFixed(4) : '';
     const pin = localStorage.getItem(`laobank_card_pin_${user?.email || user?.id}`) || '••••';
     const profileCardPinVal = document.getElementById('profileCardPinVal');
-    if (profileCardPinVal) profileCardPinVal.textContent = pin;
+    if (profileCardPinVal) {
+      profileCardPinVal.textContent = this.isPinVisible ? pin : '••••';
+    }
 
     if (profileApiKeyVal) profileApiKeyVal.textContent = state.apiKey;
     if (profileJwtDisplay) profileJwtDisplay.textContent = state.token || 'Nenhum token ativo';

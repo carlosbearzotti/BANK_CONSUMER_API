@@ -132,7 +132,8 @@ export const authFeature = {
       if (!name || !email || !cpf || !password || isNaN(income) || isNaN(age)) {
         toast.warning('Preencha todos os campos obrigatórios do formulário.');
         return;
-      }
+      // Gera a senha provisória do cartão de 4 dígitos para enviar e sincronizar com o backend
+      const generatedPin = Math.floor(1000 + Math.random() * 9000).toString();
 
       const payload = {
         name,
@@ -142,17 +143,16 @@ export const authFeature = {
         income,
         age,
         latitude,
-        longitude
+        longitude,
+        cardPin: generatedPin
       };
 
       const selectedPlanKey = document.querySelector('input[name="regCardPlan"]:checked')?.value || 'FREE';
       const planConfig = CARD_PLANS_CONFIG[selectedPlanKey] || CARD_PLANS_CONFIG.FREE;
 
       try {
-        await authService.register(payload);
-
-        // Gera automaticamente a senha do cartão (PIN 4 dígitos) e cartão físico baseado no plano escolhido
-        const generatedPin = Math.floor(1000 + Math.random() * 9000).toString();
+        const regRes = await authService.register(payload);
+        const finalPin = regRes?.cardPin || generatedPin;
         const initialLimit = income > 0 ? income * 0.8 : 0;
         const initialCards = [
           {
@@ -165,7 +165,7 @@ export const authFeature = {
             last4: '8824',
             expiry: '08/32',
             cvv: '592',
-            cardPin: generatedPin,
+            cardPin: finalPin,
             isBlocked: false,
             onlineLimit: initialLimit,
             isVirtual: false,
@@ -175,12 +175,12 @@ export const authFeature = {
         ];
 
         localStorage.setItem(`laobank_cards_${email}`, JSON.stringify(initialCards));
-        localStorage.setItem(`laobank_card_pin_${email}`, generatedPin);
-        localStorage.setItem(`laobank_temp_pin_${email}`, generatedPin);
+        localStorage.setItem(`laobank_card_pin_${email}`, finalPin);
+        localStorage.setItem(`laobank_temp_pin_${email}`, finalPin);
         localStorage.setItem(`laobank_pin_needs_change_${email}`, 'true');
         localStorage.setItem(`laobank_user_plan_${email}`, selectedPlanKey);
 
-        toast.success(`Conta criada no plano ${planConfig.name}! Senha Provisória do Cartão: ${generatedPin} (Recebida também por e-mail).`);
+        toast.success(`Conta criada no plano ${planConfig.name}! Senha Provisória do Cartão: ${finalPin} (Enviada também para ${email}).`);
 
         // Redireciona para o modo "Fazer login" de forma limpa
         document.getElementById('switchToLoginBtn')?.click();
