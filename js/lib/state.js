@@ -1,16 +1,25 @@
 import { STORAGE_KEYS, DEFAULT_CONFIG } from './config.js';
 
+// Fallback de armazenamento seguro para ambientes sem DOM / Node.js
+const memoryStore = new Map();
+const storage = typeof localStorage !== 'undefined' ? localStorage : {
+  getItem: (key) => memoryStore.get(key) || null,
+  setItem: (key, val) => { memoryStore.set(key, String(val)); },
+  removeItem: (key) => { memoryStore.delete(key); },
+  clear: () => { memoryStore.clear(); }
+};
+
 /**
  * Store Reativa de Estado Global (Padrão Cortex Store + PubSub)
  */
 class AppState {
   constructor() {
-    this.baseUrl = localStorage.getItem(STORAGE_KEYS.API_BASE_URL) || DEFAULT_CONFIG.BASE_URL;
-    this.apiKey = localStorage.getItem(STORAGE_KEYS.API_KEY) || DEFAULT_CONFIG.API_KEY;
-    this.token = localStorage.getItem(STORAGE_KEYS.TOKEN) || null;
+    this.baseUrl = storage.getItem(STORAGE_KEYS.API_BASE_URL) || DEFAULT_CONFIG.BASE_URL;
+    this.apiKey = storage.getItem(STORAGE_KEYS.API_KEY) || DEFAULT_CONFIG.API_KEY;
+    this.token = storage.getItem(STORAGE_KEYS.TOKEN) || null;
     this.user = this.loadStoredUser();
-    this.hideBalance = localStorage.getItem(STORAGE_KEYS.HIDE_BALANCE) === 'true';
-    this.sidebarExpanded = localStorage.getItem(STORAGE_KEYS.SIDEBAR_EXPANDED) !== 'false';
+    this.hideBalance = storage.getItem(STORAGE_KEYS.HIDE_BALANCE) === 'true';
+    this.sidebarExpanded = storage.getItem(STORAGE_KEYS.SIDEBAR_EXPANDED) !== 'false';
     this.activeTab = 'home';
     this.lastFeedback = null;
     this.reqLogs = [];
@@ -20,7 +29,7 @@ class AppState {
 
   loadStoredUser() {
     try {
-      const raw = localStorage.getItem(STORAGE_KEYS.USER);
+      const raw = storage.getItem(STORAGE_KEYS.USER);
       return raw ? JSON.parse(raw) : null;
     } catch {
       return null;
@@ -52,15 +61,15 @@ class AppState {
     this.user = user;
 
     if (token) {
-      localStorage.setItem(STORAGE_KEYS.TOKEN, token);
+      storage.setItem(STORAGE_KEYS.TOKEN, token);
     } else {
-      localStorage.removeItem(STORAGE_KEYS.TOKEN);
+      storage.removeItem(STORAGE_KEYS.TOKEN);
     }
 
     if (user) {
-      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
+      storage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
     } else {
-      localStorage.removeItem(STORAGE_KEYS.USER);
+      storage.removeItem(STORAGE_KEYS.USER);
     }
 
     this.notify('auth', { token, user });
@@ -70,9 +79,9 @@ class AppState {
   setUser(user) {
     this.user = user;
     if (user) {
-      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
+      storage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
     } else {
-      localStorage.removeItem(STORAGE_KEYS.USER);
+      storage.removeItem(STORAGE_KEYS.USER);
     }
     this.notify('auth', { token: this.token, user });
   }
@@ -80,27 +89,27 @@ class AppState {
   clearAuth() {
     this.token = null;
     this.user = null;
-    localStorage.removeItem(STORAGE_KEYS.TOKEN);
-    localStorage.removeItem(STORAGE_KEYS.USER);
+    storage.removeItem(STORAGE_KEYS.TOKEN);
+    storage.removeItem(STORAGE_KEYS.USER);
     this.notify('auth', { token: null, user: null });
     this.notify('view', 'auth');
   }
 
   setApiKey(key) {
     this.apiKey = key || DEFAULT_CONFIG.API_KEY;
-    localStorage.setItem(STORAGE_KEYS.API_KEY, this.apiKey);
+    storage.setItem(STORAGE_KEYS.API_KEY, this.apiKey);
     this.notify('apiKey', this.apiKey);
   }
 
   setHideBalance(hide) {
     this.hideBalance = Boolean(hide);
-    localStorage.setItem(STORAGE_KEYS.HIDE_BALANCE, String(this.hideBalance));
+    storage.setItem(STORAGE_KEYS.HIDE_BALANCE, String(this.hideBalance));
     this.notify('balanceVisibility', this.hideBalance);
   }
 
   setSidebarExpanded(expanded) {
     this.sidebarExpanded = Boolean(expanded);
-    localStorage.setItem(STORAGE_KEYS.SIDEBAR_EXPANDED, String(this.sidebarExpanded));
+    storage.setItem(STORAGE_KEYS.SIDEBAR_EXPANDED, String(this.sidebarExpanded));
     this.notify('sidebar', this.sidebarExpanded);
   }
 
@@ -110,37 +119,37 @@ class AppState {
   }
 
   setupUserEnvironment(email, initialCards, finalPin, planKey) {
-    localStorage.setItem(`laobank_cards_${email}`, JSON.stringify(initialCards));
-    localStorage.setItem(`laobank_card_pin_${email}`, finalPin);
-    localStorage.setItem(`laobank_temp_pin_${email}`, finalPin);
-    localStorage.setItem(`laobank_pin_needs_change_${email}`, 'true');
-    localStorage.setItem(`laobank_user_plan_${email}`, planKey);
+    storage.setItem(`laobank_cards_${email}`, JSON.stringify(initialCards));
+    storage.setItem(`laobank_card_pin_${email}`, finalPin);
+    storage.setItem(`laobank_temp_pin_${email}`, finalPin);
+    storage.setItem(`laobank_pin_needs_change_${email}`, 'true');
+    storage.setItem(`laobank_user_plan_${email}`, planKey);
   }
 
   needsPinChange(email) {
-    return localStorage.getItem(`laobank_pin_needs_change_${email}`) === 'true';
+    return storage.getItem(`laobank_pin_needs_change_${email}`) === 'true';
   }
 
   clearUserPinChangeState(email) {
-    localStorage.removeItem(`laobank_pin_needs_change_${email}`);
+    storage.removeItem(`laobank_pin_needs_change_${email}`);
   }
 
   getUserPlan(email) {
-    return localStorage.getItem(`laobank_user_plan_${email}`) || 'FREE';
+    return storage.getItem(`laobank_user_plan_${email}`) || 'FREE';
   }
 
   getTempPin(email) {
-    return localStorage.getItem(`laobank_temp_pin_${email}`) || localStorage.getItem(`laobank_card_pin_${email}`) || '1234';
+    return storage.getItem(`laobank_temp_pin_${email}`) || storage.getItem(`laobank_card_pin_${email}`) || '1234';
   }
 
   updateUserPin(email, newPin) {
-    localStorage.setItem(`laobank_card_pin_${email}`, newPin);
+    storage.setItem(`laobank_card_pin_${email}`, newPin);
     this.clearUserPinChangeState(email);
   }
 
   getUserCards(email) {
     try {
-      const stored = localStorage.getItem(`laobank_cards_${email}`);
+      const stored = storage.getItem(`laobank_cards_${email}`);
       return stored ? JSON.parse(stored) : null;
     } catch {
       return null;
@@ -148,7 +157,7 @@ class AppState {
   }
 
   updateUserCards(email, cards) {
-    localStorage.setItem(`laobank_cards_${email}`, JSON.stringify(cards));
+    storage.setItem(`laobank_cards_${email}`, JSON.stringify(cards));
   }
 
   addApiLog(log) {
@@ -167,3 +176,5 @@ class AppState {
 }
 
 export const state = new AppState();
+export { storage };
+

@@ -1,44 +1,77 @@
-import { authService } from './authService.js';
-import * as apiLib from '../lib/api.js';
+import { describe, it } from 'node:test';
+import assert from 'node:assert';
 
-// Mock the apiRequest function
-jest.mock('../lib/api.js', () => ({
-  apiRequest: jest.fn()
-}));
+// Mock localStorage for Node native test environment
+if (!globalThis.localStorage) {
+  let store = {};
+  globalThis.localStorage = {
+    getItem: (key) => store[key] || null,
+    setItem: (key, val) => { store[key] = String(val); },
+    removeItem: (key) => { delete store[key]; },
+    clear: () => { store = {}; }
+  };
+}
+
+import { authService } from './authService.js';
 
 describe('Auth Service', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   it('should call login endpoint with correct credentials', async () => {
-    apiLib.apiRequest.mockResolvedValueOnce({ token: '123' });
-    
+    let calledUrl = '';
+    let calledBody = '';
+
+    globalThis.fetch = async (url, options) => {
+      calledUrl = url;
+      calledBody = options.body;
+      return {
+        ok: true,
+        status: 200,
+        headers: new Headers({ 'content-type': 'application/json' }),
+        json: async () => ({ token: '123' })
+      };
+    };
+
     const result = await authService.login({ email: 'test@test.com', password: 'password' });
-    
-    expect(apiLib.apiRequest).toHaveBeenCalledWith('/api/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email: 'test@test.com', password: 'password' })
-    });
-    expect(result).toEqual({ token: '123' });
+    assert.strictEqual(calledUrl, 'http://localhost:8080/api/auth/login');
+    assert.strictEqual(calledBody, JSON.stringify({ email: 'test@test.com', password: 'password' }));
+    assert.deepStrictEqual(result, { token: '123' });
   });
 
   it('should call register endpoint with user data', async () => {
-    apiLib.apiRequest.mockResolvedValueOnce({ id: 1 });
-    
+    let calledUrl = '';
+    let calledBody = '';
+
+    globalThis.fetch = async (url, options) => {
+      calledUrl = url;
+      calledBody = options.body;
+      return {
+        ok: true,
+        status: 200,
+        headers: new Headers({ 'content-type': 'application/json' }),
+        json: async () => ({ id: 1 })
+      };
+    };
+
     const userData = { name: 'Test', email: 'test@test.com' };
     await authService.register(userData);
-    
-    expect(apiLib.apiRequest).toHaveBeenCalledWith('/api/auth/register', {
-      method: 'POST',
-      body: JSON.stringify(userData)
-    });
+    assert.strictEqual(calledUrl, 'http://localhost:8080/api/auth/register');
+    assert.strictEqual(calledBody, JSON.stringify(userData));
   });
 
   it('should get profile correctly', async () => {
-    apiLib.apiRequest.mockResolvedValueOnce({ id: 1 });
-    
-    await authService.getProfile();
-    expect(apiLib.apiRequest).toHaveBeenCalledWith('/api/auth/me', { method: 'GET' });
+    let calledUrl = '';
+
+    globalThis.fetch = async (url) => {
+      calledUrl = url;
+      return {
+        ok: true,
+        status: 200,
+        headers: new Headers({ 'content-type': 'application/json' }),
+        json: async () => ({ id: 1, name: 'User' })
+      };
+    };
+
+    const res = await authService.getProfile();
+    assert.strictEqual(calledUrl, 'http://localhost:8080/api/auth/me');
+    assert.deepStrictEqual(res, { id: 1, name: 'User' });
   });
 });
