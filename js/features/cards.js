@@ -1,6 +1,7 @@
 import { toast } from '../ui/toast.js';
 import { state } from '../lib/state.js';
 import { CARD_PLANS_CONFIG } from '../lib/config.js';
+import { modal } from '../ui/modal.js';
 
 /**
  * Módulo de Cartões de Crédito e Cartão Virtual 3D (Padrão Cortex Feature)
@@ -273,17 +274,29 @@ export const cardsFeature = {
     });
   },
 
+  openVirtualCardModal() {
+    const user = state.user;
+    const pinInput = document.getElementById('virtualCardPinInput');
+    const pinHint = document.getElementById('virtualCardPinHint');
+    const userEmail = user?.email || user?.id;
+    const storedPin = localStorage.getItem(`laobank_card_pin_${userEmail}`) || '1234';
+
+    if (pinHint) {
+      pinHint.textContent = `💡 Dica de segurança: Seu PIN cadastrado é ${storedPin}`;
+    }
+
+    if (pinInput) pinInput.value = '';
+    modal.open('virtualCardConfirmModal');
+  },
+
   setupCardActions() {
     const generateBtn = document.getElementById('generateNewVirtualCardBtn');
-    const modalEl = document.getElementById('virtualCardConfirmModal');
     const form = document.getElementById('virtualCardPasswordForm');
     const pinInput = document.getElementById('virtualCardPinInput');
 
-    if (generateBtn && modalEl) {
+    if (generateBtn) {
       generateBtn.addEventListener('click', () => {
-        if (pinInput) pinInput.value = '';
-        modalEl.classList.add('active');
-        if (pinInput) pinInput.focus();
+        this.openVirtualCardModal();
       });
     }
 
@@ -304,7 +317,7 @@ export const cardsFeature = {
           return;
         }
 
-        modalEl.classList.remove('active');
+        modal.close('virtualCardConfirmModal');
         this.generateVirtualCard();
       });
     }

@@ -705,7 +705,7 @@
                   <h2>💳 Gestão Completa de Cartões</h2>
                   <div class="card-subtitle">Controle de limites por cartão, bloqueio individual e emissão de cartões virtuais</div>
                 </div>
-                <button class="btn btn-gradient btn-sm" id="generateNewVirtualCardBtn">
+                <button class="btn btn-gradient btn-sm" id="generateNewVirtualCardBtn" onclick="window.cardsFeature.openVirtualCardModal()">
                   <span>✨ Gerar Novo Cartão Virtual</span>
                 </button>
               </div>
@@ -1355,7 +1355,7 @@
           <div class="form-group" style="margin-bottom: 1.25rem;">
             <label class="form-label" for="virtualCardPinInput" style="text-align: center; display: block;">Senha do Cartão (4 Dígitos)</label>
             <input type="password" id="virtualCardPinInput" class="form-control" maxlength="4" placeholder="••••" style="font-family: var(--font-mono); font-size: 1.5rem; letter-spacing: 8px; text-align: center;" required autocomplete="off">
-            <div style="font-size: 0.725rem; color: var(--text-muted); text-align: center; margin-top: 0.4rem;">
+            <div id="virtualCardPinHint" style="font-size: 0.75rem; color: var(--bank-gold-light); text-align: center; margin-top: 0.5rem; background: rgba(197, 160, 89, 0.1); border: 1px dashed rgba(197, 160, 89, 0.3); border-radius: var(--radius-sm); padding: 0.35rem 0.5rem;">
               Sua senha foi gerada no momento da criação da conta.
             </div>
           </div>
