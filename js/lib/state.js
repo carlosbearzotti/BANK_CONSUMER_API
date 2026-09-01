@@ -160,6 +160,27 @@ class AppState {
     storage.setItem(`laobank_cards_${email}`, JSON.stringify(cards));
   }
 
+  getUserLoans(email) {
+    try {
+      const stored = storage.getItem(`laobank_contracted_loans_${email}`);
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  saveUserLoans(email, loans) {
+    storage.setItem(`laobank_contracted_loans_${email}`, JSON.stringify(loans));
+    this.notify('loans', loans);
+  }
+
+  addContractedLoan(email, loanContract) {
+    const loans = this.getUserLoans(email);
+    loans.unshift(loanContract);
+    this.saveUserLoans(email, loans);
+    return loans;
+  }
+
   addApiLog(log) {
     this.reqLogs.unshift({
       id: Date.now(),

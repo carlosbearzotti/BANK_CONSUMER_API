@@ -754,18 +754,19 @@
 
 
           <!-- ================================================================
-               ABA 4: EMPRÉSTIMOS
+               ABA 4: EMPRÉSTIMOS & CRÉDITO REAL
                ================================================================ -->
           <section id="tab-loans" class="tab-pane">
             <div class="card">
               <div class="card-header">
                 <div class="card-title-group">
-                  <h2>💰 Simulador de Empréstimos Inteligentes</h2>
-                  <div class="card-subtitle">Cálculo de elegibilidade e taxas para Pessoal, Garantia e Consignado</div>
+                  <h2>💰 Simulador & Contratação de Empréstimos</h2>
+                  <div class="card-subtitle">Análise de elegibilidade e contratação digital com liberação imediata na conta</div>
                 </div>
-                <button id="myLoansBtn" class="btn btn-secondary btn-sm">Consultar Meus Empréstimos</button>
+                <button id="myLoansBtn" class="btn btn-secondary btn-sm">📋 Meus Contratos Ativos</button>
               </div>
 
+              <!-- Formulário de Simulação Inteligente -->
               <form id="loanSimulateForm">
                 <div class="form-grid">
                   <div class="form-group">
@@ -793,10 +794,29 @@
                   </div>
                 </div>
 
-                <button type="submit" class="btn btn-gradient">Simular Empréstimos</button>
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                  <button type="submit" class="btn btn-gradient">⚡ Simular Linhas Pré-Aprovadas</button>
+                  <button type="button" id="loadPreApprovedBtn" class="btn btn-secondary">🔍 Puxar Ofertas do Meu Perfil</button>
+                </div>
               </form>
 
-              <div id="loanResultsContainer" class="loan-results-grid"></div>
+              <!-- Grid de Linhas Elegíveis -->
+              <div style="margin-top: 1.5rem;">
+                <h3 style="font-size: 1.05rem; font-weight: 700; color: #ffffff; margin-bottom: 0.75rem;">✨ Linhas de Crédito Disponíveis para Contratação</h3>
+                <div id="loanResultsContainer" class="loan-results-grid"></div>
+              </div>
+
+              <!-- Seção: Meus Empréstimos Contratados (Real) -->
+              <div style="margin-top: 2rem; border-top: 1px solid var(--bank-border-soft); padding-top: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                  <h3 style="font-size: 1.1rem; font-weight: 700; color: #ffffff;">📑 Meus Empréstimos Contratados (<span id="activeLoansCount">0</span>)</h3>
+                  <span style="font-size: 0.775rem; color: var(--text-muted);">Crédito liberado diretamente no saldo em conta</span>
+                </div>
+                
+                <div id="activeLoansContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem;">
+                  <!-- Renderizado dinamicamente pelo loans.js -->
+                </div>
+              </div>
             </div>
           </section>
 
@@ -1359,6 +1379,81 @@
           <div style="display: flex; gap: 0.75rem;">
             <button type="button" class="btn btn-secondary" style="flex: 1;" data-modal-close>Cancelar</button>
             <button type="submit" class="btn btn-gradient" style="flex: 1;">Confirmar & Emitir</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Contratação Real de Empréstimo -->
+  <div id="contractLoanModal" class="modal-backdrop">
+    <div class="modal-card" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 class="modal-title">✍️ Contratar Empréstimo Digital</h3>
+        <button class="bank-icon-btn modal-close" data-modal-close>✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="text-align: center; margin-bottom: 1.25rem;">
+          <span id="modalLoanBadge" class="badge badge-primary" style="font-size: 0.85rem; padding: 0.25rem 0.75rem;">EMPRÉSTIMO PESSOAL</span>
+          <h4 id="modalLoanTitle" style="font-size: 1.1rem; font-weight: 800; color: #ffffff; margin-top: 0.5rem;">Crédito Pessoal Pré-Aprovado</h4>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem;">
+            Taxa contratual de <strong id="modalLoanRate" style="color: var(--bank-gold-light);">4.0% ao mês</strong>
+          </p>
+        </div>
+
+        <form id="contractLoanForm">
+          <!-- Valor do Empréstimo -->
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label" for="loanAmountInput">Quanto você deseja solicitar? (R$)</label>
+            <input type="number" id="loanAmountInput" class="form-control" min="500" max="100000" step="100" value="5000" style="font-size: 1.2rem; font-weight: 700; font-family: var(--font-mono); color: #34d399;" required>
+            <div style="font-size: 0.725rem; color: var(--text-muted); margin-top: 0.25rem;">Limite máximo calculado: <span id="modalLoanMaxLimit">R$ 50.000,00</span></div>
+          </div>
+
+          <!-- Prazo / Parcelas -->
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label" for="loanInstallmentsSelect">Número de Parcelas</label>
+            <select id="loanInstallmentsSelect" class="form-control" style="font-size: 0.95rem; font-weight: 600;">
+              <option value="6">6 parcelas mensais</option>
+              <option value="12" selected>12 parcelas mensais</option>
+              <option value="24">24 parcelas mensais</option>
+              <option value="36">36 parcelas mensais</option>
+              <option value="48">48 parcelas mensais</option>
+            </select>
+          </div>
+
+          <!-- Resumo Financeiro da Operação -->
+          <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(197, 160, 89, 0.3); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <span style="font-size: 0.8rem; color: var(--text-secondary);">Valor da Parcela Mensal:</span>
+              <span id="modalLoanPmtVal" style="font-size: 1.15rem; font-weight: 800; color: #ffffff; font-family: var(--font-mono);">R$ 532,45</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <span style="font-size: 0.78rem; color: var(--text-secondary);">Total a Pagar com Juros:</span>
+              <span id="modalLoanTotalVal" style="font-size: 0.85rem; font-weight: 700; color: var(--bank-gold-light); font-family: var(--font-mono);">R$ 6.389,40</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <span style="font-size: 0.78rem; color: var(--text-secondary);">IOF Contratual (0.38%):</span>
+              <span id="modalLoanIofVal" style="font-size: 0.78rem; color: var(--text-muted); font-family: var(--font-mono);">R$ 19,00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <span style="font-size: 0.78rem; color: var(--text-secondary);">Primeiro Vencimento:</span>
+              <span id="modalLoanFirstDueDate" style="font-size: 0.78rem; color: #34d399; font-weight: 600;">Em 30 dias</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.78rem; color: var(--text-secondary);">Destino do Crédito:</span>
+              <span style="font-size: 0.78rem; color: #ffffff; font-weight: 600;">Conta Digital LãoBank (Imediato)</span>
+            </div>
+          </div>
+
+          <!-- Assinatura Digital com Senha do Cartão -->
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label" for="loanContractPinInput" style="text-align: center; display: block;">Digite a Senha do Cartão (PIN 4 Dígitos) para Assinar:</label>
+            <input type="password" id="loanContractPinInput" class="form-control" maxlength="4" placeholder="••••" style="font-family: var(--font-mono); font-size: 1.4rem; letter-spacing: 8px; text-align: center;" required autocomplete="off">
+          </div>
+
+          <div style="display: flex; gap: 0.75rem;">
+            <button type="button" class="btn btn-secondary" style="flex: 1;" data-modal-close>Cancelar</button>
+            <button type="submit" class="btn btn-gradient" style="flex: 1.5;">✍️ Assinar & Contratar</button>
           </div>
         </form>
       </div>
