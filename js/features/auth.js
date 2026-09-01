@@ -1,6 +1,7 @@
 import { authService } from '../services/authService.js';
 import { state } from '../lib/state.js';
 import { toast } from '../ui/toast.js';
+import { CARD_PLANS_CONFIG } from '../lib/config.js';
 
 /**
  * Módulo de Autenticação e Criação de Contas (Padrão Cortex Feature)
@@ -120,17 +121,22 @@ export const authFeature = {
         longitude
       };
 
+      const selectedPlanKey = document.querySelector('input[name="regCardPlan"]:checked')?.value || 'FREE';
+      const planConfig = CARD_PLANS_CONFIG[selectedPlanKey] || CARD_PLANS_CONFIG.FREE;
+
       try {
         await authService.register(payload);
 
-        // Gera automaticamente a senha do cartão (PIN 4 dígitos) e número do cartão para o novo usuário
+        // Gera automaticamente a senha do cartão (PIN 4 dígitos) e cartão físico baseado no plano escolhido
         const generatedPin = Math.floor(1000 + Math.random() * 9000).toString();
         const initialLimit = income > 0 ? income * 0.8 : 0;
         const initialCards = [
           {
             id: 'card-physical-1',
             type: 'PHYSICAL',
-            name: 'Cartão Físico Black Prestige',
+            name: planConfig.cardName,
+            planId: planConfig.id,
+            planName: planConfig.name,
             number: '•••• •••• •••• 8824',
             last4: '8824',
             expiry: '08/32',
@@ -139,15 +145,16 @@ export const authFeature = {
             isBlocked: false,
             onlineLimit: initialLimit,
             isVirtual: false,
-            colorGrad: 'linear-gradient(135deg, #1e1338 0%, #0f172a 50%, #080c16 100%)',
-            accentColor: '#c5a059'
+            colorGrad: planConfig.colorGrad,
+            accentColor: planConfig.accentColor
           }
         ];
 
         localStorage.setItem(`laobank_cards_${email}`, JSON.stringify(initialCards));
         localStorage.setItem(`laobank_card_pin_${email}`, generatedPin);
+        localStorage.setItem(`laobank_user_plan_${email}`, selectedPlanKey);
 
-        toast.success(`Conta criada! Senha do seu Cartão: ${generatedPin} (Guarde este PIN para autorizações).`);
+        toast.success(`Conta criada no plano ${planConfig.name}! Senha do Cartão: ${generatedPin} (CDB a ${planConfig.cdbRate}% do CDI).`);
 
         // Redireciona para o modo "Fazer login" de forma limpa
         document.getElementById('switchToLoginBtn')?.click();

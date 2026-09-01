@@ -59,3 +59,46 @@ export const LOAN_MODALITY_CONFIG = {
     interestRate: 2.0
   }
 };
+
+export const CARD_PLANS_CONFIG = {
+  FREE: {
+    id: 'FREE',
+    name: 'LãoBank Classic',
+    cardName: 'Cartão Físico Classic',
+    fee: 'Grátis (R$ 0,00/mês)',
+    price: 0.00,
+    cdbRate: 101,
+    badge: '★ Cliente Classic',
+    pillClass: 'nubank-pill-silver',
+    colorGrad: 'linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #020617 100%)',
+    accentColor: '#94a3b8',
+    description: 'Sem anuidade, Pix ilimitado e CDB a 101% do CDI.'
+  },
+  GOLD: {
+    id: 'GOLD',
+    name: 'LãoBank Gold Executive',
+    cardName: 'Cartão Físico Gold Executive',
+    fee: 'R$ 54,99/mês',
+    price: 54.99,
+    cdbRate: 108,
+    badge: '★ Cliente Gold Executive',
+    pillClass: 'nubank-pill-gold',
+    colorGrad: 'linear-gradient(135deg, #78350f 0%, #451a03 50%, #1c0a00 100%)',
+    accentColor: '#fbbf24',
+    description: 'Cashback turbinado, atendimento VIP e CDB a 108% do CDI.'
+  },
+  BLACK: {
+    id: 'BLACK',
+    name: 'LãoBank Black Prestige',
+    cardName: 'Cartão Físico Black Prestige',
+    fee: 'R$ 109,99/mês',
+    price: 109.99,
+    cdbRate: 112,
+    badge: '★ Cliente Black Prestige',
+    pillClass: 'nubank-pill-emerald',
+    colorGrad: 'linear-gradient(135deg, #1e1338 0%, #0f172a 50%, #080c16 100%)',
+    accentColor: '#c5a059',
+    description: 'Salas VIP LoungeKey, Concierge 24/7 e CDB a 112% do CDI.'
+  }
+};
+

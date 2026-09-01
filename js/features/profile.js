@@ -3,6 +3,7 @@ import { passwordService } from '../services/passwordService.js';
 import { state } from '../lib/state.js';
 import { utils } from '../lib/utils.js';
 import { toast } from '../ui/toast.js';
+import { CARD_PLANS_CONFIG } from '../lib/config.js';
 
 /**
  * Módulo de Perfil do Usuário e Segurança (Padrão Cortex Feature)
@@ -191,6 +192,28 @@ export const profileFeature = {
     const name = user?.name || 'Cliente';
     const initial = name.charAt(0).toUpperCase();
 
+    // Obtenção do Plano de Cartão Ativo
+    const userEmail = user?.email || user?.id;
+    const planKey = localStorage.getItem(`laobank_user_plan_${userEmail}`) || 'FREE';
+    const plan = CARD_PLANS_CONFIG[planKey] || CARD_PLANS_CONFIG.FREE;
+
+    // Rendimento da Conta (CDB % do CDI de acordo com o plano)
+    const bankYieldDisplay = document.getElementById('bankYieldDisplay');
+    if (bankYieldDisplay) {
+      bankYieldDisplay.textContent = `Rendimento LãoBank: +${plan.cdbRate}% do CDI (${plan.name})`;
+    }
+
+    // Título e Estilo do Cartão 3D na Home
+    const homeCardTitle = document.getElementById('homeCardTitle');
+    const homeCardSubtitle = document.getElementById('homeCardSubtitle');
+    const homeCardFront = document.getElementById('homeCardFront');
+    if (homeCardTitle) homeCardTitle.textContent = `💳 ${plan.cardName}`;
+    if (homeCardSubtitle) homeCardSubtitle.textContent = `Toque no cartão para girar e ver o verso • CDB a ${plan.cdbRate}% do CDI`;
+    if (homeCardFront) {
+      homeCardFront.style.background = plan.colorGrad;
+      homeCardFront.style.borderColor = plan.accentColor;
+    }
+
     // Top Header & Credit Card & Home Balance Displays
     const bankUserName = document.getElementById('bankUserName');
     const bankUserAvatar = document.getElementById('bankUserAvatar');
@@ -228,6 +251,8 @@ export const profileFeature = {
     // Nubank Profile Screen
     const profileHeroName = document.getElementById('profileHeroName');
     const profileAvatarLarge = document.getElementById('profileAvatarLarge');
+    const profilePlanBadge = document.getElementById('profilePlanBadge');
+    const profilePlanVal = document.getElementById('profilePlanVal');
     const profileNameVal = document.getElementById('profileNameVal');
     const profileEmailVal = document.getElementById('profileEmailVal');
     const profileCpfVal = document.getElementById('profileCpfVal');
@@ -238,6 +263,13 @@ export const profileFeature = {
 
     if (profileHeroName) profileHeroName.textContent = name;
     if (profileAvatarLarge) profileAvatarLarge.textContent = initial;
+    if (profilePlanBadge) {
+      profilePlanBadge.className = `nubank-pill ${plan.pillClass}`;
+      profilePlanBadge.textContent = `${plan.badge} (${plan.cdbRate}% CDI)`;
+    }
+    if (profilePlanVal) {
+      profilePlanVal.textContent = `${plan.name} • ${plan.fee} • CDB ${plan.cdbRate}% CDI`;
+    }
     if (profileNameVal) profileNameVal.textContent = name;
     if (profileEmailVal) profileEmailVal.textContent = user?.email || '-';
     if (profileCpfVal) profileCpfVal.textContent = user?.cpf ? utils.formatCPF(user.cpf) : '-';

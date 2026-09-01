@@ -156,7 +156,56 @@
           <input type="hidden" id="regLat" value="">
           <input type="hidden" id="regLng" value="">
 
-          <div class="google-auth-actions" style="margin-top: 1.5rem;">
+          <!-- Seleção de Plano de Cartão LãoBank -->
+          <div style="margin-top: 0.85rem; margin-bottom: 1.25rem;">
+            <label style="font-size: 0.825rem; font-weight: 700; color: #f1f5f9; display: block; margin-bottom: 0.5rem;">
+              💳 Escolha o Plano do seu Cartão LãoBank:
+            </label>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.6rem;">
+              
+              <!-- Plano Free: LãoBank Classic -->
+              <label class="plan-select-card">
+                <input type="radio" name="regCardPlan" value="FREE" checked style="position: absolute; opacity: 0;">
+                <div class="plan-card-inner">
+                  <div>
+                    <span class="badge badge-secondary" style="font-size: 0.625rem; padding: 0.15rem 0.35rem; display: inline-block; margin-bottom: 0.35rem;">Sem Anuidade</span>
+                    <div style="font-weight: 700; font-size: 0.85rem; color: #ffffff;">LãoBank Classic</div>
+                    <div style="font-size: 0.725rem; color: #34d399; font-weight: 800; margin: 0.2rem 0;">CDB 101% CDI</div>
+                  </div>
+                  <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.35rem;">Grátis</div>
+                </div>
+              </label>
+
+              <!-- Plano Gold: LãoBank Gold Executive -->
+              <label class="plan-select-card">
+                <input type="radio" name="regCardPlan" value="GOLD" style="position: absolute; opacity: 0;">
+                <div class="plan-card-inner">
+                  <div>
+                    <span class="badge badge-gold" style="font-size: 0.625rem; padding: 0.15rem 0.35rem; display: inline-block; margin-bottom: 0.35rem;">Mais Popular</span>
+                    <div style="font-weight: 700; font-size: 0.85rem; color: #fbbf24;">Gold Executive</div>
+                    <div style="font-size: 0.725rem; color: #34d399; font-weight: 800; margin: 0.2rem 0;">CDB 108% CDI</div>
+                  </div>
+                  <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 0.35rem;">R$ 54,99/mês</div>
+                </div>
+              </label>
+
+              <!-- Plano Black: LãoBank Black Prestige -->
+              <label class="plan-select-card">
+                <input type="radio" name="regCardPlan" value="BLACK" style="position: absolute; opacity: 0;">
+                <div class="plan-card-inner">
+                  <div>
+                    <span class="badge badge-purple" style="font-size: 0.625rem; padding: 0.15rem 0.35rem; display: inline-block; margin-bottom: 0.35rem;">★ Ultra VIP</span>
+                    <div style="font-weight: 700; font-size: 0.85rem; color: var(--bank-gold-light);">Black Prestige</div>
+                    <div style="font-size: 0.725rem; color: #34d399; font-weight: 800; margin: 0.2rem 0;">CDB 112% CDI</div>
+                  </div>
+                  <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 0.35rem;">R$ 109,99/mês</div>
+                </div>
+              </label>
+
+            </div>
+          </div>
+
+          <div class="google-auth-actions" style="margin-top: 1.25rem;">
             <button type="button" id="switchToLoginBtn" class="google-btn-text">Fazer login em vez disso</button>
             <button type="submit" id="regSubmitBtn" class="google-btn-primary">
               <span>Criar conta</span>
@@ -401,8 +450,8 @@
               <div class="card">
                 <div class="card-header">
                   <div class="card-title-group">
-                    <h2>💳 Cartão LãoBank Black Prestige</h2>
-                    <div class="card-subtitle">Toque no cartão para girar e ver o verso</div>
+                    <h2 id="homeCardTitle">💳 Cartão LãoBank Black Prestige</h2>
+                    <div class="card-subtitle" id="homeCardSubtitle">Toque no cartão para girar e ver o verso &bull; Rendimento CDB ativo</div>
                   </div>
                 </div>
 
@@ -410,7 +459,7 @@
                 <div class="credit-card-perspective" id="interactiveCreditCard">
                   <div class="credit-card-inner">
                     <!-- Front -->
-                    <div class="credit-card-front">
+                    <div class="credit-card-front" id="homeCardFront">
                       <div class="card-chip-row">
                         <div class="card-emv-chip"></div>
                         <div class="card-contactless">
@@ -898,7 +947,7 @@
                   <h2 id="profileHeroName">Correntista</h2>
                   <div style="color: var(--text-secondary); font-size: 0.85rem;">Agência 0001 &bull; Conta Digital &bull; Banco 077 LãoBank S.A.</div>
                   <div class="nubank-badge-row">
-                    <span class="nubank-pill nubank-pill-gold">★ Cliente Black Prestige</span>
+                    <span class="nubank-pill nubank-pill-gold" id="profilePlanBadge">★ Cliente Black Prestige (112% CDI)</span>
                     <span class="nubank-pill nubank-pill-emerald">✓ Conta Verificada</span>
                   </div>
                 </div>
@@ -921,6 +970,17 @@
                       </div>
                     </div>
                     <div class="nubank-row-value" id="profileNameVal">-</div>
+                  </div>
+
+                  <div class="nubank-menu-row">
+                    <div class="nubank-row-left">
+                      <div class="nubank-row-icon">💳</div>
+                      <div>
+                        <div class="nubank-row-label">Plano de Cartão & Rendimento CDB</div>
+                        <div class="nubank-row-desc">Benefícios contratuais e remuneração da conta</div>
+                      </div>
+                    </div>
+                    <div class="nubank-row-value" style="font-weight: 700; color: #34d399;" id="profilePlanVal">Black Prestige (112% CDI)</div>
                   </div>
 
                   <div class="nubank-menu-row">

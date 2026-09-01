@@ -1,5 +1,6 @@
 import { toast } from '../ui/toast.js';
 import { state } from '../lib/state.js';
+import { CARD_PLANS_CONFIG } from '../lib/config.js';
 
 /**
  * Módulo de Cartões de Crédito e Cartão Virtual 3D (Padrão Cortex Feature)
@@ -23,7 +24,8 @@ export const cardsFeature = {
 
   loadCards() {
     const user = state.user;
-    const stored = localStorage.getItem(`laobank_cards_${user?.id || user?.email || 'guest'}`);
+    const userEmail = user?.email || user?.id || 'guest';
+    const stored = localStorage.getItem(`laobank_cards_${userEmail}`);
     if (stored) {
       try {
         this.cards = JSON.parse(stored);
@@ -31,23 +33,30 @@ export const cardsFeature = {
         this.cards = [];
       }
     } else {
-      // Cria o cartão físico padrão inicial para a conta
+      // Cria o cartão físico padrão baseado no plano de contratação
       const userIncome = user?.income || 0;
       const initialLimit = userIncome > 0 ? userIncome * 0.8 : 0;
+      const planKey = localStorage.getItem(`laobank_user_plan_${userEmail}`) || 'FREE';
+      const planConfig = CARD_PLANS_CONFIG[planKey] || CARD_PLANS_CONFIG.FREE;
+      const storedPin = localStorage.getItem(`laobank_card_pin_${userEmail}`) || '1234';
+
       this.cards = [
         {
           id: 'card-physical-1',
           type: 'PHYSICAL',
-          name: 'Cartão Físico Black Prestige',
+          name: planConfig.cardName,
+          planId: planConfig.id,
+          planName: planConfig.name,
           number: '•••• •••• •••• 8824',
           last4: '8824',
           expiry: '08/32',
           cvv: '592',
+          cardPin: storedPin,
           isBlocked: false,
           onlineLimit: initialLimit,
           isVirtual: false,
-          colorGrad: 'linear-gradient(135deg, #1e1338 0%, #0f172a 50%, #080c16 100%)',
-          accentColor: '#c5a059'
+          colorGrad: planConfig.colorGrad,
+          accentColor: planConfig.accentColor
         }
       ];
       this.saveCards();
