@@ -309,7 +309,7 @@
             <li>
               <button class="bank-nav-item-btn" data-tab="pix">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-                <span>Área Pix</span>
+                <span>Área Pix & Transferir</span>
               </button>
             </li>
             <li>
@@ -406,7 +406,7 @@
               <div class="balance-actions-row">
                 <button class="balance-action-btn primary" onclick="document.querySelector('[data-tab=pix]').click();">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-                  <span>Área Pix</span>
+                  <span>Pix & Transferir</span>
                 </button>
                 <button class="balance-action-btn" onclick="document.querySelector('[data-tab=loans]').click();">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
@@ -423,7 +423,7 @@
             <div class="quick-actions-carousel">
               <button class="quick-action-item" onclick="document.querySelector('[data-tab=pix]').click();">
                 <div class="quick-action-circle">⚡</div>
-                <span class="quick-action-label">Pix</span>
+                <span class="quick-action-label">Pix & Transferir</span>
               </button>
               <button class="quick-action-item" onclick="document.querySelector('[data-tab=cards]').click();">
                 <div class="quick-action-circle">💳</div>
@@ -514,58 +514,40 @@
                 </div>
               </div>
 
-              <!-- Extrato & Pagamentos Criptografados -->
-              <div class="card">
-                <div class="card-header">
-                  <div class="card-title-group">
-                    <h2>📄 Extrato da Conta</h2>
-                    <div class="card-subtitle">Movimentações protegidas por criptografia de ponta a ponta</div>
+              <!-- Destaque de Serviços & Extrato Rápido -->
+              <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                  <div class="card-header">
+                    <div class="card-title-group">
+                      <h2>⚡ Pix & Transferências</h2>
+                      <div class="card-subtitle">Movimentações instantâneas e seguras</div>
+                    </div>
+                    <span class="badge badge-emerald">Disponível 24/7</span>
                   </div>
-                  <button class="btn btn-secondary btn-sm" id="refreshExtratoBtn">Atualizar</button>
-                </div>
 
-                <!-- Formulário Rápido de Transferência / Pagamento -->
-                <form id="txForm" style="margin-bottom: 1.25rem; padding: 1.15rem; background: rgba(255,255,255,0.02); border: 1px solid var(--bank-border-soft); border-radius: var(--radius-lg);">
-                  <div style="font-size: 0.85rem; font-weight: 700; color: var(--bank-gold-light); margin-bottom: 0.75rem;">🔒 Nova Transferência Protegida</div>
-                  <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.6rem; margin-bottom: 0.75rem;">
-                    <div class="form-group" style="margin-bottom: 0;">
-                      <input type="text" id="txDoc" class="form-control" placeholder="CPF Beneficiário" required style="font-size: 0.825rem; height: 2.5rem;">
-                    </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                      <input type="text" id="txCard" class="form-control" placeholder="Cartão / Token" required style="font-size: 0.825rem; height: 2.5rem;">
-                    </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                      <input type="number" id="txValue" class="form-control" step="0.01" placeholder="Valor (R$)" required style="font-size: 0.825rem; height: 2.5rem;">
-                    </div>
-                  </div>
-                  <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;">Confirmar Transferência</button>
-                </form>
+                  <div style="padding: 0 0.5rem; margin-bottom: 1.25rem;">
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1rem;">
+                      Realize transferências Pix instantâneas, pagamentos protegidos por token/cartão e consulte seu extrato completo na área dedicada.
+                    </p>
 
-                <div class="bank-transactions-list" id="recentTransactionsList">
-                  <!-- Gerenciado dinamicamente pelo módulo conta.js com dados reais da conta -->
-                </div>
-
-                <!-- Tabela de Auditoria de Transações do Cofre -->
-                <div style="margin-top: 1.25rem;">
-                  <button class="btn btn-secondary btn-sm" id="loadTxBtn" style="width: 100%; font-size: 0.8rem;">Ver Histórico Criptografado da Conta</button>
-                  <div class="table-responsive" style="margin-top: 0.75rem;">
-                    <table class="data-table">
-                      <thead>
-                        <tr>
-                          <th>ID</th>
-                          <th>Beneficiário</th>
-                          <th>Cartão</th>
-                          <th>Valor</th>
-                          <th>Ação</th>
-                        </tr>
-                      </thead>
-                      <tbody id="txTableBody">
-                        <tr><td colspan="5" style="text-align: center; color: var(--text-muted); font-size: 0.8rem;">Carregando transações...</td></tr>
-                      </tbody>
-                    </table>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                      <button type="button" class="btn btn-secondary btn-sm" onclick="document.querySelector('[data-tab=pix]').click();" style="padding: 0.85rem 0.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.35rem;">
+                        <span style="font-size: 1.3rem;">⚡</span>
+                        <span style="font-size: 0.8rem; font-weight: 700;">Área Pix</span>
+                      </button>
+                      <button type="button" class="btn btn-secondary btn-sm" onclick="document.querySelector('[data-tab=pix]').click();" style="padding: 0.85rem 0.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.35rem;">
+                        <span style="font-size: 1.3rem;">🔒</span>
+                        <span style="font-size: 0.8rem; font-weight: 700;">Transferir</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
 
+                <div style="padding: 0 0.5rem;">
+                  <button type="button" class="btn btn-gradient btn-sm" style="width: 100%; font-size: 0.85rem; padding: 0.75rem;" onclick="document.querySelector('[data-tab=pix]').click();">
+                    📄 Ver Extrato Completo & Transferir
+                  </button>
+                </div>
               </div>
 
             </div>
@@ -573,26 +555,32 @@
 
 
           <!-- ================================================================
-               ABA 2: ÁREA PIX
+               ABA 2: ÁREA PIX & TRANSFERIR
                ================================================================ -->
           <section id="tab-pix" class="tab-pane">
             <div class="card">
               <div class="card-header">
                 <div class="card-title-group">
-                  <h2>⚡ Área Pix</h2>
-                  <div class="card-subtitle">Envie e receba pagamentos instantâneos em segundos 24/7</div>
+                  <h2>⚡ Área Pix & Transferir</h2>
+                  <div class="card-subtitle">Envie Pix instantâneo, realize transferências criptografadas e acompanhe seu extrato detalhado</div>
                 </div>
               </div>
 
-              <div class="form-grid" style="margin-bottom: 1.5rem;">
+              <!-- Grid Superior: Enviar Pix, Nova Transferência Protegida e QR Code -->
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem;">
+                
+                <!-- 1. Enviar Pix Instantâneo -->
                 <div class="card" style="padding: 1.25rem;">
-                  <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">💸 Transferir Pix</h3>
+                  <h3 style="font-size: 1rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
+                    <span>💸</span> Transferir Pix Instantâneo
+                  </h3>
+                  <p style="font-size: 0.775rem; color: var(--text-secondary); margin-bottom: 0.75rem;">Liquidação em segundos 24 horas por dia</p>
                   <form id="pixTransferForm">
-                    <div class="form-group">
+                    <div class="form-group" style="margin-bottom: 0.75rem;">
                       <label class="form-label" for="pixKeyInput">Chave Pix (CPF, E-mail ou Telefone)</label>
                       <input type="text" id="pixKeyInput" class="form-control" placeholder="usuario@exemplo.com" required>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="margin-bottom: 1rem;">
                       <label class="form-label" for="pixAmountInput">Valor (R$)</label>
                       <input type="number" id="pixAmountInput" class="form-control" step="0.01" placeholder="150.00" required>
                     </div>
@@ -600,19 +588,42 @@
                   </form>
                 </div>
 
-                <div class="card" style="padding: 1.5rem; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 0%, rgba(197,160,89,0.08) 0%, rgba(15,23,42,0.95) 100%); border: 1px solid rgba(197,160,89,0.25);">
-                  <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 0.5rem;">
+                <!-- 2. Nova Transferência Protegida (Cofre Criptográfico) -->
+                <div class="card" style="padding: 1.25rem;">
+                  <h3 style="font-size: 1rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
+                    <span>🔒</span> Nova Transferência Protegida
+                  </h3>
+                  <p style="font-size: 0.775rem; color: var(--text-secondary); margin-bottom: 0.75rem;">Transferência via token ou cartão com criptografia</p>
+                  <form id="txForm">
+                    <div class="form-group" style="margin-bottom: 0.6rem;">
+                      <label class="form-label" for="txDoc">CPF do Beneficiário</label>
+                      <input type="text" id="txDoc" class="form-control" placeholder="000.000.000-00" required style="font-size: 0.85rem;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0.6rem;">
+                      <label class="form-label" for="txCard">Cartão / Token Criptografado</label>
+                      <input type="text" id="txCard" class="form-control" placeholder="Token do Cartão" required style="font-size: 0.85rem;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                      <label class="form-label" for="txValue">Valor (R$)</label>
+                      <input type="number" id="txValue" class="form-control" step="0.01" placeholder="Valor (R$)" required style="font-size: 0.85rem;">
+                    </div>
+                    <button type="submit" class="btn btn-gradient" style="width: 100%;">Confirmar Transferência</button>
+                  </form>
+                </div>
+
+                <!-- 3. Meu QR Code Pix -->
+                <div class="card" style="padding: 1.25rem; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 0%, rgba(197,160,89,0.08) 0%, rgba(15,23,42,0.95) 100%); border: 1px solid rgba(197,160,89,0.25);">
+                  <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 0.35rem;">
                     <div style="font-size: 0.95rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 0.4rem;">
                       <span>⚡</span> Meu QR Code Pix
                     </div>
-                    <span class="badge badge-emerald" style="font-size: 0.65rem;">Padrão BACEN EMV</span>
+                    <span class="badge badge-emerald" style="font-size: 0.65rem;">BACEN EMV</span>
                   </div>
-                  <p style="font-size: 0.775rem; color: var(--text-secondary); margin-bottom: 1rem;">Aponte a câmera de qualquer banco ou app de pagamento para transferir</p>
+                  <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.65rem;">Aponte a câmera para transferir</p>
                   
                   <!-- Container Elegante de QR Code de Alta Resolução -->
-                  <div class="pix-qr-card-frame">
+                  <div class="pix-qr-card-frame" style="margin-bottom: 0.5rem;">
                     <div class="pix-qr-inner" id="pixQrCodeVisual">
-                      <!-- Renderizado com precisão matemática padrão QR Code Pix -->
                       <svg viewBox="0 0 160 160" class="pix-svg-canvas">
                         <defs>
                           <linearGradient id="pixEmvGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -620,22 +631,16 @@
                             <stop offset="100%" stop-color="#0f172a"/>
                           </linearGradient>
                         </defs>
-                        <!-- QR Code Frame & Pattern -->
                         <rect width="160" height="160" fill="#ffffff" rx="10"/>
-                        <!-- Top Left Finder Pattern -->
                         <rect x="12" y="12" width="40" height="40" rx="6" fill="#080c16"/>
                         <rect x="18" y="18" width="28" height="28" rx="4" fill="#ffffff"/>
                         <rect x="24" y="24" width="16" height="16" rx="2" fill="#080c16"/>
-                        <!-- Top Right Finder Pattern -->
                         <rect x="108" y="12" width="40" height="40" rx="6" fill="#080c16"/>
                         <rect x="114" y="18" width="28" height="28" rx="4" fill="#ffffff"/>
                         <rect x="120" y="24" width="16" height="16" rx="2" fill="#080c16"/>
-                        <!-- Bottom Left Finder Pattern -->
                         <rect x="12" y="108" width="40" height="40" rx="6" fill="#080c16"/>
                         <rect x="18" y="114" width="28" height="28" rx="4" fill="#ffffff"/>
                         <rect x="24" y="120" width="16" height="16" rx="2" fill="#080c16"/>
-                        
-                        <!-- Dynamic Alignment & Data Matrix Points -->
                         <rect x="60" y="18" width="8" height="8" fill="#080c16"/>
                         <rect x="76" y="18" width="8" height="8" fill="#080c16"/>
                         <rect x="92" y="18" width="8" height="8" fill="#080c16"/>
@@ -644,20 +649,15 @@
                         <rect x="60" y="42" width="8" height="8" fill="#080c16"/>
                         <rect x="76" y="42" width="8" height="8" fill="#080c16"/>
                         <rect x="92" y="42" width="8" height="8" fill="#080c16"/>
-
                         <rect x="18" y="60" width="8" height="8" fill="#080c16"/>
                         <rect x="34" y="60" width="8" height="8" fill="#080c16"/>
                         <rect x="18" y="76" width="8" height="8" fill="#080c16"/>
                         <rect x="34" y="76" width="8" height="8" fill="#080c16"/>
                         <rect x="18" y="92" width="8" height="8" fill="#080c16"/>
                         <rect x="34" y="92" width="8" height="8" fill="#080c16"/>
-
-                        <!-- Center Pix Diamond Seal -->
                         <rect x="64" y="64" width="32" height="32" rx="6" fill="#0b1329" stroke="#c5a059" stroke-width="2"/>
                         <path d="M80 70 L90 80 L80 90 L70 80 Z" fill="url(#pixEmvGrad)" stroke="#34d399" stroke-width="1.8"/>
                         <circle cx="80" cy="80" r="2.5" fill="#34d399"/>
-
-                        <!-- Right & Bottom Modules -->
                         <rect x="108" y="60" width="8" height="8" fill="#080c16"/>
                         <rect x="124" y="60" width="8" height="8" fill="#080c16"/>
                         <rect x="140" y="60" width="8" height="8" fill="#080c16"/>
@@ -666,7 +666,6 @@
                         <rect x="108" y="92" width="8" height="8" fill="#080c16"/>
                         <rect x="124" y="92" width="8" height="8" fill="#080c16"/>
                         <rect x="140" y="92" width="8" height="8" fill="#080c16"/>
-
                         <rect x="60" y="108" width="8" height="8" fill="#080c16"/>
                         <rect x="76" y="108" width="8" height="8" fill="#080c16"/>
                         <rect x="92" y="108" width="8" height="8" fill="#080c16"/>
@@ -683,14 +682,50 @@
                   </div>
 
                   <!-- Chave Pix Ativa com Badge de Copiar -->
-                  <div class="pix-key-preview-box">
-                    <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Chave Pix Registrada:</span>
-                    <span id="pixActiveKeyDisplay" style="font-family: var(--font-mono); font-size: 0.825rem; font-weight: 700; color: var(--bank-gold-light); word-break: break-all;">-</span>
+                  <div class="pix-key-preview-box" style="margin-bottom: 0.5rem;">
+                    <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">Chave Pix Registrada:</span>
+                    <span id="pixActiveKeyDisplay" style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--bank-gold-light); word-break: break-all;">-</span>
                   </div>
 
-                  <div style="display: flex; gap: 0.6rem; width: 100%; margin-top: 0.75rem;">
-                    <button class="btn btn-secondary btn-sm" id="copyMyPixKeyBtn" style="flex: 1;">📋 Copiar Chave Pix</button>
-                    <button class="btn btn-secondary btn-sm" id="copyPixPayloadBtn" style="flex: 1;">⚡ Copiar Código Copia e Cola</button>
+                  <div style="display: flex; gap: 0.4rem; width: 100%;">
+                    <button class="btn btn-secondary btn-sm" id="copyMyPixKeyBtn" style="flex: 1; font-size: 0.725rem; padding: 0.35rem;">📋 Copiar Chave</button>
+                    <button class="btn btn-secondary btn-sm" id="copyPixPayloadBtn" style="flex: 1; font-size: 0.725rem; padding: 0.35rem;">⚡ Copia e Cola</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Seção Inferior: Extrato & Auditoria Criptográfica -->
+              <div style="border-top: 1px solid var(--bank-border-soft); padding-top: 1.5rem;">
+                <div class="card-header" style="padding-left: 0; padding-right: 0;">
+                  <div class="card-title-group">
+                    <h2>📄 Extrato da Conta & Auditoria</h2>
+                    <div class="card-subtitle">Movimentações protegidas por criptografia de ponta a ponta</div>
+                  </div>
+                  <button class="btn btn-secondary btn-sm" id="refreshExtratoBtn">🔄 Atualizar Extrato</button>
+                </div>
+
+                <div class="bank-transactions-list" id="recentTransactionsList">
+                  <!-- Gerenciado dinamicamente pelo módulo conta.js com dados reais da conta -->
+                </div>
+
+                <!-- Tabela de Auditoria de Transações do Cofre -->
+                <div style="margin-top: 1.25rem;">
+                  <button class="btn btn-secondary btn-sm" id="loadTxBtn" style="width: 100%; font-size: 0.8rem;">Ver Histórico Criptografado da Conta</button>
+                  <div class="table-responsive" style="margin-top: 0.75rem;">
+                    <table class="data-table">
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Beneficiário</th>
+                          <th>Cartão / Método</th>
+                          <th>Valor</th>
+                          <th>Ação</th>
+                        </tr>
+                      </thead>
+                      <tbody id="txTableBody">
+                        <tr><td colspan="5" style="text-align: center; color: var(--text-muted); font-size: 0.8rem;">Carregando transações...</td></tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>

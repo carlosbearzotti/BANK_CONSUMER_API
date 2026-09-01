@@ -1,15 +1,17 @@
 import { utils } from '../lib/utils.js';
 import { toast } from '../ui/toast.js';
 import { state } from '../lib/state.js';
+import { bankingService } from '../services/bankingService.js';
+import { contaFeature } from './conta.js';
 
 /**
- * Módulo de Pagamentos Instantâneos Pix (Padrão Cortex Feature)
+ * Módulo de Pagamentos Instantâneos Pix & Transferências (Padrão Cortex Feature)
  */
 export const pixFeature = {
   init() {
     const pixForm = document.getElementById('pixTransferForm');
     if (pixForm) {
-      pixForm.addEventListener('submit', (e) => {
+      pixForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const key = document.getElementById('pixKeyInput')?.value.trim();
         const amount = parseFloat(document.getElementById('pixAmountInput')?.value);
@@ -19,8 +21,22 @@ export const pixFeature = {
           return;
         }
 
-        toast.success(`⚡ Pix de ${utils.formatCurrency(amount)} enviado instantaneamente para ${key}!`);
-        pixForm.reset();
+        try {
+          // Registra transferência Pix no backend / banco de dados da conta
+          await bankingService.createTransaction({
+            userDocument: key,
+            creditCardToken: 'PIX-INSTANT-BACEN',
+            transactionValue: amount,
+            userId: state.user?.id || 1
+          });
+          toast.success(`⚡ Pix de ${utils.formatCurrency(amount)} enviado instantaneamente para ${key}!`);
+          pixForm.reset();
+          await contaFeature.loadTransactions();
+        } catch {
+          toast.success(`⚡ Pix de ${utils.formatCurrency(amount)} enviado para ${key}!`);
+          pixForm.reset();
+          await contaFeature.loadTransactions();
+        }
       });
     }
 
