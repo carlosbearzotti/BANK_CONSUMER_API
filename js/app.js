@@ -8,12 +8,15 @@ import { loansFeature } from './features/loans.js';
 import { gpsFeature } from './features/gps.js';
 import { shortenerFeature } from './features/shortener.js';
 import { profileFeature } from './features/profile.js';
+import { authService } from './services/authService.js';
+import { state } from './lib/state.js';
+import { toast } from './ui/toast.js';
 
 /**
  * Bootstrap Principal da Aplicação (Padrão Cortex Application Lifecycle)
  */
 class Application {
-  init() {
+  async init() {
     // 1. Inicializar Presentation & Layout Shell
     appShell.init();
     modal.initAll();
@@ -28,7 +31,27 @@ class Application {
     shortenerFeature.init();
     profileFeature.init();
 
+    // 3. Validação Ativa de Sessão no Backend (Evita retenção de cache de contas excluídas)
+    await this.validateSession();
+
     console.info('🏦 LãoBank Digital Consumer v2.0 inicializado com sucesso (Padrão Cortex Architecture).');
+  }
+
+  async validateSession() {
+    if (!state.token) return;
+
+    try {
+      const user = await authService.getProfile();
+      if (user && (user.email || user.id)) {
+        state.setUser(user);
+      } else {
+        throw new Error('Conta não encontrada no banco de dados.');
+      }
+    } catch (err) {
+      console.warn('⚠️ Sessão em cache expirada ou conta excluída no backend. Resetando para tela de login...', err.message);
+      state.clearAuth();
+      toast.info('Sessão expirada ou não encontrada no banco de dados. Faça login novamente.');
+    }
   }
 }
 

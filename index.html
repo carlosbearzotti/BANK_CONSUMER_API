@@ -24,10 +24,13 @@
     <div class="gmail-auth-wrapper">
 
       <!-- API Endpoint Toolbar (Top) -->
-      <div style="position: absolute; top: 1.25rem; display: flex; align-items: center; gap: 0.75rem; background: rgba(15,23,42,0.7); padding: 0.4rem 0.85rem; border-radius: var(--radius-full); border: 1px solid rgba(197,160,89,0.25); font-size: 0.775rem;">
+      <div style="position: absolute; top: 1.25rem; display: flex; align-items: center; gap: 0.75rem; background: rgba(15,23,42,0.85); padding: 0.4rem 0.85rem; border-radius: var(--radius-full); border: 1px solid rgba(197,160,89,0.25); font-size: 0.775rem; z-index: 10;">
         <span id="authApiStatusDot" style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
         <span style="color: var(--bank-gold-light); font-weight: 600;">API LãoBank:</span>
         <input type="text" id="authApiUrlInput" value="http://localhost:8080" style="background: transparent; border: none; color: #ffffff; font-family: var(--font-mono); font-size: 0.75rem; outline: none; width: 150px;">
+        <button type="button" id="clearStorageCacheBtn" title="Limpar todo o cache e dados temporários do navegador" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35); color: #f87171; border-radius: var(--radius-full); font-size: 0.7rem; font-weight: 600; padding: 0.15rem 0.5rem; cursor: pointer; transition: all 0.2s;">
+          🧹 Limpar Cache
+        </button>
       </div>
 
       <!-- Classic Bank Style Auth Card (Gmail Flow Layout) -->

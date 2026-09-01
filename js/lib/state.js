@@ -67,6 +67,25 @@ class AppState {
     this.notify('view', token ? 'banking' : 'auth');
   }
 
+  setUser(user) {
+    this.user = user;
+    if (user) {
+      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
+    } else {
+      localStorage.removeItem(STORAGE_KEYS.USER);
+    }
+    this.notify('auth', { token: this.token, user });
+  }
+
+  clearAuth() {
+    this.token = null;
+    this.user = null;
+    localStorage.removeItem(STORAGE_KEYS.TOKEN);
+    localStorage.removeItem(STORAGE_KEYS.USER);
+    this.notify('auth', { token: null, user: null });
+    this.notify('view', 'auth');
+  }
+
   setApiKey(key) {
     this.apiKey = key || DEFAULT_CONFIG.API_KEY;
     localStorage.setItem(STORAGE_KEYS.API_KEY, this.apiKey);

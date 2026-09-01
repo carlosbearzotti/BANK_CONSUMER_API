@@ -16,6 +16,20 @@ export const authFeature = {
     this.setupPasswordToggles();
     this.setupPasswordRecovery();
     this.setupFirstAccessPinChange();
+    this.setupClearCache();
+  },
+
+  setupClearCache() {
+    const clearBtn = document.getElementById('clearStorageCacheBtn');
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        if (confirm('Deseja limpar todo o cache e dados temporários salvos no navegador?')) {
+          localStorage.clear();
+          sessionStorage.clear();
+          window.location.reload();
+        }
+      });
+    }
   },
 
   setupLoginForm() {

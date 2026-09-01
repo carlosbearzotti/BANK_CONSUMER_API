@@ -63,6 +63,10 @@ export async function apiRequest(endpoint, options = {}) {
     });
 
     if (!isOk) {
+      if (status === 401 || (status === 404 && endpoint.includes('/api/auth/me'))) {
+        state.clearAuth();
+      }
+
       const errorMsg = (responseData && (responseData.message || responseData.error || responseData.details)) ||
         `Erro HTTP ${status}: ${statusText}`;
       const err = new Error(errorMsg);
