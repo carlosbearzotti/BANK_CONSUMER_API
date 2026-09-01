@@ -5,12 +5,38 @@ import { state } from '../lib/state.js';
  * Módulo de Cartões de Crédito e Cartão Virtual 3D (Padrão Cortex Feature)
  */
 export const cardsFeature = {
-  invoiceAmount: 2975.00,
+  invoiceAmount: 0.00,
 
   init() {
     this.setupCardFlip();
     this.setupCardActions();
     this.setupInvoicePayment();
+
+    state.subscribe('auth', () => this.refreshCardMetrics());
+    this.refreshCardMetrics();
+  },
+
+  refreshCardMetrics() {
+    const user = state.user;
+    const income = user?.income || 0;
+    // Para conta real recém-criada: fatura zerada ou calculada, limite proporcional à renda
+    const totalLimit = income > 0 ? income * 0.8 : 0;
+    const availableLimit = Math.max(0, totalLimit - this.invoiceAmount);
+    const progressPercent = totalLimit > 0 ? ((this.invoiceAmount / totalLimit) * 100).toFixed(0) : 0;
+
+    const availableLimitEl = document.getElementById('cardAvailableLimit');
+    const totalLimitEl = document.getElementById('cardTotalLimit');
+    const progressFillEl = document.getElementById('cardLimitProgressFill');
+    const invoiceTextEl = document.getElementById('cardInvoiceText');
+    const cardsTabInvoiceDisplay = document.getElementById('cardsTabInvoiceDisplay');
+    const modalInvoiceValueDisplay = document.getElementById('modalInvoiceValueDisplay');
+
+    if (availableLimitEl) availableLimitEl.textContent = `R$ ${availableLimit.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+    if (totalLimitEl) totalLimitEl.textContent = `R$ ${totalLimit.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+    if (progressFillEl) progressFillEl.style.width = `${progressPercent}%`;
+    if (invoiceTextEl) invoiceTextEl.textContent = `R$ ${this.invoiceAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+    if (cardsTabInvoiceDisplay) cardsTabInvoiceDisplay.textContent = `R$ ${this.invoiceAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+    if (modalInvoiceValueDisplay) modalInvoiceValueDisplay.textContent = `R$ ${this.invoiceAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
   },
 
   setupCardFlip() {
@@ -48,6 +74,7 @@ export const cardsFeature = {
         if (balanceSpan) {
           balanceSpan.textContent = `R$ ${userIncome.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
         }
+        this.refreshCardMetrics();
         modalEl.classList.add('active');
       });
     }
@@ -60,6 +87,12 @@ export const cardsFeature = {
         const userEmail = user?.email || 'correntista@laobank.com.br';
         const userName = user?.name || 'Correntista LãoBank';
 
+        if (this.invoiceAmount <= 0) {
+          toast.info('Não há fatura pendente para pagamento (R$ 0,00).');
+          if (modalEl) modalEl.classList.remove('active');
+          return;
+        }
+
         toast.info('Processando operação de pagamento...');
 
         if (method === 'ACCOUNT_BALANCE') {
@@ -70,8 +103,7 @@ export const cardsFeature = {
           } else {
             toast.success(`Fatura de R$ ${this.invoiceAmount.toFixed(2)} paga com sucesso via Saldo em Conta!`);
             this.invoiceAmount = 0;
-            const invoiceDisplay = document.querySelector('#tab-cards .balance-sensitive');
-            if (invoiceDisplay) invoiceDisplay.textContent = 'R$ 0,00 (Fatura Paga)';
+            this.refreshCardMetrics();
           }
           if (modalEl) modalEl.classList.remove('active');
 

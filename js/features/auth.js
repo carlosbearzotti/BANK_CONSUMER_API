@@ -97,10 +97,17 @@ export const authFeature = {
       const email = document.getElementById('regEmail')?.value.trim();
       const cpf = document.getElementById('regCpf')?.value.trim();
       const password = document.getElementById('regPassword')?.value;
-      const income = parseFloat(document.getElementById('regIncome')?.value) || 7500.0;
-      const age = parseInt(document.getElementById('regAge')?.value, 10) || 29;
-      const latitude = parseFloat(document.getElementById('regLat')?.value) || -23.5505;
-      const longitude = parseFloat(document.getElementById('regLng')?.value) || -46.6333;
+      const income = parseFloat(document.getElementById('regIncome')?.value);
+      const age = parseInt(document.getElementById('regAge')?.value, 10);
+      const latVal = document.getElementById('regLat')?.value;
+      const lngVal = document.getElementById('regLng')?.value;
+      const latitude = latVal ? parseFloat(latVal) : null;
+      const longitude = lngVal ? parseFloat(lngVal) : null;
+
+      if (!name || !email || !cpf || !password || isNaN(income) || isNaN(age)) {
+        toast.warning('Preencha todos os campos obrigatórios do formulário.');
+        return;
+      }
 
       const payload = {
         name,

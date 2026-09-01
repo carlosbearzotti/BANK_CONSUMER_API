@@ -152,9 +152,9 @@
             <div id="resolvedDetailsText" style="color: var(--text-secondary); font-size: 0.75rem;">Carregando dados...</div>
           </div>
 
-          <!-- Campos de Coordenadas Preenchidos Automaticamente em Background -->
-          <input type="hidden" id="regLat" value="-23.5505">
-          <input type="hidden" id="regLng" value="-46.6333">
+          <!-- Campos de Coordenadas Preenchidos Automaticamente em Background via Busca de CEP -->
+          <input type="hidden" id="regLat" value="">
+          <input type="hidden" id="regLng" value="">
 
           <div class="google-auth-actions" style="margin-top: 1.5rem;">
             <button type="button" id="switchToLoginBtn" class="google-btn-text">Fazer login em vez disso</button>
@@ -324,13 +324,13 @@
 
               <div class="balance-value-row">
                 <span class="balance-currency">R$</span>
-                <span id="bankBalanceDisplay" class="balance-amount">14.850,00</span>
+                <span id="bankBalanceDisplay" class="balance-amount">0,00</span>
               </div>
 
               <div>
                 <span class="balance-yield-badge">
                   <span>📈</span>
-                  <span>Rendimento LãoBank: +102% do CDI (+R$ 142,30 este mês)</span>
+                  <span id="bankYieldDisplay">Rendimento LãoBank: +102% do CDI</span>
                 </span>
               </div>
 
@@ -433,14 +433,14 @@
                 <div class="card-limit-box">
                   <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
                     <span style="color: var(--text-secondary);">Limite Disponível:</span>
-                    <strong style="color: #34d399;" class="balance-sensitive">R$ 5.525,00</strong>
+                    <strong style="color: #34d399;" class="balance-sensitive" id="cardAvailableLimit">R$ 0,00</strong>
                   </div>
                   <div class="limit-progress-bar">
-                    <div class="limit-progress-fill" style="width: 35%;"></div>
+                    <div class="limit-progress-fill" id="cardLimitProgressFill" style="width: 0%;"></div>
                   </div>
                   <div style="display: flex; justify-content: space-between; font-size: 0.775rem; color: var(--text-muted);">
-                    <span>Fatura atual: <strong class="balance-sensitive" style="color: #f1f5f9;">R$ 2.975,00</strong></span>
-                    <span>Limite total: R$ 8.500,00</span>
+                    <span>Fatura atual: <strong class="balance-sensitive" id="cardInvoiceText" style="color: #f1f5f9;">R$ 0,00</strong></span>
+                    <span>Limite total: <span id="cardTotalLimit">R$ 0,00</span></span>
                   </div>
                 </div>
               </div>
@@ -588,7 +588,7 @@
                     </svg>
                   </div>
 
-                  <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('00020126580014br.gov.bcb.pix0136carlos@exemplo.com5204000053039865802BR5912Carlos Silva6009Sao Paulo62070503***6304E2CA'); alert('Chave Pix Copia e Cola copiada!');">📋 Copiar Chave Pix</button>
+                  <button class="btn btn-secondary btn-sm" id="copyMyPixKeyBtn">📋 Copiar Minha Chave Pix</button>
                 </div>
               </div>
 
@@ -620,8 +620,8 @@
 
                 <div class="card" style="padding: 1.25rem;">
                   <h3 style="font-size: 1rem; margin-bottom: 0.75rem;">📊 Fatura Atual</h3>
-                  <div style="font-size: 1.6rem; font-weight: 800; color: #f87171; margin-bottom: 0.5rem;" class="balance-sensitive">R$ 2.975,00</div>
-                  <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">Vencimento em 10 de Setembro &bull; Fechamento em 03 de Setembro</p>
+                  <div style="font-size: 1.6rem; font-weight: 800; color: #f87171; margin-bottom: 0.5rem;" class="balance-sensitive" id="cardsTabInvoiceDisplay">R$ 0,00</div>
+                  <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;" id="cardsTabDueDateText">Fatura em dia &bull; Próximo fechamento no início do mês</p>
                   <button class="btn btn-primary btn-sm" id="openInvoiceModalBtn">Pagar Fatura</button>
                 </div>
               </div>
@@ -645,8 +645,8 @@
               <form id="loanSimulateForm">
                 <div class="form-grid">
                   <div class="form-group">
-                    <label class="form-label" for="loanName">Nome do Cliente</label>
-                    <input type="text" id="loanName" class="form-control" placeholder="Carlos Silva" required>
+                    <label class="form-label" for="loanName">Nome Completo</label>
+                    <input type="text" id="loanName" class="form-control" placeholder="Nome do Titular" required>
                   </div>
                   <div class="form-group">
                     <label class="form-label" for="loanCpf">CPF</label>
@@ -730,15 +730,15 @@
                       <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.6rem; margin-bottom: 1rem;">
                         <div class="form-group" style="margin-bottom: 0;">
                           <label class="form-label" for="searchX">Ref X</label>
-                          <input type="number" id="searchX" class="form-control" value="20" required>
+                          <input type="number" id="searchX" class="form-control" placeholder="X" required>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
                           <label class="form-label" for="searchY">Ref Y</label>
-                          <input type="number" id="searchY" class="form-control" value="10" required>
+                          <input type="number" id="searchY" class="form-control" placeholder="Y" required>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
                           <label class="form-label" for="searchDmax">Raio (m)</label>
-                          <input type="number" id="searchDmax" class="form-control" value="10" required>
+                          <input type="number" id="searchDmax" class="form-control" placeholder="Distância" required>
                         </div>
                       </div>
                       <button type="submit" class="btn btn-gradient" style="width: 100%;">Buscar Agências no Raio</button>
@@ -788,7 +788,7 @@
               <form id="shortenerForm">
                 <div class="form-group" style="margin-bottom: 1.25rem;">
                   <label class="form-label" for="originalUrlInput">Cole a URL do Boleto, Comprovante ou Pagamento:</label>
-                  <input type="url" id="originalUrlInput" class="form-control" placeholder="https://laobank.com.br/boletos/2026-fatura-mensal-carlos-silva-pdf" required>
+                  <input type="url" id="originalUrlInput" class="form-control" placeholder="https://laobank.com.br/boletos/fatura-mensal-digital-pdf" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Gerar Link Seguro Encurtado</button>
               </form>
@@ -1153,7 +1153,7 @@
       <div class="modal-body">
         <div style="text-align: center; margin-bottom: 1.5rem;">
           <div style="font-size: 0.85rem; color: var(--text-secondary);">Valor da Fatura Fechada</div>
-          <div style="font-size: 2rem; font-weight: 800; color: #f87171;">R$ 2.975,00</div>
+          <div style="font-size: 2rem; font-weight: 800; color: #f87171;" id="modalInvoiceValueDisplay">R$ 0,00</div>
           <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">Vencimento em 10 de Setembro</div>
         </div>
         

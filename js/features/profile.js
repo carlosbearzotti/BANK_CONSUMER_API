@@ -191,14 +191,19 @@ export const profileFeature = {
     const name = user?.name || 'Cliente';
     const initial = name.charAt(0).toUpperCase();
 
-    // Top Header & Credit Card
+    // Top Header & Credit Card & Home Balance Display
     const bankUserName = document.getElementById('bankUserName');
     const bankUserAvatar = document.getElementById('bankUserAvatar');
     const cardFrontHolder = document.getElementById('cardFrontHolder');
+    const bankBalanceDisplay = document.getElementById('bankBalanceDisplay');
 
     if (bankUserName) bankUserName.textContent = `Olá, ${name}`;
     if (bankUserAvatar) bankUserAvatar.textContent = initial;
     if (cardFrontHolder) cardFrontHolder.textContent = name.toUpperCase();
+    if (bankBalanceDisplay) {
+      const userBalance = user?.income || 0;
+      bankBalanceDisplay.textContent = userBalance.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+    }
 
     // Nubank Profile Screen
     const profileHeroName = document.getElementById('profileHeroName');
