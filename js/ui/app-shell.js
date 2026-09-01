@@ -57,6 +57,7 @@ export const appShell = {
         activePane.classList.add('active');
       }
 
+      document.body.style.overflow = '';
       state.setActiveTab(targetTab);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };

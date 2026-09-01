@@ -562,3 +562,9 @@
   font-family: var(--font-mono);
   text-align: right;
 }
+
+#tab-profile {
+  width: 100%;
+  padding-bottom: 6rem;
+  overflow-y: visible;
+}

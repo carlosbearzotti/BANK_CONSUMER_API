@@ -799,12 +799,14 @@
 
 .tab-pane.active {
   display: block;
-  animation: fadeIn 0.25s ease forwards;
+  animation: fadeInTab 0.2s ease forwards;
+  min-height: 100%;
+  overflow-y: visible;
 }
 
-@keyframes fadeIn {
+@keyframes fadeInTab {
   from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+  to { opacity: 1; transform: none; }
 }
 
 /* ==========================================================================
