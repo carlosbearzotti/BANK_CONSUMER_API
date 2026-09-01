@@ -130,18 +130,39 @@ export const cardsFeature = {
               <span style="color: var(--text-secondary);">🌐 Limite para Compras Online:</span>
               <strong style="color: #60a5fa;" id="onlineLimitText_${card.id}">R$ ${card.onlineLimit.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>
             </div>
-            <div style="display: flex; gap: 0.5rem; margin-top: 0.6rem;">
+            <div style="display: flex; gap: 0.5rem; margin-top: 0.6rem; flex-wrap: wrap;">
               <button class="btn btn-secondary btn-sm" style="flex: 1; font-size: 0.75rem;" onclick="window.cardsFeature.adjustOnlineLimit('${card.id}')">
-                ⚙️ Ajustar Limite Online
+                ⚙️ Limite Online
               </button>
               <button class="btn ${card.isBlocked ? 'btn-success' : 'btn-danger'} btn-sm" style="font-size: 0.75rem;" onclick="window.cardsFeature.toggleSingleCardBlock('${card.id}')">
                 ${card.isBlocked ? '🔓 Desbloquear' : '🔒 Bloquear'}
               </button>
+              ${card.isVirtual ? `
+                <button class="btn btn-danger btn-sm" style="font-size: 0.75rem;" title="Excluir Cartão Virtual" onclick="window.cardsFeature.deleteVirtualCard('${card.id}')">
+                  🗑️ Excluir
+                </button>
+              ` : ''}
             </div>
           </div>
         </div>
       `;
     }).join('');
+  },
+
+  deleteVirtualCard(cardId) {
+    const card = this.cards.find((c) => c.id === cardId);
+    if (!card) return;
+    if (!card.isVirtual) {
+      toast.warning('O Cartão Físico principal da conta não pode ser excluído.');
+      return;
+    }
+
+    if (confirm(`Deseja realmente excluir o Cartão Virtual •••• ${card.last4}?\n\n⚠️ Atenção: Quaisquer compras ou gastos já lançados permanecerão computados na fatura geral da conta.`)) {
+      this.cards = this.cards.filter((c) => c.id !== cardId);
+      this.saveCards();
+      this.refreshCardMetrics();
+      toast.success(`🗑️ Cartão Virtual •••• ${card.last4} excluído! Seus lançamentos continuam registrados na fatura geral.`);
+    }
   },
 
   updateSelectBlockDropdown() {
