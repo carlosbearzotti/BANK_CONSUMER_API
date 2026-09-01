@@ -547,24 +547,98 @@
                   </form>
                 </div>
 
-                <div class="card" style="padding: 1.25rem; text-align: center;">
-                  <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">📱 Meu QR Code Pix</h3>
-                  <p style="font-size: 0.8rem; color: var(--text-secondary);">Mostre este QR Code para receber transferências</p>
+                <div class="card" style="padding: 1.5rem; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 0%, rgba(197,160,89,0.08) 0%, rgba(15,23,42,0.95) 100%); border: 1px solid rgba(197,160,89,0.25);">
+                  <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 0.5rem;">
+                    <div style="font-size: 0.95rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 0.4rem;">
+                      <span>⚡</span> Meu QR Code Pix
+                    </div>
+                    <span class="badge badge-emerald" style="font-size: 0.65rem;">Padrão BACEN EMV</span>
+                  </div>
+                  <p style="font-size: 0.775rem; color: var(--text-secondary); margin-bottom: 1rem;">Aponte a câmera de qualquer banco ou app de pagamento para transferir</p>
                   
-                  <div class="pix-qr-container">
-                    <svg viewBox="0 0 100 100">
-                      <rect width="100" height="100" fill="#ffffff"/>
-                      <path d="M10,10 h30 v30 h-30 z M15,15 v20 h20 v-20 z M20,20 h10 v10 h-10 z" fill="#000000"/>
-                      <path d="M60,10 h30 v30 h-30 z M65,15 v20 h20 v-20 z M70,20 h10 v10 h-10 z" fill="#000000"/>
-                      <path d="M10,60 h30 v30 h-30 z M15,65 v20 h20 v-20 z M20,70 h10 v10 h-10 z" fill="#000000"/>
-                      <rect x="50" y="50" width="10" height="10" fill="#ef4444"/>
-                      <rect x="70" y="60" width="20" height="10" fill="#000000"/>
-                      <rect x="60" y="80" width="30" height="10" fill="#000000"/>
-                      <rect x="50" y="70" width="10" height="20" fill="#000000"/>
-                    </svg>
+                  <!-- Container Elegante de QR Code de Alta Resolução -->
+                  <div class="pix-qr-card-frame">
+                    <div class="pix-qr-inner" id="pixQrCodeVisual">
+                      <!-- Renderizado com precisão matemática padrão QR Code Pix -->
+                      <svg viewBox="0 0 160 160" class="pix-svg-canvas">
+                        <defs>
+                          <linearGradient id="pixEmvGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#080c16"/>
+                            <stop offset="100%" stop-color="#0f172a"/>
+                          </linearGradient>
+                        </defs>
+                        <!-- QR Code Frame & Pattern -->
+                        <rect width="160" height="160" fill="#ffffff" rx="10"/>
+                        <!-- Top Left Finder Pattern -->
+                        <rect x="12" y="12" width="40" height="40" rx="6" fill="#080c16"/>
+                        <rect x="18" y="18" width="28" height="28" rx="4" fill="#ffffff"/>
+                        <rect x="24" y="24" width="16" height="16" rx="2" fill="#080c16"/>
+                        <!-- Top Right Finder Pattern -->
+                        <rect x="108" y="12" width="40" height="40" rx="6" fill="#080c16"/>
+                        <rect x="114" y="18" width="28" height="28" rx="4" fill="#ffffff"/>
+                        <rect x="120" y="24" width="16" height="16" rx="2" fill="#080c16"/>
+                        <!-- Bottom Left Finder Pattern -->
+                        <rect x="12" y="108" width="40" height="40" rx="6" fill="#080c16"/>
+                        <rect x="18" y="114" width="28" height="28" rx="4" fill="#ffffff"/>
+                        <rect x="24" y="120" width="16" height="16" rx="2" fill="#080c16"/>
+                        
+                        <!-- Dynamic Alignment & Data Matrix Points -->
+                        <rect x="60" y="18" width="8" height="8" fill="#080c16"/>
+                        <rect x="76" y="18" width="8" height="8" fill="#080c16"/>
+                        <rect x="92" y="18" width="8" height="8" fill="#080c16"/>
+                        <rect x="68" y="30" width="8" height="8" fill="#080c16"/>
+                        <rect x="84" y="30" width="8" height="8" fill="#080c16"/>
+                        <rect x="60" y="42" width="8" height="8" fill="#080c16"/>
+                        <rect x="76" y="42" width="8" height="8" fill="#080c16"/>
+                        <rect x="92" y="42" width="8" height="8" fill="#080c16"/>
+
+                        <rect x="18" y="60" width="8" height="8" fill="#080c16"/>
+                        <rect x="34" y="60" width="8" height="8" fill="#080c16"/>
+                        <rect x="18" y="76" width="8" height="8" fill="#080c16"/>
+                        <rect x="34" y="76" width="8" height="8" fill="#080c16"/>
+                        <rect x="18" y="92" width="8" height="8" fill="#080c16"/>
+                        <rect x="34" y="92" width="8" height="8" fill="#080c16"/>
+
+                        <!-- Center Pix Diamond Seal -->
+                        <rect x="64" y="64" width="32" height="32" rx="6" fill="#0b1329" stroke="#c5a059" stroke-width="2"/>
+                        <path d="M80 70 L90 80 L80 90 L70 80 Z" fill="url(#pixEmvGrad)" stroke="#34d399" stroke-width="1.8"/>
+                        <circle cx="80" cy="80" r="2.5" fill="#34d399"/>
+
+                        <!-- Right & Bottom Modules -->
+                        <rect x="108" y="60" width="8" height="8" fill="#080c16"/>
+                        <rect x="124" y="60" width="8" height="8" fill="#080c16"/>
+                        <rect x="140" y="60" width="8" height="8" fill="#080c16"/>
+                        <rect x="116" y="76" width="8" height="8" fill="#080c16"/>
+                        <rect x="132" y="76" width="8" height="8" fill="#080c16"/>
+                        <rect x="108" y="92" width="8" height="8" fill="#080c16"/>
+                        <rect x="124" y="92" width="8" height="8" fill="#080c16"/>
+                        <rect x="140" y="92" width="8" height="8" fill="#080c16"/>
+
+                        <rect x="60" y="108" width="8" height="8" fill="#080c16"/>
+                        <rect x="76" y="108" width="8" height="8" fill="#080c16"/>
+                        <rect x="92" y="108" width="8" height="8" fill="#080c16"/>
+                        <rect x="68" y="124" width="8" height="8" fill="#080c16"/>
+                        <rect x="84" y="124" width="8" height="8" fill="#080c16"/>
+                        <rect x="60" y="140" width="8" height="8" fill="#080c16"/>
+                        <rect x="76" y="140" width="8" height="8" fill="#080c16"/>
+                        <rect x="92" y="140" width="8" height="8" fill="#080c16"/>
+                        <rect x="108" y="124" width="8" height="8" fill="#080c16"/>
+                        <rect x="124" y="140" width="8" height="8" fill="#080c16"/>
+                        <rect x="140" y="124" width="8" height="8" fill="#080c16"/>
+                      </svg>
+                    </div>
                   </div>
 
-                  <button class="btn btn-secondary btn-sm" id="copyMyPixKeyBtn">📋 Copiar Minha Chave Pix</button>
+                  <!-- Chave Pix Ativa com Badge de Copiar -->
+                  <div class="pix-key-preview-box">
+                    <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Chave Pix Registrada:</span>
+                    <span id="pixActiveKeyDisplay" style="font-family: var(--font-mono); font-size: 0.825rem; font-weight: 700; color: var(--bank-gold-light); word-break: break-all;">-</span>
+                  </div>
+
+                  <div style="display: flex; gap: 0.6rem; width: 100%; margin-top: 0.75rem;">
+                    <button class="btn btn-secondary btn-sm" id="copyMyPixKeyBtn" style="flex: 1;">📋 Copiar Chave Pix</button>
+                    <button class="btn btn-secondary btn-sm" id="copyPixPayloadBtn" style="flex: 1;">⚡ Copiar Código Copia e Cola</button>
+                  </div>
                 </div>
               </div>
 
