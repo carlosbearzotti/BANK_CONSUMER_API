@@ -124,20 +124,6 @@ export const authFeature = {
         await authService.register(payload);
         toast.success('Conta bancária criada com sucesso! Faça login com suas credenciais.');
 
-        // Disparo assíncrono de e-mail de boas-vindas / cartão emitido (Porta 3002)
-        fetch('http://localhost:3002/api/notify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            to: email,
-            name: name,
-            template: 'card_issued',
-            last4: '8824',
-            deliveryDays: 7,
-            subject: '💳 Seu Cartão LãoBank foi emitido! Físico em até 7 dias e Virtual liberado'
-          })
-        }).catch(() => {});
-
         // Redireciona para o modo "Fazer login" de forma limpa
         document.getElementById('switchToLoginBtn')?.click();
         const loginEmail = document.getElementById('loginEmail');
