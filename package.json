@@ -4,10 +4,22 @@
   "description": "Frontend Consumer standalone para a API Integrados (Fintech Suite)",
   "main": "index.html",
   "scripts": {
+    "test": "jest",
     "dev": "npx serve . -l 3000",
     "start": "npx serve . -l 3000"
   },
-  "keywords": ["fintech", "api-consumer", "spring-boot", "dashboard"],
+  "keywords": [
+    "fintech",
+    "api-consumer",
+    "spring-boot",
+    "dashboard"
+  ],
   "author": "Carlos",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^8.0.1",
+    "@babel/preset-env": "^8.0.2",
+    "jest": "^30.5.0",
+    "jest-environment-jsdom": "^30.5.0"
+  }
 }

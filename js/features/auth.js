@@ -68,7 +68,7 @@ export const authFeature = {
         toast.success(`Bem-vindo ao LãoBank, ${user?.name || 'Cliente'}!`);
 
         // Verifica se é o primeiro acesso e exige a troca da senha provisória do cartão
-        const needsPinChange = localStorage.getItem(`laobank_pin_needs_change_${email}`) === 'true';
+        const needsPinChange = state.needsPinChange(email);
         if (needsPinChange) {
           setTimeout(() => {
             this.openFirstAccessPinModal(email);
@@ -132,6 +132,8 @@ export const authFeature = {
       if (!name || !email || !cpf || !password || isNaN(income) || isNaN(age)) {
         toast.warning('Preencha todos os campos obrigatórios do formulário.');
         return;
+      }
+
       // Gera a senha provisória do cartão de 4 dígitos para enviar e sincronizar com o backend
       const generatedPin = Math.floor(1000 + Math.random() * 9000).toString();
 
@@ -174,11 +176,7 @@ export const authFeature = {
           }
         ];
 
-        localStorage.setItem(`laobank_cards_${email}`, JSON.stringify(initialCards));
-        localStorage.setItem(`laobank_card_pin_${email}`, finalPin);
-        localStorage.setItem(`laobank_temp_pin_${email}`, finalPin);
-        localStorage.setItem(`laobank_pin_needs_change_${email}`, 'true');
-        localStorage.setItem(`laobank_user_plan_${email}`, selectedPlanKey);
+        state.setupUserEnvironment(email, initialCards, finalPin, selectedPlanKey);
 
         toast.success(`Conta criada no plano ${planConfig.name}! Senha Provisória do Cartão: ${finalPin} (Enviada também para ${email}).`);
 
@@ -520,7 +518,7 @@ export const authFeature = {
       const newPin = document.getElementById('newPinInput')?.value.trim();
       const confirmPin = document.getElementById('confirmNewPinInput')?.value.trim();
 
-      const storedTempPin = localStorage.getItem(`laobank_temp_pin_${email}`) || localStorage.getItem(`laobank_card_pin_${email}`) || '1234';
+      const storedTempPin = state.getTempPin(email);
 
       if (!tempPin || tempPin !== storedTempPin) {
         toast.error('A senha provisória informada está incorreta! Verifique seu e-mail.');
@@ -538,17 +536,13 @@ export const authFeature = {
       }
 
       // Salva a nova senha definitiva do cartão
-      localStorage.setItem(`laobank_card_pin_${email}`, newPin);
-      localStorage.removeItem(`laobank_pin_needs_change_${email}`);
+      state.updateUserPin(email, newPin);
 
       // Atualiza nos cartões armazenados
-      const storedCards = localStorage.getItem(`laobank_cards_${email}`);
-      if (storedCards) {
-        try {
-          const cards = JSON.parse(storedCards);
-          cards.forEach((c) => { c.cardPin = newPin; });
-          localStorage.setItem(`laobank_cards_${email}`, JSON.stringify(cards));
-        } catch {}
+      const cards = state.getUserCards(email);
+      if (cards) {
+        cards.forEach((c) => { c.cardPin = newPin; });
+        state.updateUserCards(email, cards);
       }
 
       modal.close('firstAccessPinChangeModal');

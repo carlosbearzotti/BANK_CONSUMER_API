@@ -275,16 +275,7 @@ export const cardsFeature = {
   },
 
   openVirtualCardModal() {
-    const user = state.user;
     const pinInput = document.getElementById('virtualCardPinInput');
-    const pinHint = document.getElementById('virtualCardPinHint');
-    const userEmail = user?.email || user?.id;
-    const storedPin = localStorage.getItem(`laobank_card_pin_${userEmail}`) || '1234';
-
-    if (pinHint) {
-      pinHint.textContent = `💡 Dica de segurança: Seu PIN cadastrado é ${storedPin}`;
-    }
-
     if (pinInput) pinInput.value = '';
     modal.open('virtualCardConfirmModal');
   },

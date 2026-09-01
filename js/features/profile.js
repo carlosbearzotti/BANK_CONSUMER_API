@@ -293,10 +293,11 @@ export const profileFeature = {
     const ageStr = user?.age ? `${user.age} anos` : '';
     const lat = user?.latitude != null ? user.latitude.toFixed(4) : '';
     const lng = user?.longitude != null ? user.longitude.toFixed(4) : '';
-    const pin = localStorage.getItem(`laobank_card_pin_${user?.email || user?.id}`) || '••••';
+    const pin = localStorage.getItem(`laobank_card_pin_${user?.email || user?.id}`) || '1234';
     const profileCardPinVal = document.getElementById('profileCardPinVal');
     if (profileCardPinVal) {
-      profileCardPinVal.textContent = this.isPinVisible ? pin : '••••';
+      profileCardPinVal.textContent = pin;
+      profileCardPinVal.classList.toggle('blurred', !this.isPinVisible);
     }
 
     if (profileApiKeyVal) profileApiKeyVal.textContent = state.apiKey;

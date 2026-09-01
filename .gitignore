@@ -1,0 +1,11 @@
+# Dependências
+node_modules/
+package-lock.json
+
+# Testes
+coverage/
+.jest/
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db

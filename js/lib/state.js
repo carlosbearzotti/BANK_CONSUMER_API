@@ -109,6 +109,48 @@ class AppState {
     this.notify('tab', tab);
   }
 
+  setupUserEnvironment(email, initialCards, finalPin, planKey) {
+    localStorage.setItem(`laobank_cards_${email}`, JSON.stringify(initialCards));
+    localStorage.setItem(`laobank_card_pin_${email}`, finalPin);
+    localStorage.setItem(`laobank_temp_pin_${email}`, finalPin);
+    localStorage.setItem(`laobank_pin_needs_change_${email}`, 'true');
+    localStorage.setItem(`laobank_user_plan_${email}`, planKey);
+  }
+
+  needsPinChange(email) {
+    return localStorage.getItem(`laobank_pin_needs_change_${email}`) === 'true';
+  }
+
+  clearUserPinChangeState(email) {
+    localStorage.removeItem(`laobank_pin_needs_change_${email}`);
+  }
+
+  getUserPlan(email) {
+    return localStorage.getItem(`laobank_user_plan_${email}`) || 'FREE';
+  }
+
+  getTempPin(email) {
+    return localStorage.getItem(`laobank_temp_pin_${email}`) || localStorage.getItem(`laobank_card_pin_${email}`) || '1234';
+  }
+
+  updateUserPin(email, newPin) {
+    localStorage.setItem(`laobank_card_pin_${email}`, newPin);
+    this.clearUserPinChangeState(email);
+  }
+
+  getUserCards(email) {
+    try {
+      const stored = localStorage.getItem(`laobank_cards_${email}`);
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  updateUserCards(email, cards) {
+    localStorage.setItem(`laobank_cards_${email}`, JSON.stringify(cards));
+  }
+
   addApiLog(log) {
     this.reqLogs.unshift({
       id: Date.now(),
