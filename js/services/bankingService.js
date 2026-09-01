@@ -21,5 +21,24 @@ export const bankingService = {
     return await apiRequest('/api/transactions/stats', {
       method: 'GET'
     });
+  },
+
+  async sendPix(pixData) {
+    return await apiRequest('/api/pix', {
+      method: 'POST',
+      body: JSON.stringify(pixData)
+    });
+  },
+
+  async getMyPix() {
+    return await apiRequest('/api/pix', {
+      method: 'GET'
+    });
+  },
+
+  async getMyCards() {
+    return await apiRequest('/api/cards', {
+      method: 'GET'
+    });
   }
 };

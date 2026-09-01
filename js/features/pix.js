@@ -22,12 +22,11 @@ export const pixFeature = {
         }
 
         try {
-          // Registra transferência Pix no backend / banco de dados da conta
-          await bankingService.createTransaction({
-            userDocument: key,
-            creditCardToken: 'PIX-INSTANT-BACEN',
-            transactionValue: amount,
-            userId: state.user?.id || 1
+          // Registra transferência Pix no backend real (Phase 3)
+          await bankingService.sendPix({
+            destinationKey: key,
+            amount: amount,
+            message: "Pix Instantâneo B2C"
           });
           toast.success(`⚡ Pix de ${utils.formatCurrency(amount)} enviado instantaneamente para ${key}!`);
           pixForm.reset();

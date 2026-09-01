@@ -250,9 +250,7 @@ export const loansFeature = {
     if (iofValSpan) iofValSpan.textContent = utils.formatCurrency(iof);
   },
 
-  handleContractSubmit() {
-    const user = state.user;
-    const email = user?.email || user?.id || 'guest';
+  async handleContractSubmit() {
     const amountInput = document.getElementById('loanAmountInput');
     const installmentsSelect = document.getElementById('loanInstallmentsSelect');
     const pinInput = document.getElementById('loanContractPinInput');
@@ -266,40 +264,23 @@ export const loansFeature = {
       return;
     }
 
-    const storedPin = state.getTempPin(email);
-    if (!inputPin || inputPin !== storedPin) {
-      toast.error('Senha do cartão incorreta! Digite seu PIN de 4 dígitos cadastrado.');
+    if (!inputPin) {
+      toast.warning('Informe sua senha para autorizar.');
       return;
     }
 
-    // Calcula parcelas
-    const i = (this.selectedLoan.rate || 3.0) / 100;
-    const factor = Math.pow(1 + i, installments);
-    const pmt = (principal * (i * factor)) / (factor - 1);
-    const total = pmt * installments;
-
-    // Cria Contrato Real
-    const contract = {
-      id: `EMP-${Date.now().toString().slice(-6)}`,
-      protocol: `#LÃO-${Math.floor(100000 + Math.random() * 900000)}`,
-      typeKey: this.selectedLoan.typeKey,
-      typeName: this.selectedLoan.name,
-      badgeClass: this.selectedLoan.badgeClass,
-      principal,
-      rate: this.selectedLoan.rate,
-      installments,
-      paidInstallments: 0,
-      pmt,
-      total,
-      contractedAt: new Date().toLocaleDateString('pt-BR'),
-      status: 'ATIVO'
-    };
-
-    state.addContractedLoan(email, contract);
-    modal.close('contractLoanModal');
-
-    toast.success(`🎉 Empréstimo de ${utils.formatCurrency(principal)} contratado com sucesso! Saldo liberado na sua conta.`);
-    this.loadContractedLoans();
+    try {
+      toast.info('Processando contratação no backend...');
+      const loanType = this.selectedLoan.typeKey;
+      
+      const response = await loanService.contract(loanType, principal, installments);
+      modal.close('contractLoanModal');
+      toast.success(`🎉 Empréstimo contratado! Protocolo: ${response.protocol}`);
+      
+      this.loadContractedLoans();
+    } catch (err) {
+      toast.error(err.message || 'Erro ao contratar empréstimo');
+    }
   },
 
   setupActiveLoansListeners() {
@@ -314,25 +295,24 @@ export const loansFeature = {
     }
   },
 
-  loadContractedLoans() {
-    const user = state.user;
-    const email = user?.email || user?.id || 'guest';
-    this.activeLoans = state.getUserLoans(email);
-
+  async loadContractedLoans() {
     const countSpan = document.getElementById('activeLoansCount');
     const container = document.getElementById('activeLoansContainer');
-
-    if (countSpan) countSpan.textContent = this.activeLoans.length;
     if (!container) return;
 
-    if (this.activeLoans.length === 0) {
-      container.innerHTML = `
-        <div style="grid-column: 1 / -1; padding: 2rem; text-align: center; color: var(--text-muted); background: rgba(255,255,255,0.02); border: 1px dashed var(--bank-border-soft); border-radius: var(--radius-md);">
-          Você ainda não possui nenhum empréstimo contratado. Faça uma simulação acima para contratar.
-        </div>
-      `;
-      return;
-    }
+    try {
+      this.activeLoans = await loanService.getMyContracts();
+      
+      if (countSpan) countSpan.textContent = this.activeLoans.length;
+
+      if (this.activeLoans.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; padding: 2rem; text-align: center; color: var(--text-muted); background: rgba(255,255,255,0.02); border: 1px dashed var(--bank-border-soft); border-radius: var(--radius-md);">
+            Você ainda não possui nenhum empréstimo contratado. Faça uma simulação acima para contratar.
+          </div>
+        `;
+        return;
+      }
 
     container.innerHTML = this.activeLoans.map((contract) => {
       const isFinished = contract.paidInstallments >= contract.installments;
@@ -393,6 +373,11 @@ export const loansFeature = {
         </div>
       `;
     }).join('');
+    
+    } catch (err) {
+      console.error(err);
+      toast.error('Não foi possível carregar os empréstimos.');
+    }
   },
 
   payInstallment(contractId) {

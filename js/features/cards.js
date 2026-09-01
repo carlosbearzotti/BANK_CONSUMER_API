@@ -2,6 +2,7 @@ import { toast } from '../ui/toast.js';
 import { state } from '../lib/state.js';
 import { CARD_PLANS_CONFIG } from '../lib/config.js';
 import { modal } from '../ui/modal.js';
+import { bankingService } from '../services/bankingService.js';
 
 /**
  * Módulo de Cartões de Crédito e Cartão Virtual 3D (Padrão Cortex Feature)
@@ -23,18 +24,20 @@ export const cardsFeature = {
     this.refreshCardMetrics();
   },
 
-  loadCards() {
+  async loadCards() {
     const user = state.user;
     const userEmail = user?.email || user?.id || 'guest';
-    const stored = localStorage.getItem(`laobank_cards_${userEmail}`);
-    if (stored) {
-      try {
-        this.cards = JSON.parse(stored);
-      } catch {
-        this.cards = [];
+    
+    try {
+      if (state.token) {
+        this.cards = await bankingService.getMyCards();
       }
-    } else {
-      // Cria o cartão físico padrão baseado no plano de contratação
+    } catch (err) {
+      console.warn('Erro ao buscar cartões do backend:', err);
+    }
+    
+    if (!this.cards || this.cards.length === 0) {
+      // Cria o cartão físico padrão baseado no plano de contratação (Fallback)
       const userIncome = user?.income || 0;
       const initialLimit = userIncome > 0 ? userIncome * 0.8 : 0;
       const planKey = localStorage.getItem(`laobank_user_plan_${userEmail}`) || 'FREE';

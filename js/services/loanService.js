@@ -15,5 +15,22 @@ export const loanService = {
     return await apiRequest(`/api/loans/me?location=${encodeURIComponent(location)}`, {
       method: 'GET'
     });
+  },
+
+  async contract(loanType, principal, installments) {
+    return await apiRequest('/api/loans', {
+      method: 'POST',
+      body: JSON.stringify({
+        loanType,
+        principal,
+        installments
+      })
+    });
+  },
+
+  async getMyContracts() {
+    return await apiRequest('/api/loans/contracts', {
+      method: 'GET'
+    });
   }
 };

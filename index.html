@@ -309,7 +309,7 @@
             <li>
               <button class="bank-nav-item-btn" data-tab="pix">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-                <span>Área Pix & Transferir</span>
+                <span>Pix & Transferências</span>
               </button>
             </li>
             <li>
@@ -450,70 +450,6 @@
             <!-- 3. Two Column Layout: Cartão Black + Extrato & Transferência Segura -->
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
               
-              <!-- Card Highlight -->
-              <div class="card">
-                <div class="card-header">
-                  <div class="card-title-group">
-                    <h2 id="homeCardTitle">💳 Cartão LãoBank Black Prestige</h2>
-                    <div class="card-subtitle" id="homeCardSubtitle">Toque no cartão para girar e ver o verso &bull; Rendimento CDB ativo</div>
-                  </div>
-                </div>
-
-                <!-- 3D Credit Card Element -->
-                <div class="credit-card-perspective" id="interactiveCreditCard">
-                  <div class="credit-card-inner">
-                    <!-- Front -->
-                    <div class="credit-card-front" id="homeCardFront">
-                      <div class="card-chip-row">
-                        <div class="card-emv-chip"></div>
-                        <div class="card-contactless">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8.5 16.5a5 5 0 0 1 0-7"></path><path d="M12 20a10 10 0 0 0 0-14"></path></svg>
-                        </div>
-                      </div>
-                      <div class="card-number-display" id="cardFrontNumber">•••• •••• •••• 8824</div>
-                      <div class="card-meta-row">
-                        <div>
-                          <div style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase;">Titular</div>
-                          <div class="card-holder-name" id="cardFrontHolder">TITULAR DA CONTA</div>
-                        </div>
-                        <div>
-                          <div style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase;">Validade</div>
-                          <div class="card-expiry">08/32</div>
-                        </div>
-                        <div style="font-weight: 800; font-size: 1.2rem; font-style: italic; color: #ffffff;">VISA</div>
-                      </div>
-                    </div>
-
-                    <!-- Back -->
-                    <div class="credit-card-back">
-                      <div class="card-black-stripe"></div>
-                      <div>
-                        <div style="font-size: 0.65rem; color: #94a3b8; margin-left: 2rem; margin-bottom: 0.2rem;">CÓDIGO DE SEGURANÇA (CVV)</div>
-                        <div class="card-cvv-box" id="cardBackCvv">592</div>
-                      </div>
-                      <div style="padding: 0 1.5rem; font-size: 0.65rem; color: #64748b; text-align: center;">
-                        LãoBank S.A. &bull; Proteção Criptográfica &bull; Atendimento 24h
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Limit Bar -->
-                <div class="card-limit-box">
-                  <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
-                    <span style="color: var(--text-secondary);">Limite Disponível:</span>
-                    <strong style="color: #34d399;" class="balance-sensitive" id="cardAvailableLimit">R$ 0,00</strong>
-                  </div>
-                  <div class="limit-progress-bar">
-                    <div class="limit-progress-fill" id="cardLimitProgressFill" style="width: 0%;"></div>
-                  </div>
-                  <div style="display: flex; justify-content: space-between; font-size: 0.775rem; color: var(--text-muted);">
-                    <span>Fatura atual: <strong class="balance-sensitive" id="cardInvoiceText" style="color: #f1f5f9;">R$ 0,00</strong></span>
-                    <span>Limite total: <span id="cardTotalLimit">R$ 0,00</span></span>
-                  </div>
-                </div>
-              </div>
-
               <!-- Fatura do Cartão & Opção para Ver Extrato -->
               <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
@@ -541,7 +477,7 @@
 
                 <div style="padding: 0 0.5rem;">
                   <button type="button" class="btn btn-gradient btn-sm" style="width: 100%; font-size: 0.85rem; padding: 0.75rem;" onclick="document.querySelector('[data-tab=pix]').click();">
-                    📄 Ver Extrato Completo da Conta
+                    📄 Ver Extrato Completo na Área Pix
                   </button>
                 </div>
               </div>
@@ -875,6 +811,7 @@
                     <div style="font-size: 0.78rem; font-weight: 700; color: var(--bank-gold-light); text-transform: uppercase; letter-spacing: 0.05em;">Sua Referência Geográfica</div>
                     <div id="radarUserAddressLabel" style="font-size: 0.95rem; font-weight: 700; color: #ffffff;">Endereço de Cadastro da Conta</div>
                     <div id="radarUserCoordsLabel" style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">GPS: (-23.5505, -46.6333) • Ponto Central no Radar: (20, 20)</div>
+                    <div style="font-size: 0.7rem; color: #f87171; margin-top: 0.5rem; font-weight: 600;">* Novos pontos só podem ser cadastrados via Backoffice</div>
                   </div>
                 </div>
 
