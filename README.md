@@ -44,11 +44,11 @@ Esta aplicação consome diretamente a API centralizadora REST em `http://localh
   - Simulação de taxas e elegibilidade de crédito (Crédito Pessoal, Com Garantia, Consignado).
   - Cálculo instantâneo do valor da parcela baseado no prazo e juros.
 
-### 5. 📍 Radar GPS de Agências & Caixas Eletrônicos
-- **Endpoints**: `GET /pois/nearby`, `POST /pois`
+### 5. 📍 Radar & Agências Recomendadas
+- **Endpoints**: `GET /pois`
 - **Funcionalidades**:
-  - Radar interativo renderizado em HTML5 Canvas para busca de pontos de atendimento próximos por raio euclidiano (km).
-  - Cadastro de novos pontos de interesse diretamente no mapa.
+  - Radar interativo renderizado em HTML5 Canvas com cálculo automático de proximidade euclidiana a partir do endereço cadastrado do cliente.
+  - Lista de recomendações inteligentes ordenadas por distância estimada e tempo de trajeto.
 
 ### 6. ✂️ Encurtador de URLs ("Indique e Ganhe")
 - **Endpoints**: `POST /shorten-url`, `GET /{shortCode}`

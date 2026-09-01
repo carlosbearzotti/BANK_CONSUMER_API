@@ -802,79 +802,48 @@
 
 
           <!-- ================================================================
-               ABA 5: RADAR GPS DE AGÊNCIAS
+               ABA 5: RADAR GPS DE AGÊNCIAS & CAIXAS 24H (RECOMENDAÇÕES)
                ================================================================ -->
           <section id="tab-gps" class="tab-pane">
             <div class="card">
               <div class="card-header">
                 <div class="card-title-group">
                   <h2>📍 Radar de Agências & Caixas 24h</h2>
-                  <div class="card-subtitle">Cadastro e busca euclidiana por raio de proximidade no mapa</div>
+                  <div class="card-subtitle">Pontos de atendimento mais próximos recomendados para a sua localização</div>
                 </div>
-                <button id="refreshPoisBtn" class="btn btn-secondary btn-sm">Recarregar Mapa</button>
+                <button id="refreshPoisBtn" class="btn btn-secondary btn-sm">🔄 Recalcular Proximidade</button>
               </div>
 
-                <!-- Forms Grid: Cadastrar & Buscar -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem;">
-                  <!-- Create POI Form -->
-                  <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--bank-border-soft); border-radius: var(--radius-lg); padding: 1.25rem;">
-                    <div style="font-size: 0.85rem; font-weight: 700; color: var(--bank-gold-light); margin-bottom: 0.85rem;">📍 Cadastrar Novo Ponto / Agência</div>
-                    <form id="poiCreateForm">
-                      <div class="form-group">
-                        <label class="form-label" for="poiName">Nome da Agência</label>
-                        <input type="text" id="poiName" class="form-control" placeholder="Agência Central" required>
-                      </div>
-                      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
-                        <div class="form-group" style="margin-bottom: 0;">
-                          <label class="form-label" for="poiX">Coord X</label>
-                          <input type="number" id="poiX" class="form-control" placeholder="20" required>
-                        </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                          <label class="form-label" for="poiY">Coord Y</label>
-                          <input type="number" id="poiY" class="form-control" placeholder="10" required>
-                        </div>
-                      </div>
-                      <button type="submit" class="btn btn-primary" style="width: 100%;">Cadastrar Agência</button>
-                    </form>
+              <!-- Location Banner: Localização Cadastrada & Filtro de Raio -->
+              <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(197, 160, 89, 0.25); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                  <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(197, 160, 89, 0.15); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; border: 1px solid rgba(197, 160, 89, 0.35);">
+                    🏠
                   </div>
-
-                  <!-- Search Nearby Form -->
-                  <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--bank-border-soft); border-radius: var(--radius-lg); padding: 1.25rem;">
-                    <div style="font-size: 0.85rem; font-weight: 700; color: var(--status-info); margin-bottom: 0.85rem;">🎯 Busca por Raio e CEP (Gratuito)</div>
-                    
-                    <div style="margin-bottom: 0.85rem;">
-                      <label class="form-label" for="poiCepInput" style="font-size: 0.78rem;">Buscar pelo seu CEP / Endereço:</label>
-                      <div style="display: flex; gap: 0.4rem;">
-                        <input type="text" id="poiCepInput" class="form-control" placeholder="Ex: 01310-100 (Av. Paulista)" style="font-size: 0.82rem;">
-                        <button type="button" id="poiCepSearchBtn" class="btn btn-secondary btn-sm" style="white-space: nowrap;">🔍 Localizar</button>
-                      </div>
-                    </div>
-
-                    <form id="poiSearchForm">
-                      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.6rem; margin-bottom: 1rem;">
-                        <div class="form-group" style="margin-bottom: 0;">
-                          <label class="form-label" for="searchX">Ref X</label>
-                          <input type="number" id="searchX" class="form-control" placeholder="X" required>
-                        </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                          <label class="form-label" for="searchY">Ref Y</label>
-                          <input type="number" id="searchY" class="form-control" placeholder="Y" required>
-                        </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                          <label class="form-label" for="searchDmax">Raio (m)</label>
-                          <input type="number" id="searchDmax" class="form-control" placeholder="Distância" required>
-                        </div>
-                      </div>
-                      <button type="submit" class="btn btn-gradient" style="width: 100%;">Buscar Agências no Raio</button>
-                    </form>
+                  <div>
+                    <div style="font-size: 0.78rem; font-weight: 700; color: var(--bank-gold-light); text-transform: uppercase; letter-spacing: 0.05em;">Sua Referência Geográfica</div>
+                    <div id="radarUserAddressLabel" style="font-size: 0.95rem; font-weight: 700; color: #ffffff;">Endereço de Cadastro da Conta</div>
+                    <div id="radarUserCoordsLabel" style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">GPS: (-23.5505, -46.6333) • Ponto Central no Radar: (20, 20)</div>
                   </div>
                 </div>
+
+                <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                  <div style="display: flex; align-items: center; gap: 0.4rem; background: rgba(255,255,255,0.04); border: 1px solid var(--bank-border-soft); padding: 0.35rem 0.75rem; border-radius: var(--radius-md);">
+                    <span style="font-size: 0.75rem; color: var(--text-secondary);">Raio de alcance:</span>
+                    <select id="radarRadiusSelect" class="form-control" style="padding: 0.2rem 0.5rem; font-size: 0.8rem; width: auto; background: transparent; border: none; color: #ffffff; cursor: pointer;">
+                      <option value="15" style="background: #0f172a;" selected>15 km (Padrão)</option>
+                      <option value="25" style="background: #0f172a;">25 km (Expandido)</option>
+                      <option value="40" style="background: #0f172a;">40 km (Regional)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
 
               <!-- Radar Visualizer & POI List -->
               <div class="radar-map-wrapper">
                 <div class="canvas-container">
                   <canvas id="gpsCanvas"></canvas>
-                  <div id="canvasCoords" class="canvas-overlay-coords">X: 0 | Y: 0</div>
+                  <div id="canvasCoords" class="canvas-overlay-coords">Radar Ativo</div>
                 </div>
                 <div id="poiListContainer" class="poi-list"></div>
               </div>

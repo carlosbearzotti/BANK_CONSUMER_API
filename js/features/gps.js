@@ -1,12 +1,14 @@
 import { poiService } from '../services/poiService.js';
+import { state } from '../lib/state.js';
 import { toast } from '../ui/toast.js';
 
 /**
- * Módulo de Radar GPS de Agências e POIs (Padrão Cortex Feature)
+ * Módulo de Radar GPS de Agências & Caixas 24h (Recomendações B2C)
  */
 export const gpsFeature = {
   pois: [],
-  searchCircle: null,
+  userCoords: { x: 20, y: 20 },
+  searchRadius: 15,
   canvas: null,
   ctx: null,
 
@@ -17,8 +19,40 @@ export const gpsFeature = {
       this.setupCanvas();
     }
 
-    this.setupForms();
-    this.loadAllPois();
+    this.setupListeners();
+    this.updateUserLocation();
+    this.loadRecommendations();
+
+    state.subscribe('auth', () => {
+      this.updateUserLocation();
+      this.loadRecommendations();
+    });
+  },
+
+  updateUserLocation() {
+    const user = state.user;
+    if (user?.latitude != null && user?.longitude != null) {
+      // Mapeia coordenadas reais (ex: SP -23.55, -46.63) para grade relativa do radar (0-50)
+      const refX = Math.abs(Math.round((user.longitude + 46.63) * 100)) % 36 + 7;
+      const refY = Math.abs(Math.round((user.latitude + 23.55) * 100)) % 36 + 7;
+      this.userCoords = { x: refX, y: refY };
+    } else {
+      this.userCoords = { x: 20, y: 20 };
+    }
+
+    // Atualiza labels visuais de localização
+    const addrLabel = document.getElementById('radarUserAddressLabel');
+    const coordsLabel = document.getElementById('radarUserCoordsLabel');
+
+    if (addrLabel) {
+      addrLabel.textContent = user?.name ? `Localização Residencial de ${user.name.split(' ')[0]}` : 'Endereço Cadastrado na Conta';
+    }
+
+    if (coordsLabel) {
+      const latStr = user?.latitude != null ? user.latitude.toFixed(4) : '-23.5505';
+      const lngStr = user?.longitude != null ? user.longitude.toFixed(4) : '-46.6333';
+      coordsLabel.textContent = `GPS: (${latStr}, ${lngStr}) • Ponto Central no Radar: (${this.userCoords.x}, ${this.userCoords.y})`;
+    }
   },
 
   setupCanvas() {
@@ -38,166 +72,71 @@ export const gpsFeature = {
       const rect = this.canvas.getBoundingClientRect();
       const x = Math.round((e.clientX - rect.left) / (this.canvas.width / 50));
       const y = Math.round((this.canvas.height - (e.clientY - rect.top)) / (this.canvas.height / 50));
-      if (coordsDisplay) coordsDisplay.textContent = `X: ${x} | Y: ${y}`;
+      if (coordsDisplay) coordsDisplay.textContent = `Cursor: (${x}, ${y})`;
     });
   },
 
-  setupForms() {
-    const createForm = document.getElementById('poiCreateForm');
-    const searchForm = document.getElementById('poiSearchForm');
+  setupListeners() {
     const refreshBtn = document.getElementById('refreshPoisBtn');
-
-    if (createForm) {
-      createForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const name = document.getElementById('poiName')?.value.trim();
-        const x = parseInt(document.getElementById('poiX')?.value, 10);
-        const y = parseInt(document.getElementById('poiY')?.value, 10);
-
-        if (!name || isNaN(x) || isNaN(y)) {
-          toast.warning('Informe o nome e as coordenadas X e Y.');
-          return;
-        }
-
-        try {
-          await poiService.create({ name, x, y });
-          toast.success(`Agência '${name}' cadastrada no mapa!`);
-          createForm.reset();
-          await this.loadAllPois();
-        } catch (err) {
-          toast.error(`Erro ao cadastrar agência: ${err.message}`);
-        }
-      });
-    }
-
-    if (searchForm) {
-      searchForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const x = parseInt(document.getElementById('searchX')?.value, 10);
-        const y = parseInt(document.getElementById('searchY')?.value, 10);
-        const dmax = parseInt(document.getElementById('searchDmax')?.value, 10);
-
-        try {
-          const res = await poiService.findNearby(x, y, dmax);
-          const list = Array.isArray(res) ? res : (res.pois || []);
-          this.searchCircle = { x, y, dmax };
-          this.drawRadar();
-          this.renderPoiList(list, `Agências no raio de ${dmax}m de (${x}, ${y})`);
-          toast.info(`${list.length} agências encontradas no raio.`);
-        } catch (err) {
-          toast.error(`Erro na busca por raio: ${err.message}`);
-        }
-      });
-    }
-
-    const poiCepInput = document.getElementById('poiCepInput');
-    const poiCepBtn = document.getElementById('poiCepSearchBtn');
-
-    if (poiCepBtn && poiCepInput) {
-      poiCepBtn.addEventListener('click', async () => {
-        const query = poiCepInput.value.trim();
-        if (!query) {
-          toast.warning('Informe um CEP ou endereço para localizar.');
-          return;
-        }
-
-        toast.info('Buscando localização por endereço...');
-        try {
-          const cleanCep = query.replace(/\D/g, '');
-          let lat = null;
-          let lng = null;
-
-          if (cleanCep.length === 8) {
-            // 1. AwesomeAPI (Mais rápida com coordenadas diretas)
-            try {
-              const aRes = await fetch(`https://cep.awesomeapi.com.br/json/${cleanCep}`);
-              if (aRes.ok) {
-                const aData = await aRes.json();
-                if (aData.lat && aData.lng) {
-                  lat = parseFloat(aData.lat);
-                  lng = parseFloat(aData.lng);
-                }
-              }
-            } catch {}
-
-            // 2. ViaCEP + OpenStreetMap
-            if (!lat || !lng) {
-              try {
-                const vRes = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
-                if (vRes.ok) {
-                  const vData = await vRes.json();
-                  if (!vData.erro) {
-                    const q = encodeURIComponent(`${vData.logradouro || ''}, ${vData.localidade || ''}, ${vData.uf || ''}, Brasil`);
-                    const osmRes = await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`);
-                    if (osmRes.ok) {
-                      const osmData = await osmRes.json();
-                      if (osmData && osmData.length > 0) {
-                        lat = parseFloat(osmData[0].lat);
-                        lng = parseFloat(osmData[0].lon);
-                      }
-                    }
-                  }
-                }
-              } catch {}
-            }
-          }
-
-          // 3. Busca por texto livre (rua, bairro, cidade) via OpenStreetMap Nominatim
-          if (!lat || !lng) {
-            const osmRes = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query + ', Brasil')}&format=json&limit=1`);
-            const osmData = await osmRes.json();
-            if (osmData && osmData.length > 0) {
-              lat = parseFloat(osmData[0].lat);
-              lng = parseFloat(osmData[0].lon);
-            }
-          }
-
-          if (lat && lng) {
-            // Mapeia coordenadas geográficas relativas para a grade do radar local
-            const refX = Math.abs(Math.round((lng + 46.63) * 100)) % 50;
-            const refY = Math.abs(Math.round((lat + 23.55) * 100)) % 50;
-
-            const searchX = document.getElementById('searchX');
-            const searchY = document.getElementById('searchY');
-            if (searchX) searchX.value = refX;
-            if (searchY) searchY.value = refY;
-
-            toast.success(`Endereço localizado! Ref: (${refX}, ${refY})`);
-            searchForm?.dispatchEvent(new Event('submit'));
-          } else {
-            toast.warning('Endereço não localizado com precisão. Usando ponto central.');
-            searchForm?.dispatchEvent(new Event('submit'));
-          }
-        } catch (err) {
-          toast.error('Erro na geolocalização: ' + err.message);
-        }
-      });
-    }
+    const radiusSelect = document.getElementById('radarRadiusSelect');
 
     if (refreshBtn) {
       refreshBtn.addEventListener('click', () => {
-        this.searchCircle = null;
-        this.loadAllPois();
-        toast.info('Radar recarregado.');
+        this.updateUserLocation();
+        this.loadRecommendations();
+        toast.info('Proximidade recalculada com base no seu endereço!');
+      });
+    }
+
+    if (radiusSelect) {
+      radiusSelect.addEventListener('change', (e) => {
+        this.searchRadius = parseInt(e.target.value, 10) || 15;
+        this.loadRecommendations();
       });
     }
   },
 
-  async loadAllPois() {
+  async loadRecommendations() {
     try {
       const data = await poiService.getAll();
-      this.pois = Array.isArray(data) ? data : (data.content || []);
-      this.drawRadar();
-      this.renderPoiList(this.pois, 'Todas as Agências e Caixas 24h');
+      const list = Array.isArray(data) ? data : (data.content || []);
+      this.pois = list.length > 0 ? list : this.getFallbackPois();
     } catch {
-      this.pois = [
-        { id: 1, name: 'LãoBank Matriz', x: 20, y: 10 },
-        { id: 2, name: 'Caixa 24h Paulista', x: 15, y: 8 },
-        { id: 3, name: 'Agência Faria Lima', x: 28, y: 14 }
-      ];
-      this.drawRadar();
-      this.renderPoiList(this.pois, 'Agências Ativas');
+      this.pois = this.getFallbackPois();
     }
+
+    // Calcula distância euclidiana para cada ponto em relação ao endereço do usuário
+    this.pois = this.pois.map((p) => {
+      const dx = p.x - this.userCoords.x;
+      const dy = p.y - this.userCoords.y;
+      const rawDist = Math.sqrt(dx * dx + dy * dy);
+      const distKm = (rawDist * 0.45).toFixed(1);
+      const estMinutes = Math.max(2, Math.round(rawDist * 1.8));
+
+      return {
+        ...p,
+        rawDist,
+        distKm: parseFloat(distKm),
+        estMinutes,
+        type: p.name?.toLowerCase().includes('caixa') ? 'ATM' : 'AGENCIA'
+      };
+    });
+
+    // Ordena do mais próximo para o mais distante
+    this.pois.sort((a, b) => a.rawDist - b.rawDist);
+
+    this.drawRadar();
+    this.renderPoiList();
+  },
+
+  getFallbackPois() {
+    return [
+      { id: 1, name: 'LãoBank Agência Paulista', x: 22, y: 23 },
+      { id: 2, name: 'Caixa 24h Shopping Cidade', x: 18, y: 19 },
+      { id: 3, name: 'LãoBank Agência Faria Lima', x: 26, y: 15 },
+      { id: 4, name: 'Caixa 24h Estação Central', x: 14, y: 25 },
+      { id: 5, name: 'LãoBank Prime Jardins', x: 28, y: 26 }
+    ];
   },
 
   drawRadar() {
@@ -209,7 +148,7 @@ export const gpsFeature = {
 
     ctx.clearRect(0, 0, w, h);
 
-    // Fundo Grid
+    // 1. Grade do Radar
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
     ctx.lineWidth = 1;
     for (let x = 0; x < w; x += 25) {
@@ -225,58 +164,98 @@ export const gpsFeature = {
       ctx.stroke();
     }
 
-    // Raio de busca ativo
-    if (this.searchCircle) {
-      const cx = this.searchCircle.x * scale;
-      const cy = h - (this.searchCircle.y * scale);
-      const r = this.searchCircle.dmax * scale;
+    // 2. Círculo de Proximidade em volta do Usuário
+    const userPx = this.userCoords.x * scale;
+    const userPy = h - (this.userCoords.y * scale);
+    const radiusPx = this.searchRadius * scale;
 
-      ctx.beginPath();
-      ctx.arc(cx, cy, r, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(197, 160, 89, 0.12)';
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(197, 160, 89, 0.6)';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-    }
+    ctx.beginPath();
+    ctx.arc(userPx, userPy, radiusPx, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(197, 160, 89, 0.08)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(197, 160, 89, 0.45)';
+    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.setLineDash([]); // Restaura traço contínuo
 
-    // Renderizar POIs
-    this.pois.forEach((p) => {
+    // 3. Renderizar POIs Recomendados
+    this.pois.forEach((p, idx) => {
       const px = p.x * scale;
       const py = h - (p.y * scale);
+      const isClosest = idx === 0;
 
       ctx.beginPath();
-      ctx.arc(px, py, 6, 0, Math.PI * 2);
-      ctx.fillStyle = '#34d399';
+      ctx.arc(px, py, isClosest ? 7 : 5, 0, Math.PI * 2);
+      ctx.fillStyle = isClosest ? '#dfb76c' : '#34d399';
       ctx.fill();
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = isClosest ? 2 : 1;
       ctx.stroke();
 
-      ctx.fillStyle = '#f1f5f9';
-      ctx.font = '10px sans-serif';
-      ctx.fillText(p.name, px + 8, py + 3);
+      ctx.fillStyle = isClosest ? '#dfb76c' : '#f1f5f9';
+      ctx.font = isClosest ? 'bold 10px sans-serif' : '10px sans-serif';
+      ctx.fillText(p.name, px + 9, py + 3);
     });
+
+    // 4. Marcador do Usuário ("Você está aqui")
+    ctx.beginPath();
+    ctx.arc(userPx, userPy, 9, 0, Math.PI * 2);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = 'bold 11px sans-serif';
+    ctx.fillText('📍 Você', userPx + 12, userPy + 4);
   },
 
-  renderPoiList(list, title) {
+  renderPoiList() {
     const container = document.getElementById('poiListContainer');
     if (!container) return;
 
+    const nearbyCount = this.pois.filter((p) => p.rawDist <= this.searchRadius).length;
+
     container.innerHTML = `
-      <div style="font-size: 0.8rem; font-weight: 700; color: var(--bank-gold-light); margin-bottom: 0.75rem;">
-        ${title} (${list.length})
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+        <div style="font-size: 0.82rem; font-weight: 700; color: var(--bank-gold-light); text-transform: uppercase; letter-spacing: 0.05em;">
+          Recomendações por Proximidade (${this.pois.length})
+        </div>
+        <span class="badge badge-primary" style="font-size: 0.7rem;">${nearbyCount} no seu raio de ${this.searchRadius}km</span>
       </div>
-      <div style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 280px; overflow-y: auto;">
-        ${list.map((p) => `
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 0.85rem; background: rgba(255,255,255,0.03); border: 1px solid var(--bank-border-soft); border-radius: var(--radius-sm);">
-            <div>
-              <div style="font-size: 0.85rem; font-weight: 600; color: #ffffff;">${p.name}</div>
-              <div style="font-size: 0.75rem; color: var(--text-muted);">Coordenadas: (${p.x}, ${p.y})</div>
+
+      <div style="display: flex; flex-direction: column; gap: 0.65rem; max-height: 280px; overflow-y: auto;">
+        ${this.pois.map((p, idx) => {
+          const isClosest = idx === 0;
+          const isInsideRadius = p.rawDist <= this.searchRadius;
+
+          return `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0.95rem; background: ${isClosest ? 'rgba(197, 160, 89, 0.08)' : 'rgba(255,255,255,0.02)'}; border: 1px solid ${isClosest ? 'rgba(197, 160, 89, 0.4)' : 'var(--bank-border-soft)'}; border-radius: var(--radius-md); transition: all 0.2s;">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="font-size: 1.3rem;">
+                  ${p.type === 'ATM' ? '🏧' : '🏛️'}
+                </div>
+                <div>
+                  <div style="display: flex; align-items: center; gap: 0.45rem;">
+                    <span style="font-size: 0.875rem; font-weight: 700; color: #ffffff;">${p.name}</span>
+                    ${isClosest ? '<span class="badge badge-warning" style="font-size: 0.65rem; padding: 0.1rem 0.4rem;">⭐ Mais Próxima</span>' : ''}
+                  </div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.15rem;">
+                    Distância: <strong style="color: #38bdf8;">~${p.distKm} km</strong> • Tempo estimado: <strong style="color: #34d399;">~${p.estMinutes} min</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <span class="badge ${isInsideRadius ? 'badge-gold' : 'badge-secondary'}" style="font-size: 0.7rem;">
+                  ${isInsideRadius ? 'No seu raio' : 'Fora do raio'}
+                </span>
+              </div>
             </div>
-            <span class="badge badge-gold">Disponível</span>
-          </div>
-        `).join('')}
+          `;
+        }).join('')}
       </div>
     `;
   }
