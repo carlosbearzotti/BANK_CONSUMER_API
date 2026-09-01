@@ -2,6 +2,7 @@ import { authService } from '../services/authService.js';
 import { state } from '../lib/state.js';
 import { toast } from '../ui/toast.js';
 import { CARD_PLANS_CONFIG } from '../lib/config.js';
+import { modal } from '../ui/modal.js';
 
 /**
  * Módulo de Autenticação e Criação de Contas (Padrão Cortex Feature)
@@ -14,6 +15,7 @@ export const authFeature = {
     this.setupViewToggles();
     this.setupPasswordToggles();
     this.setupPasswordRecovery();
+    this.setupFirstAccessPinChange();
   },
 
   setupLoginForm() {
@@ -50,6 +52,14 @@ export const authFeature = {
 
         state.setAuth(token, user);
         toast.success(`Bem-vindo ao LãoBank, ${user?.name || 'Cliente'}!`);
+
+        // Verifica se é o primeiro acesso e exige a troca da senha provisória do cartão
+        const needsPinChange = localStorage.getItem(`laobank_pin_needs_change_${email}`) === 'true';
+        if (needsPinChange) {
+          setTimeout(() => {
+            this.openFirstAccessPinModal(email);
+          }, 400);
+        }
       } catch (err) {
         toast.error(`Falha no login: ${err.message || 'Credenciais inválidas'}`);
       }
@@ -152,9 +162,11 @@ export const authFeature = {
 
         localStorage.setItem(`laobank_cards_${email}`, JSON.stringify(initialCards));
         localStorage.setItem(`laobank_card_pin_${email}`, generatedPin);
+        localStorage.setItem(`laobank_temp_pin_${email}`, generatedPin);
+        localStorage.setItem(`laobank_pin_needs_change_${email}`, 'true');
         localStorage.setItem(`laobank_user_plan_${email}`, selectedPlanKey);
 
-        toast.success(`Conta criada no plano ${planConfig.name}! Senha do Cartão: ${generatedPin} (CDB a ${planConfig.cdbRate}% do CDI).`);
+        toast.success(`Conta criada no plano ${planConfig.name}! Senha Provisória do Cartão: ${generatedPin} (Recebida também por e-mail).`);
 
         // Redireciona para o modo "Fazer login" de forma limpa
         document.getElementById('switchToLoginBtn')?.click();
@@ -468,5 +480,72 @@ export const authFeature = {
         }
       });
     }
+  },
+
+  openFirstAccessPinModal(email) {
+    const tempPinInput = document.getElementById('tempPinInput');
+    const newPinInput = document.getElementById('newPinInput');
+    const confirmNewPinInput = document.getElementById('confirmNewPinInput');
+
+    if (tempPinInput) tempPinInput.value = '';
+    if (newPinInput) newPinInput.value = '';
+    if (confirmNewPinInput) confirmNewPinInput.value = '';
+
+    modal.open('firstAccessPinChangeModal');
+  },
+
+  setupFirstAccessPinChange() {
+    const form = document.getElementById('firstAccessPinChangeForm');
+    if (!form) return;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const user = state.user;
+      const email = user?.email || 'guest';
+      const tempPin = document.getElementById('tempPinInput')?.value.trim();
+      const newPin = document.getElementById('newPinInput')?.value.trim();
+      const confirmPin = document.getElementById('confirmNewPinInput')?.value.trim();
+
+      const storedTempPin = localStorage.getItem(`laobank_temp_pin_${email}`) || localStorage.getItem(`laobank_card_pin_${email}`) || '1234';
+
+      if (!tempPin || tempPin !== storedTempPin) {
+        toast.error('A senha provisória informada está incorreta! Verifique seu e-mail.');
+        return;
+      }
+
+      if (!newPin || newPin.length !== 4 || !/^\d{4}$/.test(newPin)) {
+        toast.warning('A nova senha deve conter exatamente 4 dígitos numéricos.');
+        return;
+      }
+
+      if (newPin !== confirmPin) {
+        toast.warning('A confirmação da nova senha não confere.');
+        return;
+      }
+
+      // Salva a nova senha definitiva do cartão
+      localStorage.setItem(`laobank_card_pin_${email}`, newPin);
+      localStorage.removeItem(`laobank_pin_needs_change_${email}`);
+
+      // Atualiza nos cartões armazenados
+      const storedCards = localStorage.getItem(`laobank_cards_${email}`);
+      if (storedCards) {
+        try {
+          const cards = JSON.parse(storedCards);
+          cards.forEach((c) => { c.cardPin = newPin; });
+          localStorage.setItem(`laobank_cards_${email}`, JSON.stringify(cards));
+        } catch {}
+      }
+
+      modal.close('firstAccessPinChangeModal');
+      toast.success('✨ Nova senha pessoal do cartão cadastrada com sucesso! Seu cartão está pronto para uso.');
+
+      // Atualiza elementos de UI
+      const profileCardPinVal = document.getElementById('profileCardPinVal');
+      if (profileCardPinVal) profileCardPinVal.textContent = newPin;
+      window.cardsFeature?.loadCards();
+      window.cardsFeature?.refreshCardMetrics();
+    });
   }
 };
+

@@ -1332,6 +1332,7 @@
           
           <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Confirmar Pagamento</button>
         </form>
+      </div>
     </div>
   </div>
 
@@ -1364,6 +1365,46 @@
             <button type="button" class="btn btn-secondary" style="flex: 1;" data-modal-close>Cancelar</button>
             <button type="submit" class="btn btn-gradient" style="flex: 1;">Confirmar & Emitir</button>
           </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Primeiro Acesso: Definição de Nova Senha Pessoal do Cartão -->
+  <div id="firstAccessPinChangeModal" class="modal-backdrop">
+    <div class="modal-card" style="max-width: 450px;">
+      <div class="modal-header">
+        <h3 class="modal-title">🔐 Primeiro Acesso ao Cartão</h3>
+        <button class="bank-icon-btn modal-close" data-modal-close>✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="text-align: center; margin-bottom: 1.25rem;">
+          <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">💳✨</div>
+          <h4 style="font-size: 1.05rem; font-weight: 700; color: #ffffff;">Defina sua Nova Senha do Cartão</h4>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.35rem;">
+            Por segurança, confirme a <strong>senha provisória recebida por e-mail</strong> e escolha sua nova senha definitiva de 4 dígitos.
+          </p>
+        </div>
+
+        <form id="firstAccessPinChangeForm">
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label" for="tempPinInput">Senha Provisória do E-mail (4 Dígitos)</label>
+            <input type="password" id="tempPinInput" class="form-control" maxlength="4" placeholder="••••" style="font-family: var(--font-mono); font-size: 1.3rem; letter-spacing: 6px; text-align: center;" required autocomplete="off">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label" for="newPinInput">Nova Senha Definitiva (4 Dígitos Numéricos)</label>
+            <input type="password" id="newPinInput" class="form-control" maxlength="4" placeholder="••••" style="font-family: var(--font-mono); font-size: 1.3rem; letter-spacing: 6px; text-align: center;" required autocomplete="off">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label" for="confirmNewPinInput">Confirmar Nova Senha (4 Dígitos)</label>
+            <input type="password" id="confirmNewPinInput" class="form-control" maxlength="4" placeholder="••••" style="font-family: var(--font-mono); font-size: 1.3rem; letter-spacing: 6px; text-align: center;" required autocomplete="off">
+          </div>
+
+          <button type="submit" class="btn btn-gradient" style="width: 100%;">
+            <span>Confirmar e Ativar Cartão</span>
+          </button>
         </form>
       </div>
     </div>
