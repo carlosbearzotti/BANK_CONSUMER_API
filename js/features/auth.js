@@ -559,7 +559,17 @@ export const authFeature = {
       if (profileCardPinVal) profileCardPinVal.textContent = newPin;
       window.cardsFeature?.loadCards();
       window.cardsFeature?.refreshCardMetrics();
+      window.profileFeature?.refreshUI();
     });
+
+    const logoutBtn = document.getElementById('firstAccessLogoutBtn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => {
+        modal.close('firstAccessPinChangeModal');
+        state.clearAuth();
+        toast.info('Sessão encerrada. Ao fazer login novamente, a ativação da conta será solicitada.');
+      });
+    }
   }
 };
 
