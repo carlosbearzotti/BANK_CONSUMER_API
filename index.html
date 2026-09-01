@@ -653,28 +653,49 @@
             <div class="card">
               <div class="card-header">
                 <div class="card-title-group">
-                  <h2>💳 Gestão de Cartões</h2>
-                  <div class="card-subtitle">Controle de limites, bloqueio temporário e cartões virtuais</div>
+                  <h2>💳 Gestão Completa de Cartões</h2>
+                  <div class="card-subtitle">Controle de limites por cartão, bloqueio individual e emissão de cartões virtuais</div>
                 </div>
+                <button class="btn btn-gradient btn-sm" id="generateNewVirtualCardBtn">
+                  <span>✨ Gerar Novo Cartão Virtual</span>
+                </button>
               </div>
 
-              <div class="form-grid">
+              <!-- Grid Superior: Resumo de Fatura & Ações Globais -->
+              <div class="form-grid" style="margin-bottom: 1.5rem;">
                 <div class="card" style="padding: 1.25rem;">
-                  <h3 style="font-size: 1rem; margin-bottom: 0.75rem;">⚙️ Configurações Rápidas</h3>
-                  <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                    <button class="btn btn-secondary" id="toggleCardBlockBtn">🔒 Bloqueio Temporário: Desativado</button>
-                    <button class="btn btn-secondary" onclick="alert('Novo Cartão Virtual gerado com sucesso! Código CVV temporário ativo por 24 horas.');">🔄 Gerar Novo Cartão Virtual</button>
-                    <button class="btn btn-secondary" onclick="alert('Limite de compras online atualizado!');">🌐 Ajustar Limite para Compras Online</button>
-                  </div>
-                </div>
-
-                <div class="card" style="padding: 1.25rem;">
-                  <h3 style="font-size: 1rem; margin-bottom: 0.75rem;">📊 Fatura Atual</h3>
+                  <h3 style="font-size: 1rem; margin-bottom: 0.75rem;">📊 Fatura do Cartão</h3>
                   <div style="font-size: 1.6rem; font-weight: 800; color: #f87171; margin-bottom: 0.5rem;" class="balance-sensitive" id="cardsTabInvoiceDisplay">R$ 0,00</div>
                   <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;" id="cardsTabDueDateText">Fatura em dia &bull; Próximo fechamento no início do mês</p>
                   <button class="btn btn-primary btn-sm" id="openInvoiceModalBtn">Pagar Fatura</button>
                 </div>
+
+                <div class="card" style="padding: 1.25rem;">
+                  <h3 style="font-size: 1rem; margin-bottom: 0.75rem;">🔒 Bloqueio Temporário Seletivo</h3>
+                  <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem;">Escolha qual cartão você deseja bloquear ou desbloquear:</p>
+                  <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+                    <select id="selectCardToBlock" class="form-control" style="flex: 1; min-width: 180px;">
+                      <!-- Preenchido dinamicamente com os cartões ativos -->
+                    </select>
+                    <button class="btn btn-secondary btn-sm" id="toggleSelectedCardBlockBtn" style="white-space: nowrap;">
+                      🔒 Bloquear / Desbloquear
+                    </button>
+                  </div>
+                </div>
               </div>
+
+              <!-- Lista de Cartões Ativos (Físico + Virtuais) -->
+              <div style="margin-top: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                  <h3 style="font-size: 1.1rem; font-weight: 700; color: #ffffff;">💳 Meus Cartões Ativos (<span id="totalCardsCount">1</span>)</h3>
+                  <span style="font-size: 0.775rem; color: var(--text-muted);">Toque em qualquer cartão para ver o verso / CVV</span>
+                </div>
+                
+                <div id="cardsListGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+                  <!-- Renderizado dinamicamente pelo cards.js -->
+                </div>
+              </div>
+
             </div>
           </section>
 
