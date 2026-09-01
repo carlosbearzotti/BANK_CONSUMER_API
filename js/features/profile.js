@@ -17,9 +17,41 @@ export const profileFeature = {
     this.setupLogout();
     this.setupTokenCopy();
     this.setupPinToggle();
+    this.setupPasswordChangeToggle();
 
     state.subscribe('auth', () => this.refreshUI());
     this.refreshUI();
+  },
+
+  setupPasswordChangeToggle() {
+    const toggleBtn = document.getElementById('togglePasswordChangeBtn');
+    const toggleBtnInner = document.getElementById('togglePasswordChangeBtnInner');
+    const cancelBtn = document.getElementById('cancelPasswordChangeBtn');
+    const container = document.getElementById('passwordChangeCollapseContainer');
+    const input = document.getElementById('profilePwdTestInput');
+
+    const toggle = (force) => {
+      if (!container) return;
+      const isVisible = container.style.display !== 'none';
+      const nextState = force !== undefined ? force : !isVisible;
+      container.style.display = nextState ? 'block' : 'none';
+      if (toggleBtnInner) {
+        toggleBtnInner.textContent = nextState ? 'Fechar ▲' : 'Trocar Senha ▾';
+      }
+      if (nextState && input) {
+        input.focus();
+      }
+    };
+
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', (e) => {
+        if (e.target !== cancelBtn) toggle();
+      });
+    }
+
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', () => toggle(false));
+    }
   },
 
   setupPinToggle() {

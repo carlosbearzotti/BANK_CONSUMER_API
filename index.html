@@ -1019,36 +1019,56 @@
                 </div>
               </div>
 
-              <!-- 3. Seção: Segurança & Validação de Senha (Integrada) -->
+              <!-- 3. Seção: Segurança & Senha de Acesso (Integrada) -->
               <div class="nubank-section-card">
                 <div class="nubank-section-header">
                   <span>Segurança & Senha de Acesso</span>
                 </div>
                 <div style="padding: 1.25rem;">
-                  <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
-                    Validador de conformidade com as 5 regras de segurança obrigatórias do banco:
-                  </p>
-                  
-                  <div class="form-group" style="margin-bottom: 0.75rem;">
-                    <input type="password" id="profilePwdTestInput" class="form-control" placeholder="Digite uma nova senha para testar conformidade..." style="font-family: var(--font-mono);">
-                  </div>
-
-                  <div class="password-meter-container" style="margin: 0.5rem 0 1rem 0;">
-                    <div class="password-meter-bar">
-                      <div id="profilePwdMeterFill" class="password-meter-fill"></div>
+                  <!-- Menu Row: Trocar Senha de Acesso -->
+                  <div class="nubank-menu-row" style="background: transparent; border: none; padding: 0.25rem 0 0.75rem 0; cursor: pointer;" id="togglePasswordChangeBtn">
+                    <div class="nubank-row-left">
+                      <div class="nubank-row-icon">🔑</div>
+                      <div>
+                        <div class="nubank-row-label">Trocar Senha de Acesso</div>
+                        <div class="nubank-row-desc">Validador de conformidade e alteração de senha</div>
+                      </div>
                     </div>
-                    <div id="profilePwdMeterLabel" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">Digite uma senha com 8+ caracteres, maiúscula, minúscula, número e símbolo.</div>
+                    <div class="nubank-row-value">
+                      <button type="button" class="btn btn-secondary btn-sm" id="togglePasswordChangeBtnInner" style="font-size: 0.75rem;">Trocar Senha ▾</button>
+                    </div>
                   </div>
 
-                  <ul class="password-rules-list" style="margin-bottom: 1rem;">
-                    <li id="pRuleLength" class="password-rule-item invalid"><span class="rule-icon">✗</span> Mínimo de 8 caracteres</li>
-                    <li id="pRuleUpper" class="password-rule-item invalid"><span class="rule-icon">✗</span> Ao menos 1 letra maiúscula</li>
-                    <li id="pRuleLower" class="password-rule-item invalid"><span class="rule-icon">✗</span> Ao menos 1 letra minúscula</li>
-                    <li id="pRuleDigit" class="password-rule-item invalid"><span class="rule-icon">✗</span> Ao menos 1 dígito numérico</li>
-                    <li id="pRuleSpecial" class="password-rule-item invalid"><span class="rule-icon">✗</span> Ao menos 1 caractere especial (!@#$%...)</li>
-                  </ul>
+                  <!-- Container Colapsável: Aparece somente ao selecionar Trocar Senha de Acesso -->
+                  <div id="passwordChangeCollapseContainer" style="display: none; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--bank-border-soft); border-radius: var(--radius-md); padding: 1.25rem; margin-top: 0.5rem; margin-bottom: 1rem;">
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                      Validador de conformidade com as 5 regras de segurança obrigatórias do banco:
+                    </p>
+                    
+                    <div class="form-group" style="margin-bottom: 0.75rem;">
+                      <input type="password" id="profilePwdTestInput" class="form-control" placeholder="Digite uma nova senha para testar conformidade..." style="font-family: var(--font-mono);">
+                    </div>
 
-                  <button type="button" id="profileValidatePwdBtn" class="btn btn-secondary btn-sm">Validar Senha na API Backend</button>
+                    <div class="password-meter-container" style="margin: 0.5rem 0 1rem 0;">
+                      <div class="password-meter-bar">
+                        <div id="profilePwdMeterFill" class="password-meter-fill"></div>
+                      </div>
+                      <div id="profilePwdMeterLabel" style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary);">Digite uma senha com 8+ caracteres, maiúscula, minúscula, número e símbolo.</div>
+                    </div>
+
+                    <ul class="password-rules-list" style="margin-bottom: 1rem;">
+                      <li id="pRuleLength" class="password-rule-item invalid"><span class="rule-icon">✗</span> Mínimo de 8 caracteres</li>
+                      <li id="pRuleUpper" class="password-rule-item invalid"><span class="rule-icon">✗</span> Ao menos 1 letra maiúscula</li>
+                      <li id="pRuleLower" class="password-rule-item invalid"><span class="rule-icon">✗</span> Ao menos 1 letra minúscula</li>
+                      <li id="pRuleDigit" class="password-rule-item invalid"><span class="rule-icon">✗</span> Ao menos 1 dígito numérico</li>
+                      <li id="pRuleSpecial" class="password-rule-item invalid"><span class="rule-icon">✗</span> Ao menos 1 caractere especial (!@#$%...)</li>
+                    </ul>
+
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                      <button type="button" id="profileValidatePwdBtn" class="btn btn-secondary btn-sm">Validar Senha na API Backend</button>
+                      <button type="button" id="cancelPasswordChangeBtn" class="btn btn-outline btn-sm" style="font-size: 0.75rem;">Cancelar</button>
+                    </div>
+                  </div>
 
                   <hr style="border: 0; border-top: 1px solid var(--bank-border-subtle); margin: 1.5rem 0;">
                   
