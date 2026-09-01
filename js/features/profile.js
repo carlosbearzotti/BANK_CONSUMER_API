@@ -246,7 +246,9 @@ export const profileFeature = {
     const ageStr = user?.age ? `${user.age} anos` : '';
     const lat = user?.latitude != null ? user.latitude.toFixed(4) : '';
     const lng = user?.longitude != null ? user.longitude.toFixed(4) : '';
-    if (profileGeoVal) profileGeoVal.textContent = lat && lng ? `${ageStr} • (${lat}, ${lng})` : ageStr;
+    const pin = localStorage.getItem(`laobank_card_pin_${user?.email || user?.id}`) || '••••';
+    const profileCardPinVal = document.getElementById('profileCardPinVal');
+    if (profileCardPinVal) profileCardPinVal.textContent = pin;
 
     if (profileApiKeyVal) profileApiKeyVal.textContent = state.apiKey;
     if (profileJwtDisplay) profileJwtDisplay.textContent = state.token || 'Nenhum token ativo';

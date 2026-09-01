@@ -942,7 +942,7 @@
                         <div class="nubank-row-desc">Documento cadastrado na Receita Federal</div>
                       </div>
                     </div>
-                    <div class="nubank-row-value" id="profileCpfVal">123.456.789-00</div>
+                    <div class="nubank-row-value" id="profileCpfVal">-</div>
                   </div>
 
                   <div class="nubank-menu-row">
@@ -953,7 +953,7 @@
                         <div class="nubank-row-desc">Base para análise de limite de crédito</div>
                       </div>
                     </div>
-                    <div class="nubank-row-value" id="profileIncomeVal" style="color: #34d399;">R$ 7.500,00</div>
+                    <div class="nubank-row-value" id="profileIncomeVal" style="color: #34d399;">R$ 0,00</div>
                   </div>
 
                   <div class="nubank-menu-row">
@@ -964,7 +964,18 @@
                         <div class="nubank-row-desc">Coordenadas geográficas do cadastro</div>
                       </div>
                     </div>
-                    <div class="nubank-row-value" id="profileGeoVal">29 anos &bull; (-23.5505, -46.6333)</div>
+                    <div class="nubank-row-value" id="profileGeoVal">-</div>
+                  </div>
+
+                  <div class="nubank-menu-row">
+                    <div class="nubank-row-left">
+                      <div class="nubank-row-icon">🔐</div>
+                      <div>
+                        <div class="nubank-row-label">Senha do Cartão (PIN 4 Dígitos)</div>
+                        <div class="nubank-row-desc">Utilizada para compras e emissão de cartões virtuais</div>
+                      </div>
+                    </div>
+                    <div class="nubank-row-value" style="font-family: var(--font-mono); font-weight: 700; color: var(--bank-gold-light);" id="profileCardPinVal">••••</div>
                   </div>
 
                 </div>
@@ -1260,6 +1271,39 @@
           </div>
           
           <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Confirmar Pagamento</button>
+        </form>
+    </div>
+  </div>
+
+  <!-- Modal Confirmação de Emissão de Cartão Virtual (Exige Senha do Cartão) -->
+  <div id="virtualCardConfirmModal" class="modal-backdrop">
+    <div class="modal-card" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 class="modal-title">✨ Emitir Cartão Virtual</h3>
+        <button class="bank-icon-btn modal-close" data-modal-close>✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="text-align: center; margin-bottom: 1.25rem;">
+          <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">💳🔐</div>
+          <h4 style="font-size: 1.05rem; font-weight: 700; color: #ffffff;">Autorização de Segurança</h4>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.35rem;">
+            Para gerar um novo Cartão Virtual dinâmico, confirme a sua <strong>Senha de 4 dígitos do Cartão</strong>.
+          </p>
+        </div>
+
+        <form id="virtualCardPasswordForm">
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label" for="virtualCardPinInput" style="text-align: center; display: block;">Senha do Cartão (4 Dígitos)</label>
+            <input type="password" id="virtualCardPinInput" class="form-control" maxlength="4" placeholder="••••" style="font-family: var(--font-mono); font-size: 1.5rem; letter-spacing: 8px; text-align: center;" required autocomplete="off">
+            <div style="font-size: 0.725rem; color: var(--text-muted); text-align: center; margin-top: 0.4rem;">
+              Sua senha foi gerada no momento da criação da conta.
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem;">
+            <button type="button" class="btn btn-secondary" style="flex: 1;" data-modal-close>Cancelar</button>
+            <button type="submit" class="btn btn-gradient" style="flex: 1;">Confirmar & Emitir</button>
+          </div>
         </form>
       </div>
     </div>

@@ -266,8 +266,36 @@ export const cardsFeature = {
 
   setupCardActions() {
     const generateBtn = document.getElementById('generateNewVirtualCardBtn');
-    if (generateBtn) {
+    const modalEl = document.getElementById('virtualCardConfirmModal');
+    const form = document.getElementById('virtualCardPasswordForm');
+    const pinInput = document.getElementById('virtualCardPinInput');
+
+    if (generateBtn && modalEl) {
       generateBtn.addEventListener('click', () => {
+        if (pinInput) pinInput.value = '';
+        modalEl.classList.add('active');
+        if (pinInput) pinInput.focus();
+      });
+    }
+
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const user = state.user;
+        const inputPin = pinInput?.value.trim();
+        const storedPin = localStorage.getItem(`laobank_card_pin_${user?.email || user?.id}`) || '1234';
+
+        if (!inputPin || inputPin.length !== 4) {
+          toast.warning('A senha do cartão deve conter exatamente 4 dígitos.');
+          return;
+        }
+
+        if (inputPin !== storedPin) {
+          toast.error('Senha do cartão incorreta! Verifique o PIN cadastrado.');
+          return;
+        }
+
+        modalEl.classList.remove('active');
         this.generateVirtualCard();
       });
     }

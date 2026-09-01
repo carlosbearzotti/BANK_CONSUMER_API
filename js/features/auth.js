@@ -122,7 +122,32 @@ export const authFeature = {
 
       try {
         await authService.register(payload);
-        toast.success('Conta bancária criada com sucesso! Faça login com suas credenciais.');
+
+        // Gera automaticamente a senha do cartão (PIN 4 dígitos) e número do cartão para o novo usuário
+        const generatedPin = Math.floor(1000 + Math.random() * 9000).toString();
+        const initialLimit = income > 0 ? income * 0.8 : 0;
+        const initialCards = [
+          {
+            id: 'card-physical-1',
+            type: 'PHYSICAL',
+            name: 'Cartão Físico Black Prestige',
+            number: '•••• •••• •••• 8824',
+            last4: '8824',
+            expiry: '08/32',
+            cvv: '592',
+            cardPin: generatedPin,
+            isBlocked: false,
+            onlineLimit: initialLimit,
+            isVirtual: false,
+            colorGrad: 'linear-gradient(135deg, #1e1338 0%, #0f172a 50%, #080c16 100%)',
+            accentColor: '#c5a059'
+          }
+        ];
+
+        localStorage.setItem(`laobank_cards_${email}`, JSON.stringify(initialCards));
+        localStorage.setItem(`laobank_card_pin_${email}`, generatedPin);
+
+        toast.success(`Conta criada! Senha do seu Cartão: ${generatedPin} (Guarde este PIN para autorizações).`);
 
         // Redireciona para o modo "Fazer login" de forma limpa
         document.getElementById('switchToLoginBtn')?.click();
