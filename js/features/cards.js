@@ -97,7 +97,7 @@ export const cardsFeature = {
 
         if (method === 'ACCOUNT_BALANCE') {
           // 1. Pagamento com Saldo em Conta Real
-          const currentBalance = user?.income || 0;
+          const currentBalance = user?.balance != null ? user.balance : 0.00;
           if (currentBalance < this.invoiceAmount) {
             toast.warning(`Saldo insuficiente (R$ ${currentBalance.toFixed(2)}) para quitar a fatura de R$ ${this.invoiceAmount.toFixed(2)}.`);
           } else {

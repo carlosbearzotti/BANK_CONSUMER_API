@@ -327,10 +327,26 @@
                 <span id="bankBalanceDisplay" class="balance-amount">0,00</span>
               </div>
 
+              <!-- Indicadores de Saldo Disponível x Renda Cadastral x Limite de Crédito -->
+              <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem; margin-bottom: 0.75rem;">
+                <span class="balance-yield-badge" style="background: rgba(52,211,153,0.1); border-color: rgba(52,211,153,0.25); color: #34d399;">
+                  <span>💰</span>
+                  <span>Saldo em Conta: <strong id="homeAccountBalanceSub">R$ 0,00</strong></span>
+                </span>
+                <span class="balance-yield-badge" style="background: rgba(197,160,89,0.1); border-color: rgba(197,160,89,0.25); color: var(--bank-gold-light);">
+                  <span>💼</span>
+                  <span>Renda Cadastrada: <strong id="homeIncomeSub">R$ 0,00</strong></span>
+                </span>
+                <span class="balance-yield-badge" style="background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.25); color: #60a5fa;">
+                  <span>💳</span>
+                  <span>Limite de Crédito: <strong id="homeCreditLimitSub">R$ 0,00</strong></span>
+                </span>
+              </div>
+
               <div>
                 <span class="balance-yield-badge">
                   <span>📈</span>
-                  <span id="bankYieldDisplay">Rendimento LãoBank: +102% do CDI</span>
+                  <span id="bankYieldDisplay">Rendimento LãoBank: +102% do CDI (Conta Ativa)</span>
                 </span>
               </div>
 
@@ -473,47 +489,7 @@
                 </form>
 
                 <div class="bank-transactions-list" id="recentTransactionsList">
-                  <div class="tx-card-item">
-                    <div class="tx-item-left">
-                      <div class="tx-icon-circle pix">⚡</div>
-                      <div class="tx-item-info">
-                        <h4>Pix Recebido - Empresa X</h4>
-                        <span>Hoje, 10:45 &bull; Transferência Pix</span>
-                      </div>
-                    </div>
-                    <div class="tx-item-right">
-                      <div class="tx-item-value positive balance-sensitive">+ R$ 2.500,00</div>
-                      <span class="badge badge-success" style="font-size: 0.65rem;">Concluído</span>
-                    </div>
-                  </div>
-
-                  <div class="tx-card-item">
-                    <div class="tx-item-left">
-                      <div class="tx-icon-circle card">💳</div>
-                      <div class="tx-item-info">
-                        <h4>Supermercado Central</h4>
-                        <span>Ontem, 18:20 &bull; Cartão de Crédito</span>
-                      </div>
-                    </div>
-                    <div class="tx-item-right">
-                      <div class="tx-item-value negative balance-sensitive">- R$ 342,80</div>
-                      <span class="badge badge-primary" style="font-size: 0.65rem;">Aprovado</span>
-                    </div>
-                  </div>
-
-                  <div class="tx-card-item">
-                    <div class="tx-item-left">
-                      <div class="tx-icon-circle loan">💰</div>
-                      <div class="tx-item-info">
-                        <h4>Crédito Pessoal Aprovado</h4>
-                        <span>28 Ago, 14:10 &bull; Empréstimo</span>
-                      </div>
-                    </div>
-                    <div class="tx-item-right">
-                      <div class="tx-item-value positive balance-sensitive">+ R$ 5.000,00</div>
-                      <span class="badge badge-success" style="font-size: 0.65rem;">Depositado</span>
-                    </div>
-                  </div>
+                  <!-- Gerenciado dinamicamente pelo módulo conta.js com dados reais da conta -->
                 </div>
 
                 <!-- Tabela de Auditoria de Transações do Cofre -->

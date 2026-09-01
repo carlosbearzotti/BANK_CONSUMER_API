@@ -191,18 +191,38 @@ export const profileFeature = {
     const name = user?.name || 'Cliente';
     const initial = name.charAt(0).toUpperCase();
 
-    // Top Header & Credit Card & Home Balance Display
+    // Top Header & Credit Card & Home Balance Displays
     const bankUserName = document.getElementById('bankUserName');
     const bankUserAvatar = document.getElementById('bankUserAvatar');
     const cardFrontHolder = document.getElementById('cardFrontHolder');
     const bankBalanceDisplay = document.getElementById('bankBalanceDisplay');
+    const homeAccountBalanceSub = document.getElementById('homeAccountBalanceSub');
+    const homeIncomeSub = document.getElementById('homeIncomeSub');
+    const homeCreditLimitSub = document.getElementById('homeCreditLimitSub');
+
+    // Para conta recém-criada:
+    // Saldo em Conta Corrente: inicia em R$ 0,00 (ou o valor de saldo real)
+    // Renda Cadastral: valor declarado no registro (ex: R$ 5.000,00)
+    // Limite de Crédito Aprovado: proporcional à renda (ex: 80% da renda)
+    const userIncome = user?.income || 0;
+    const accountBalance = user?.balance != null ? user.balance : 0.00;
+    const creditLimit = userIncome > 0 ? userIncome * 0.8 : 0.00;
 
     if (bankUserName) bankUserName.textContent = `Olá, ${name}`;
     if (bankUserAvatar) bankUserAvatar.textContent = initial;
     if (cardFrontHolder) cardFrontHolder.textContent = name.toUpperCase();
+
     if (bankBalanceDisplay) {
-      const userBalance = user?.income || 0;
-      bankBalanceDisplay.textContent = userBalance.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+      bankBalanceDisplay.textContent = accountBalance.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+    }
+    if (homeAccountBalanceSub) {
+      homeAccountBalanceSub.textContent = `R$ ${accountBalance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+    }
+    if (homeIncomeSub) {
+      homeIncomeSub.textContent = `R$ ${userIncome.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+    }
+    if (homeCreditLimitSub) {
+      homeCreditLimitSub.textContent = `R$ ${creditLimit.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
     }
 
     // Nubank Profile Screen
