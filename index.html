@@ -514,30 +514,26 @@
                 </div>
               </div>
 
-              <!-- Destaque de Serviços & Extrato Rápido -->
+              <!-- Fatura do Cartão & Opção para Ver Extrato -->
               <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
                   <div class="card-header">
                     <div class="card-title-group">
-                      <h2>⚡ Pix & Transferências</h2>
-                      <div class="card-subtitle">Movimentações instantâneas e seguras</div>
+                      <h2>📊 Fatura do Cartão</h2>
+                      <div class="card-subtitle">Controle de gastos e vencimento</div>
                     </div>
-                    <span class="badge badge-emerald">Disponível 24/7</span>
+                    <span class="badge badge-success" id="homeInvoiceBadge">Fatura em Dia</span>
                   </div>
 
                   <div style="padding: 0 0.5rem; margin-bottom: 1.25rem;">
-                    <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1rem;">
-                      Realize transferências Pix instantâneas, pagamentos protegidos por token/cartão e consulte seu extrato completo na área dedicada.
-                    </p>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
-                      <button type="button" class="btn btn-secondary btn-sm" onclick="document.querySelector('[data-tab=pix]').click();" style="padding: 0.85rem 0.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.35rem;">
-                        <span style="font-size: 1.3rem;">⚡</span>
-                        <span style="font-size: 0.8rem; font-weight: 700;">Área Pix</span>
-                      </button>
-                      <button type="button" class="btn btn-secondary btn-sm" onclick="document.querySelector('[data-tab=pix]').click();" style="padding: 0.85rem 0.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.35rem;">
-                        <span style="font-size: 1.3rem;">🔒</span>
-                        <span style="font-size: 0.8rem; font-weight: 700;">Transferir</span>
+                    <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--bank-border-soft); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1rem;">
+                      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <span style="font-size: 0.8rem; color: var(--text-secondary);">Valor Atual da Fatura:</span>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">Vencimento início do mês</span>
+                      </div>
+                      <div style="font-size: 1.75rem; font-weight: 800; color: #f87171; font-family: var(--font-mono); margin-bottom: 0.85rem;" class="balance-sensitive" id="homeInvoiceDisplay">R$ 0,00</div>
+                      <button type="button" class="btn btn-primary btn-sm" style="width: 100%; font-size: 0.85rem;" onclick="document.getElementById('openInvoiceModalBtn')?.click();">
+                        💳 Pagar Fatura
                       </button>
                     </div>
                   </div>
@@ -545,7 +541,7 @@
 
                 <div style="padding: 0 0.5rem;">
                   <button type="button" class="btn btn-gradient btn-sm" style="width: 100%; font-size: 0.85rem; padding: 0.75rem;" onclick="document.querySelector('[data-tab=pix]').click();">
-                    📄 Ver Extrato Completo & Transferir
+                    📄 Ver Extrato Completo da Conta
                   </button>
                 </div>
               </div>

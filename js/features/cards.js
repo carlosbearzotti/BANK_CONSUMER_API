@@ -253,6 +253,8 @@ export const cardsFeature = {
     const progressFillEl = document.getElementById('cardLimitProgressFill');
     const invoiceTextEl = document.getElementById('cardInvoiceText');
     const cardsTabInvoiceDisplay = document.getElementById('cardsTabInvoiceDisplay');
+    const homeInvoiceDisplay = document.getElementById('homeInvoiceDisplay');
+    const homeInvoiceBadge = document.getElementById('homeInvoiceBadge');
     const modalInvoiceValueDisplay = document.getElementById('modalInvoiceValueDisplay');
 
     if (availableLimitEl) availableLimitEl.textContent = `R$ ${availableLimit.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
@@ -260,6 +262,11 @@ export const cardsFeature = {
     if (progressFillEl) progressFillEl.style.width = `${progressPercent}%`;
     if (invoiceTextEl) invoiceTextEl.textContent = `R$ ${this.invoiceAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
     if (cardsTabInvoiceDisplay) cardsTabInvoiceDisplay.textContent = `R$ ${this.invoiceAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+    if (homeInvoiceDisplay) homeInvoiceDisplay.textContent = `R$ ${this.invoiceAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+    if (homeInvoiceBadge) {
+      homeInvoiceBadge.className = this.invoiceAmount > 0 ? 'badge badge-warning' : 'badge badge-success';
+      homeInvoiceBadge.textContent = this.invoiceAmount > 0 ? 'Fatura Aberta' : 'Fatura em Dia';
+    }
     if (modalInvoiceValueDisplay) modalInvoiceValueDisplay.textContent = `R$ ${this.invoiceAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
 
     this.renderCardsGrid();
